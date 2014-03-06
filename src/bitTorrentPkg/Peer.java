@@ -5,17 +5,17 @@ import java.io.FileReader;
 import java.io.IOException;
 
 public class Peer {
-	int numOfPrefNeighbors; //Number of neighbors this peer will share with
-	int unchokingInterval; //Time between each normal unchoke of an existing peer (in seconds)
-	int optUnchokingInterval; //Time between each optimistic unchoke of a new peer (in seconds)
-	String fileName; 
-	int fileSize;	//in bytes
-	int pieceSize;	//Size of each piece file will be broken into (in bytes)
-	int numOfPieces; //number of pieces in a file (filesize divided by piecesize, rounded up)
-	int peerID; //the peerID of THIS peer
-	String hostName; //host name of THIS peer
-	int listeningPort; 	//listening port for THIS peer
-	boolean hasFile;
+	private int numOfPrefNeighbors; //Number of neighbors this peer will share with
+	private int unchokingInterval; //Time between each normal unchoke of an existing peer (in seconds)
+	private int optUnchokingInterval; //Time between each optimistic unchoke of a new peer (in seconds)
+	private String fileName; 
+	private int fileSize;	//in bytes
+	private int pieceSize;	//Size of each piece file will be broken into (in bytes)
+	private int numOfPieces; //number of pieces in a file (filesize divided by piecesize, rounded up)
+	private int peerID; //the peerID of THIS peer
+	private String hostName; //host name of THIS peer
+	private int listeningPort; 	//listening port for THIS peer
+	private boolean hasFile;
 
 	public Peer() throws IOException{
 		peerID = -1;
@@ -29,7 +29,7 @@ public class Peer {
 		readPeerInfo();
 	}
 	
-	public void readCommon() throws IOException{
+	private void readCommon() throws IOException{
 		//this method parses Common.cfg
 		String currLine = null;
 		String parts[] = null;
@@ -59,16 +59,8 @@ public class Peer {
 		
 	}
 	
-	public String toString(){
-		//mainly for debugging- this can be converted into a log later maybe?
-		return "NumberOfPrefferedNeighbors " + numOfPrefNeighbors + "\nUnchokingInterval " + unchokingInterval + 
-				"\nOptimisticUnchokingInterval " + optUnchokingInterval + "\nFileName " + fileName + 
-				"\nFileSize " + fileSize + "\nPeerID " + peerID + "\nHostName " + hostName + 
-				"\nListeningPort " + listeningPort + "\nHasFile " + hasFile + "\n";
-		
-	}
 
-	public void readPeerInfo() throws IOException{
+	private void readPeerInfo() throws IOException{
 		String currLine = null;
 		String parts[] = null;
 		BufferedReader peerInfo = new BufferedReader(new FileReader("/Users/joeysiracusa/Development/networking-project/src/bitTorrentPkg/PeerInfo.cfg"));
@@ -99,6 +91,15 @@ public class Peer {
 			System.out.println("WARNING: This machine not found in tracker.  Terminating...");
 			System.exit(0);
 		}
+		
+	}
+	
+	public String toString(){
+		//mainly for debugging- this can be converted into a log later maybe?
+		return "NumberOfPrefferedNeighbors " + numOfPrefNeighbors + "\nUnchokingInterval " + unchokingInterval + 
+				"\nOptimisticUnchokingInterval " + optUnchokingInterval + "\nFileName " + fileName + 
+				"\nFileSize " + fileSize + "\nPeerID " + peerID + "\nHostName " + hostName + 
+				"\nListeningPort " + listeningPort + "\nHasFile " + hasFile + "\n";
 		
 	}
 

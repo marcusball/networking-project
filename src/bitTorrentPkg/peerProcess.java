@@ -16,31 +16,39 @@ import java.io.IOException;
 
 public class peerProcess {
 
-	int numOfPrefNeighbors; //Number of neighbors this peer will share with
-	int unchokingInterval; //Time between each normal unchoke of an existing peer (in seconds)
-	int optUnchokingInterval; //Time between each optimistic unchoke of a new peer (in seconds)
-	String fileName; 
-	int fileSize;	//in bytes
-	int pieceSize;	//Size of each piece file will be broken into (in bytes)
-	int numOfPieces; //number of pieces in a file (filesize divided by piecesize, rounded up)
+	static int numOfPrefNeighbors; //Number of neighbors this peer will share with
+	static int unchokingInterval; //Time between each normal unchoke of an existing peer (in seconds)
+	static int optUnchokingInterval; //Time between each optimistic unchoke of a new peer (in seconds)
+	static String fileName; 
+	static int fileSize;	//in bytes
+	static int pieceSize;	//Size of each piece file will be broken into (in bytes)
+	static int numOfPieces; //number of pieces in a file (filesize divided by piecesize, rounded up)
 	
 	
-	public void readCommon() throws IOException{
+	public static void readCommon() throws IOException{
 		//this method parses Common.cfg
-		BufferedReader config = new BufferedReader(new FileReader("Common.cfg"));
-		config.skip(27); //NumberOfPreferences_ is 27 chars
-		numOfPrefNeighbors = config.read();
-		config.skip(19); //newline + UnchokingInterval_ is 19 chars
-		unchokingInterval = config.read();
-		config.skip(29); //newline + OptimisticUnchokingInterval_
-		optUnchokingInterval = config.read();
-		config.skip(10); //newline + FileName_
-		fileName = config.readLine();
-		config.skip(9); //FileSize_ (don't count newline)
-		fileSize = config.read();
-		config.skip(11); //newline + PieceSize_
-		pieceSize = config.read();
-		config.close();
+		String currLine = null;
+		String parts[] = null;
+		BufferedReader config = new BufferedReader(new FileReader("/Users/joeysiracusa/Development/networking-project/src/bitTorrentPkg/Common.cfg"));
+		currLine = config.readLine(); //gets the line in a string
+		parts = currLine.split(" "); //splits the line at the space
+		numOfPrefNeighbors = Integer.parseInt(parts[1]); //reads the value after the space
+		currLine = config.readLine(); //repeat for all variables in config file
+		parts = currLine.split(" ");
+		unchokingInterval = Integer.parseInt(parts[1]);
+		currLine = config.readLine();
+		parts = currLine.split(" ");
+		optUnchokingInterval = Integer.parseInt(parts[1]);
+		currLine = config.readLine();
+		parts = currLine.split(" ");
+		fileName = parts[1];
+		currLine = config.readLine();
+		parts = currLine.split(" ");
+		fileSize = Integer.parseInt(parts[1]);
+		currLine = config.readLine();
+		parts = currLine.split(" ");
+		pieceSize = Integer.parseInt(parts[1]);
+		config.close(); //close the config file
 		
 		//reading from Common.cfg is complete, now finish calculations
 		numOfPieces = (fileSize + pieceSize - 1) / pieceSize; //integer division which rounds up
@@ -48,14 +56,25 @@ public class peerProcess {
 	}
 	
 	public void readPeerInfo() throws IOException{
-		//this method 
+		
+	}
+	
+	public static void printConfig(){
+		//mainly for debugging- this can be converted into a log later maybe?
+		System.out.println("NumberOfPrefferedNeighbors " + numOfPrefNeighbors);
+		System.out.println("UnchokingInterval " + unchokingInterval);
+		System.out.println("OptimisticUnchokingInterval " + optUnchokingInterval);
+		System.out.println("FileName " + fileName);
+		System.out.println("FileSize " + fileSize);
 	}
 	
 	
 	
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		// TODO Auto-generated method stub
+		readCommon();
+		printConfig();
 
 	}
 

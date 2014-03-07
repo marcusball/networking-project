@@ -5,6 +5,7 @@ import java.io.FileReader;
 import java.io.IOException;
 
 public class Peer {
+	//--------------------VARIABLES--------------------
 	//Common.cfg variables
 	private int numOfPrefNeighbors; //Number of neighbors this peer will share with
 	private int unchokingInterval; //Time between each normal unchoke of an existing peer (in seconds)
@@ -19,12 +20,18 @@ public class Peer {
 	private String hostName; //host name of THIS peer
 	private int listeningPort; 	//listening port for THIS peer
 	private boolean hasFile;
+	private boolean isFirstPeer; //if it's the first peer, just wait and listen
+								 //if not, initiate tcp connections with others
 	
 	//File related variables
 	private boolean bitfield[]; //keeps track of which pieces the peer has
 
+	/*--------------------CONSTRUCTORS--------------------
+	 * All Peer class constructors are located here
+	 */
+	
 	public Peer() throws IOException{
-		peerID = -1;
+		peerID = -1; //if for some reason you don't have a peerID but want to test
 		readCommon();
 		bitfield = new boolean[numOfPieces];
 		readPeerInfo();
@@ -41,6 +48,7 @@ public class Peer {
 		//this method parses Common.cfg
 		String currLine = null;
 		String parts[] = null;
+		//Joey's path: /Users/joeysiracusa/Development/networking-project/src/bitTorrentPkg/Common.cfg
 		BufferedReader config = new BufferedReader(new FileReader("Common.cfg"));
 		currLine = config.readLine(); //gets the line in a string
 		parts = currLine.split(" "); //splits the line at the space
@@ -72,6 +80,7 @@ public class Peer {
 		//searches PeerInfo for THIS peer ID
 		String currLine = null;
 		String parts[] = null;
+		//Joey's path: /Users/joeysiracusa/Development/networking-project/src/bitTorrentPkg/PeerInfo.cfg		
 		BufferedReader peerInfo = new BufferedReader(new FileReader("PeerInfo.cfg"));
 		boolean foundOwnPeerID = false;
 		currLine = peerInfo.readLine();

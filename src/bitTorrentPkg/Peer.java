@@ -5,6 +5,7 @@ import java.io.FileReader;
 import java.io.IOException;
 
 public class Peer {
+	//Common.cfg variables
 	private int numOfPrefNeighbors; //Number of neighbors this peer will share with
 	private int unchokingInterval; //Time between each normal unchoke of an existing peer (in seconds)
 	private int optUnchokingInterval; //Time between each optimistic unchoke of a new peer (in seconds)
@@ -12,20 +13,27 @@ public class Peer {
 	private int fileSize;	//in bytes
 	private int pieceSize;	//Size of each piece file will be broken into (in bytes)
 	private int numOfPieces; //number of pieces in a file (filesize divided by piecesize, rounded up)
-	private int peerID; //the peerID of THIS peer
+	
+	//PeerInfo.cfg variables
+	private int peerID; //the peerID of THIS peer (inputted into command line)
 	private String hostName; //host name of THIS peer
 	private int listeningPort; 	//listening port for THIS peer
 	private boolean hasFile;
+	
+	//File related variables
+	private boolean bitfield[]; //keeps track of which pieces the peer has
 
 	public Peer() throws IOException{
 		peerID = -1;
 		readCommon();
+		bitfield = new boolean[numOfPieces];
 		readPeerInfo();
 	}
 	
 	public Peer(int peerID) throws IOException{
 		this.peerID = peerID;
 		readCommon();
+		bitfield = new boolean[numOfPieces];
 		readPeerInfo();
 	}
 	
@@ -33,7 +41,7 @@ public class Peer {
 		//this method parses Common.cfg
 		String currLine = null;
 		String parts[] = null;
-		BufferedReader config = new BufferedReader(new FileReader("/Users/joeysiracusa/Development/networking-project/src/bitTorrentPkg/Common.cfg"));
+		BufferedReader config = new BufferedReader(new FileReader("Common.cfg"));
 		currLine = config.readLine(); //gets the line in a string
 		parts = currLine.split(" "); //splits the line at the space
 		this.numOfPrefNeighbors = Integer.parseInt(parts[1]); //reads the value after the space
@@ -61,24 +69,36 @@ public class Peer {
 	
 
 	private void readPeerInfo() throws IOException{
+		//searches PeerInfo for THIS peer ID
 		String currLine = null;
 		String parts[] = null;
-		BufferedReader peerInfo = new BufferedReader(new FileReader("/Users/joeysiracusa/Development/networking-project/src/bitTorrentPkg/PeerInfo.cfg"));
+		BufferedReader peerInfo = new BufferedReader(new FileReader("PeerInfo.cfg"));
 		boolean foundOwnPeerID = false;
 		currLine = peerInfo.readLine();
 		while(!foundOwnPeerID && currLine != null){
-			parts = currLine.split(" ");
+			parts = currLine.split(" "); //split each line into peerID, hostname, listening port, has file
 			if(Integer.parseInt(parts[0]) == peerID){
 				foundOwnPeerID = true;
-				this.hostName = parts[1];
-				this.listeningPort = Integer.parseInt(parts[2]);
+				this.hostName = parts[1]; //save the host name
+				this.listeningPort = Integer.parseInt(parts[2]); //save the listening port
 				if(Integer.parseInt(parts[3]) == 1){
+					//if it has the file, set all of the bitfield to be true
+					//this means is has every piece of the file
 					hasFile = true;
-					//TODO: Set bitfield to be all 1's
+					for(int i = 0; i < numOfPieces; i++){
+						bitfield[i] = true;
+					}
 					
 				}else{
+					//if it does not have the file, set all of bitfield to be false
+					//at the beggining of the program, either the peer has the complete file 
+					//or the peer does not have a single piece of the file
+					//therefore, we set all of the bitfield to be false, since it has no pieces
 					hasFile = false;
-					//TODO: Set bitfield to be all 0's
+					for(int i = 0; i < numOfPieces; i++){
+						bitfield[i] = true;
+					}
+					
 					
 				}
 					

@@ -19,6 +19,7 @@ public class Logger {
 		peerID = -1;
 		logFileName = "log_peer_-1.log";
 		writer = new PrintWriter(logFileName, "UTF-8");
+		writer.println(new Date().toString() + ": " + peerID + " created");
 	}
 	
 	public Logger(int peerID) throws FileNotFoundException, UnsupportedEncodingException{

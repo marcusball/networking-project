@@ -12,8 +12,8 @@ public class Peer {
 	private int optUnchokingInterval; //Time between each optimistic unchoke of a new peer (in seconds)
 	private String fileName; 
 	private int fileSize;	//in bytes
-	private int pieceSize;	//Size of each piece file will be broken into (in bytes)
-	private int numOfPieces; //number of pieces in a file (filesize divided by piecesize, rounded up)
+	private int pieceSize;	//Size of each piece file will be broken up into (in bytes)
+	private int numOfPieces; //number of pieces in a file (fileSize divided by pieceSize, rounded up)
 	
 	//PeerInfo.cfg variables
 	private int peerID; //the peerID of THIS peer (inputted into command line)
@@ -24,7 +24,9 @@ public class Peer {
 								 //if not, initiate tcp connections with others
 	
 	//File related variables
-	private boolean bitfield[]; //keeps track of which pieces the peer has
+	private boolean bitfield[]; //if bitfield[i] is true, the peer has piece i
+								//keeps track of which pieces the peer has
+								
 
 	/*--------------------CONSTRUCTORS--------------------
 	 * All Peer class constructors are located here
@@ -43,6 +45,90 @@ public class Peer {
 		bitfield = new boolean[numOfPieces];
 		readPeerInfo();
 	}
+	
+	/*--------------------GET/SET METHODS--------------------
+	 * All Peer class get/set methods are located here
+	 */
+	public int getNumOfPrefNeighbors(){
+		return numOfPrefNeighbors;
+	}
+	
+	public void setNumOfPrefNeighbors(int numOfPrefNeighbors){
+		this.numOfPrefNeighbors = numOfPrefNeighbors;
+	}
+	
+	public int getUnchokingInterval(){
+		return unchokingInterval;
+	}
+	
+	public void setUnchokingInterval(int unchokingInterval){
+		this.unchokingInterval = unchokingInterval;
+	}
+	
+	public int getOptUnchokingInterval(){
+		return optUnchokingInterval;
+	}
+	
+	public void setOptUnchokingInterval(int optUnchokingInterval){
+		this.optUnchokingInterval = optUnchokingInterval;
+	}
+	
+	public String getFileName(){
+		return fileName; //this cannot be changed
+	}
+	
+	public int getFileSize(){
+		return fileSize; //this cannot be changed
+	}
+	
+	public int pieceSize(){
+		return pieceSize; //this cannot be changed
+	}
+	
+	public int numOfPieces(){
+		return numOfPieces; //this cannot be changed
+	}
+	
+	public int getPeerID(){
+		return peerID;	//this cannot be changed
+	}
+	
+	public String getHostName(){
+		return hostName; //this cannot be changed
+	}
+	
+	public int getListeningPort(){
+		return listeningPort;
+	}
+	
+	public void setListeningPort(int listeningPort){
+		this.listeningPort = listeningPort;
+	}
+	
+	public boolean hasFile(){
+		return hasFile;
+	}
+	
+	public void setHasFile(boolean hasFile){
+		this.hasFile = hasFile;
+	}
+	
+	public boolean isFirstPeer(){
+		return isFirstPeer;
+	}
+	
+	public void setIsFirstPeer(boolean isFirstPeer){
+		this.isFirstPeer = isFirstPeer;
+	}
+	
+	public boolean[] getBitfield(){
+		return bitfield;		//this cannot be changed
+	}
+	
+	/*--------------------READING CONFIG FILES--------------------
+	 * Methods to read Common.cfg and PeerInfo.cfg are located here
+	 */
+	
 	
 	private void readCommon() throws IOException{
 		//this method parses Common.cfg
@@ -120,6 +206,10 @@ public class Peer {
 			System.out.println("WARNING: This machine not found in tracker.  Terminating...");
 			System.exit(0);
 		}
+		
+	}
+	
+	public void listen(){
 		
 	}
 	

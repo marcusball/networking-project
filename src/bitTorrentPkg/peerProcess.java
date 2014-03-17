@@ -17,11 +17,13 @@ public class peerProcess {
 	
 	public static void main(String[] args) throws IOException {
 		int peerID0 = 1000; //normally this would be inputted from the command line
-		Peer thisPeer0 = new Peer(peerID0);
-		System.out.println("FIRST PEER: \n" + thisPeer0.toString());
-		Logger log = new Logger(peerID0);
-		log.testLog();
-		log.closeLog();
+		Peer peer0 = new Peer(peerID0);
+		
+		if(peer0.isFirstPeer()){
+			//if it is the first peer, listen for other peers attempting to connect
+			peer0.listen();
+		}
+		
 	}
 
 }

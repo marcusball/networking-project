@@ -7,6 +7,11 @@ import java.io.IOException;
 import java.net.Socket;
 import java.net.ServerSocket;
 
+<<<<<<< HEAD
+=======
+//import com.sun.tools.javac.util.Pair;
+
+>>>>>>> ff2c65f37f97b7c73bf006a704d51641cbcb2fdf
 public class Peer {
 	//--------------------VARIABLES--------------------
 	//Common.cfg variables

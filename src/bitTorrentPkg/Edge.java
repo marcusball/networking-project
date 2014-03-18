@@ -26,7 +26,8 @@ public class Edge {
 		else{
 			receiver = new ServerSocket(origin.getListeningPort());
 		}
-			
+		
+		//this is a useless comment for testing
 		
 	}
 

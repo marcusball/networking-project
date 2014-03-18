@@ -136,7 +136,7 @@ public class Peer {
 		String parts[] = null;
 		//Joey's path: /Users/joeysiracusa/Development/networking-project/src/bitTorrentPkg/Common.cfg
 		//Anurag's path: /Users/anurag/My Documents/GitHub/networking-project/src/bitTorrentPkg/Common.cfg
-		BufferedReader config = new BufferedReader(new FileReader("/Users/anurag/My Documents/GitHub/networking-project/src/bitTorrentPkg/Common.cfg"));
+		BufferedReader config = new BufferedReader(new FileReader("Common.cfg"));
 		currLine = config.readLine(); //gets the line in a string
 		parts = currLine.split(" "); //splits the line at the space
 		this.numOfPrefNeighbors = Integer.parseInt(parts[1]); //reads the value after the space
@@ -169,7 +169,7 @@ public class Peer {
 		String parts[] = null;
 		//Joey's path: /Users/joeysiracusa/Development/networking-project/src/bitTorrentPkg/PeerInfo.cfg
 		//Anurag's path: /Users/anurag/My Documents/GitHub/networking-project/src/bitTorrentPkg/PeerInfo.cfg
-		BufferedReader peerInfo = new BufferedReader(new FileReader("/Users/anurag/My Documents/GitHub/networking-project/src/bitTorrentPkg/PeerInfo.cfg"));
+		BufferedReader peerInfo = new BufferedReader(new FileReader("PeerInfo.cfg"));
 		boolean foundOwnPeerID = false;
 		currLine = peerInfo.readLine();
 		while(!foundOwnPeerID && currLine != null){
@@ -220,11 +220,10 @@ public class Peer {
 		return "NumberOfPrefferedNeighbors " + numOfPrefNeighbors + "\nUnchokingInterval " + unchokingInterval + 
 				"\nOptimisticUnchokingInterval " + optUnchokingInterval + "\nFileName " + fileName + 
 				"\nFileSize " + fileSize + "\nPeerID " + peerID + "\nHostName " + hostName + 
-				"\nListeningPort " + listeningPort + "\nHasFile " + hasFile + "\n";
-		
+				"\nListeningPort " + listeningPort + "\nHasFile " + hasFile + "\n";		
 	}
 
-
+	
 
 }
 

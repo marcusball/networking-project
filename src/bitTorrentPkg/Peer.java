@@ -270,11 +270,6 @@ public class Peer {
 				"\nListeningPort " + listeningPort + "\nHasFile " + hasFile + "\n";		
 	}
 
-<<<<<<< HEAD
-	
-
-=======
->>>>>>> 0593d7abf0c8db47a687cc5429e5efa15255e452
 }
 
 

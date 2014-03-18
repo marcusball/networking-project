@@ -1,8 +1,13 @@
 package bitTorrentPkg;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.Socket;
+import java.net.ServerSocket;
+
+import com.sun.tools.javac.util.Pair;
 
 public class Peer {
 	//--------------------VARIABLES--------------------
@@ -26,8 +31,10 @@ public class Peer {
 	//File related variables
 	private boolean bitfield[]; //if bitfield[i] is true, the peer has piece i
 								//keeps track of which pieces the peer has
-								
-
+	
+	public Edge senders[] = new Edge[5];
+	public Edge receiver;
+	
 	/*--------------------CONSTRUCTORS--------------------
 	 * All Peer class constructors are located here
 	 */
@@ -44,6 +51,15 @@ public class Peer {
 		readCommon();
 		bitfield = new boolean[numOfPieces];
 		readPeerInfo();
+	}
+	
+	public Peer(int peerID, String hostName, int listeningPort, boolean hasFile){
+		//this constructor is used to keep track of OTHER peers
+		//when keeping track of other peers, this info is all that is necessary
+		this.peerID = peerID;
+		this.hostName = hostName;
+		this.listeningPort = listeningPort;
+		this.hasFile = hasFile;
 	}
 	
 	/*--------------------GET/SET METHODS--------------------
@@ -167,6 +183,7 @@ public class Peer {
 		//searches PeerInfo for THIS peer ID
 		String currLine = null;
 		String parts[] = null;
+
 		//Joey's path: /Users/joeysiracusa/Development/networking-project/src/bitTorrentPkg/PeerInfo.cfg
 		//Anurag's path: /Users/anurag/My Documents/GitHub/networking-project/src/bitTorrentPkg/PeerInfo.cfg
 		BufferedReader peerInfo = new BufferedReader(new FileReader("PeerInfo.cfg"));
@@ -195,10 +212,8 @@ public class Peer {
 					for(int i = 0; i < numOfPieces; i++){
 						bitfield[i] = true;
 					}
-					
-					
-				}
-					
+
+				}					
 				break;
 			}
 			currLine = peerInfo.readLine();
@@ -211,7 +226,39 @@ public class Peer {
 		
 	}
 	
-	public void listen(){
+
+	
+	public void initiateTCPConnections() throws IOException{
+		//we are going to need to read PeerInfo.cfg again
+		//most of this code is similar to readPeerInfo() method
+		String currLine = null;
+		String parts[] = null;
+		//Joey's path: /Users/joeysiracusa/Development/networking-project/src/bitTorrentPkg/PeerInfo.cfg		
+		BufferedReader peerInfo = new BufferedReader(new FileReader("PeerInfo.cfg"));
+		boolean foundOwnPeerID = false;
+		currLine = peerInfo.readLine();
+		int peersScanned = 0;
+		while(currLine != null && peersScanned < 5){
+			//we only have 
+			int currPeerID;
+			String currHostName;
+			int currListeningPort;
+			boolean currHasFile;
+			parts = currLine.split(" "); //split each line into peerID, hostname, listening port, has file
+			if(Integer.parseInt(parts[0]) == peerID){
+				return;
+			}else{
+				currPeerID = Integer.parseInt(parts[0]);
+				currHostName = parts[1]; //save the host name
+				currListeningPort = Integer.parseInt(parts[2]); //save the listening port
+				if(Integer.parseInt(parts[3]) == 1) currHasFile = true;
+				else currHasFile = false;
+				senders[peersScanned] = new Edge(this, new Peer(currPeerID, currHostName, currListeningPort, currHasFile),
+													true);
+			}
+			currLine = peerInfo.readLine();
+		}
+		
 		
 	}
 	
@@ -223,8 +270,11 @@ public class Peer {
 				"\nListeningPort " + listeningPort + "\nHasFile " + hasFile + "\n";		
 	}
 
+<<<<<<< HEAD
 	
 
+=======
+>>>>>>> 0593d7abf0c8db47a687cc5429e5efa15255e452
 }
 
 

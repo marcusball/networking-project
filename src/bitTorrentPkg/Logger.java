@@ -85,6 +85,33 @@ public class Logger {
 	//		not interested messages, downloading a piece, and completion of download
 	//		Also consider creating non-required logs for debugging in the future
 	
+	// pID is a quick way of denoting peer 2's ID
+	public void receiveHaveMessage(int pID, int pieceIndex) {
+		writer.println(new Date().toString() + "Peer " + peerID + "received a 'have' message from Peer "
+		+ pID + " for the piece " + pieceIndex);
+	}
+	
+	// Same definition of pID as above method
+	public void receiveInterestedMessage(int pID) {
+		writer.println(new Date().toString() + " Peer " + peerID + "received an 'interested' message from Peer "
+		+ pID);
+	}
+	
+	public void receiveNotInterestedMessage(int pID) {
+		writer.println(new Date().toString() + " Peer " + peerID + "received a 'not interested' message from Peer "
+		+ pID);
+	}
+	
+	// Same pieceIndex used a few methods above; numPieces introduced for the first time
+	public void downloadingPiece(int pID, int pieceIndex, int numPieces) {
+		writer.println(new Date().toString() + " Peer " + peerID + "has downloaded the piece " + pieceIndex + " from " + pID);
+		writer.println("Now the number of pieces it has is: " + numPieces);
+	}
+	
+	public void downloadComplete() {
+		writer.println(new Date().toString() + " Peer " + peerID + "has downloaded the complete file.");
+	}
+	
 	public void closeLog(){
 		writer.println(new Date().toString() + ": Log file closed.");
 		writer.close();

@@ -3,7 +3,7 @@ package bitTorrentPkg;
 import java.io.IOException;
 
 /* peerProcess.java
- * Authors: Joey Siracusa, Marcus Ball, Anurag
+ * Authors: Joey Siracusa, Marcus Ball, Anurag Komaravelli
  * 
  * This process is launched on each machine.  It reads Common.cfg and PeerInfo.cfg, initializes
  * the related variables, and has peers connect and share with each other. 

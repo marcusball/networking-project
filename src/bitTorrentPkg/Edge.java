@@ -10,6 +10,7 @@ import bitTorrentPkg.Messages.Bitfield;
 import bitTorrentPkg.Messages.Choke;
 import bitTorrentPkg.Messages.Have;
 import bitTorrentPkg.Messages.Interested;
+import bitTorrentPkg.Messages.NormalMessage;
 import bitTorrentPkg.Messages.NotInterested;
 import bitTorrentPkg.Messages.Request;
 import bitTorrentPkg.Messages.Unchoke;
@@ -38,6 +39,13 @@ public class Edge {
 		
 		//this is a useless comment for testing
 		
+	}
+	
+	public NormalMessage listen() throws IOException{
+		sender = receiver.accept();
+		receiver.bind(sender.getLocalSocketAddress());
+		
+		return null;
 	}
 	
 	public void sendHandshake() throws IOException {

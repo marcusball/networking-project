@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.ServerSocket;
+import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
+import java.net.InetSocketAddress;
 
 import bitTorrentPkg.Messages.Bitfield;
 import bitTorrentPkg.Messages.Choke;
@@ -19,27 +21,23 @@ public class Edge {
 	private Peer origin;
 	private Peer destination;
 	
-	boolean isServerSocket;
-	boolean isNormalSocket;
-	
 	Socket sender;
 	ServerSocket receiver;
 	
-	public Edge(Peer origin, Peer destination, boolean isServerSocket) throws IOException{
-		this.origin = origin;
-		this.destination = destination;
-		this.isServerSocket = isServerSocket;
-		this.isNormalSocket = !isServerSocket;
-		if(isNormalSocket){
-			sender = new Socket(destination.getHostName(), destination.getListeningPort());
-		}
-		else{
-			receiver = new ServerSocket(origin.getListeningPort());
-		}
-		
-		//this is a useless comment for testing
+	public Edge(Peer origin) throws IOException, SocketTimeoutException{
+		//if an edge is created without a destination, listen for one
+		receiver = new ServerSocket(origin.getListeningPort());
+		sender = receiver.accept(); 
 		
 	}
+	
+	public Edge(Peer origin, Peer destination) throws IOException{
+		sender = new Socket(destination.getHostName(), destination.getListeningPort());
+		
+	}
+	
+
+
 	
 	public NormalMessage listen() throws IOException{
 		sender = receiver.accept();

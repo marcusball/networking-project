@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.ServerSocket;
+import java.util.*;
 
 public class Peer {
 	//--------------------VARIABLES--------------------
@@ -29,9 +30,9 @@ public class Peer {
 	//File related variables
 	private boolean bitfield[]; //if bitfield[i] is true, the peer has piece i
 								//keeps track of which pieces the peer has
+
 	
-	public Edge senders[] = new Edge[5];
-	public Edge receiver;
+	public ArrayList<Edge> others;
 	
 	/*--------------------CONSTRUCTORS--------------------
 	 * All Peer class constructors are located here
@@ -150,7 +151,7 @@ public class Peer {
 		String parts[] = null;
 		//Joey's path: /Users/joeysiracusa/Development/networking-project/src/bitTorrentPkg/Common.cfg
 		//Anurag's path: /Users/anurag/My Documents/GitHub/networking-project/src/bitTorrentPkg/Common.cfg
-		BufferedReader config = new BufferedReader(new FileReader("Common.cfg"));
+		BufferedReader config = new BufferedReader(new FileReader("/cise/homes/js7/Documents/networking-project/src/bitTorrentPkg/Common.cfg"));
 		currLine = config.readLine(); //gets the line in a string
 		parts = currLine.split(" "); //splits the line at the space
 		this.numOfPrefNeighbors = Integer.parseInt(parts[1]); //reads the value after the space
@@ -179,18 +180,23 @@ public class Peer {
 
 	private void readPeerInfo() throws IOException{
 		//searches PeerInfo for THIS peer ID
+		int peerCount = 0;
 		String currLine = null;
 		String parts[] = null;
 
 		//Joey's path: /Users/joeysiracusa/Development/networking-project/src/bitTorrentPkg/PeerInfo.cfg
 		//Anurag's path: /Users/anurag/My Documents/GitHub/networking-project/src/bitTorrentPkg/PeerInfo.cfg
-		BufferedReader peerInfo = new BufferedReader(new FileReader("PeerInfo.cfg"));
+		BufferedReader peerInfo = new BufferedReader(new FileReader("/cise/homes/js7/Documents/networking-project/src/bitTorrentPkg/PeerInfo.cfg"));
 		boolean foundOwnPeerID = false;
 		currLine = peerInfo.readLine();
 		while(!foundOwnPeerID && currLine != null){
+			System.out.println(currLine);
 			parts = currLine.split(" "); //split each line into peerID, hostname, listening port, has file
 			if(Integer.parseInt(parts[0]) == peerID){
 				foundOwnPeerID = true;
+				if(peerCount == 0){
+					isFirstPeer = true;
+				}
 				this.hostName = parts[1]; //save the host name
 				this.listeningPort = Integer.parseInt(parts[2]); //save the listening port
 				if(Integer.parseInt(parts[3]) == 1){
@@ -215,6 +221,7 @@ public class Peer {
 				break;
 			}
 			currLine = peerInfo.readLine();
+			peerCount++;
 		}
 		peerInfo.close();
 		if(!foundOwnPeerID){
@@ -232,11 +239,9 @@ public class Peer {
 		String currLine = null;
 		String parts[] = null;
 		//Joey's path: /Users/joeysiracusa/Development/networking-project/src/bitTorrentPkg/PeerInfo.cfg		
-		BufferedReader peerInfo = new BufferedReader(new FileReader("PeerInfo.cfg"));
-		boolean foundOwnPeerID = false;
+		BufferedReader peerInfo = new BufferedReader(new FileReader("/cise/homes/js7/Documents/networking-project/src/bitTorrentPkg/PeerInfo.cfg"));
 		currLine = peerInfo.readLine();
-		int peersScanned = 0;
-		while(currLine != null && peersScanned < 5){
+		while(currLine != null){
 			//we only have 
 			int currPeerID;
 			String currHostName;
@@ -251,13 +256,16 @@ public class Peer {
 				currListeningPort = Integer.parseInt(parts[2]); //save the listening port
 				if(Integer.parseInt(parts[3]) == 1) currHasFile = true;
 				else currHasFile = false;
-				senders[peersScanned] = new Edge(this, new Peer(currPeerID, currHostName, currListeningPort, currHasFile),
-													true);
+				others.add(new Edge(this, new Peer(currPeerID, currHostName, currListeningPort, currHasFile)));
 			}
 			currLine = peerInfo.readLine();
 		}
 		
 		
+	}
+	
+	public void listen() throws IOException{
+		others.add(new Edge(this));  //when edge is created without destination, it automatically listens for one
 	}
 	
 	public String toString(){

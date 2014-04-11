@@ -6,7 +6,6 @@ public class Handshake implements IMessage {
 		this.peerId = peerID;
 	}
 	
-	@Override
 	public byte[] toBytes() {
 		byte[] output = new byte[32];
 		byte[] header = "HELLO".getBytes();

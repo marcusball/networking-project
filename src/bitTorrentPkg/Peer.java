@@ -47,6 +47,7 @@ public class Peer {
 	
 	public Peer(int peerID) throws IOException{
 		this.peerID = peerID;
+		others = new ArrayList<Edge>();
 		readCommon();
 		bitfield = new boolean[numOfPieces];
 		readPeerInfo();
@@ -55,6 +56,8 @@ public class Peer {
 	public Peer(int peerID, String hostName, int listeningPort, boolean hasFile){
 		//this constructor is used to keep track of OTHER peers
 		//when keeping track of other peers, this info is all that is necessary
+
+		others = new ArrayList<Edge>();
 		this.peerID = peerID;
 		this.hostName = hostName;
 		this.listeningPort = listeningPort;

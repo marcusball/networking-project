@@ -1,15 +1,22 @@
 package bitTorrentPkg;
 
-import java.io.IOException;
+//io related
+import java.io.InputStream;
+import java.io.DataInputStream;
 import java.io.PrintWriter;
+import java.io.IOException;
+
+//Socket related
 import java.net.Socket;
 import java.net.ServerSocket;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.net.InetSocketAddress;
 
-import bitTorrentPkg.Messages.Bitfield;
+//Messages
+import bitTorrentPkg.Messages.BitfieldMessage;
 import bitTorrentPkg.Messages.Choke;
+import bitTorrentPkg.Messages.Handshake;
 import bitTorrentPkg.Messages.Have;
 import bitTorrentPkg.Messages.Interested;
 import bitTorrentPkg.Messages.NormalMessage;
@@ -21,29 +28,60 @@ public class Edge {
 	private Peer origin;
 	private Peer destination;
 	
-	Socket sender;
-	ServerSocket receiver;
+	Socket socket;
+	ServerSocket listener;
+	
+	DataInputStream in;
+	PrintWriter out;
 	
 	public Edge(Peer origin) throws IOException, SocketTimeoutException{
 		//if an edge is created without a destination, listen for one
-		receiver = new ServerSocket(origin.getListeningPort());
-		sender = receiver.accept(); 
+		listener = new ServerSocket(origin.getListeningPort());
+		socket = listener.accept(); 
+		in = new DataInputStream(socket.getInputStream());
+		out = new PrintWriter(socket.getOutputStream());
+		byte[] handshake = getHandshake();
+		byte[] compare = "HELLO".getBytes();
+		boolean same = true;
+		for(int i = 0; i < 5; i++){
+			same = (handshake[i] == compare[i]);
+		}
+		
 		
 	}
 	
 	public Edge(Peer origin, Peer destination) throws IOException{
-		sender = new Socket(destination.getHostName(), destination.getListeningPort());
-		
+		socket = new Socket(destination.getHostName(), destination.getListeningPort());	
+		in = new DataInputStream(socket.getInputStream());
+		out = new PrintWriter(socket.getOutputStream());
+		sendHandshake(true);
 	}
 	
-
-
+	public byte[] getHandshake() throws IOException{
+		byte[] handshake = new byte[32];
+		int count = 0;
+		while((in.available() > 0) && (count < 32)){
+			handshake[count] = in.readByte();
+		}
+		return handshake;
+	}
 	
-	public NormalMessage listen() throws IOException{
-		sender = receiver.accept();
-		receiver.bind(sender.getLocalSocketAddress());
+	public byte[] getMessage() throws IOException{
+		//first get message length (field is 4 bytes = 1 int)
+		int length = in.readInt();
+		int count = 0;
+		byte[] message = new byte[4+length];
+		//convert that length into bytes and put it in the bytes message array
+		for (count = 0; count < 4; count++) {
+		    message[count] = (byte)(length >>> (count * 8));
+		}
 		
-		return null;
+		//then continue reading the buffer while count < (length+4)
+		while((in.available() > 0) && (count < (length+4))){
+			message[count] = in.readByte();
+		}
+		
+		return message;
 	}
 	
 	public void sendHandshake() throws IOException {
@@ -67,58 +105,51 @@ public class Edge {
 			handshake[j] = (char) (origin.getPeerID()%10);
 		}
 		
-		PrintWriter out = new PrintWriter(sender.getOutputStream());
 		out.print(handshake);
-		out.close();
+	}
+	
+	public void sendHandshake(boolean newHandShake) throws IOException{
+		if(newHandShake){
+			Handshake handshake = new Handshake(this.origin.getPeerID());
+			out.print(handshake.toBytes());
+		}
+		else{
+			this.sendHandshake();
+		}	
 	}
 	
 	public void sendChoke() throws IOException{
 		Choke choke = new Choke();
-		PrintWriter out = new PrintWriter(sender.getOutputStream());
 		out.print(choke.toBytes());
-		out.close();
 	}
 	
 	public void sendUnchoke() throws IOException{
 		Unchoke unchoke = new Unchoke();
-		PrintWriter out = new PrintWriter(sender.getOutputStream());
 		out.print(unchoke.toBytes());
-		out.close();
 	}
 	
 	public void sendInterested() throws IOException{
 		Interested interested = new Interested();
-		PrintWriter out = new PrintWriter(sender.getOutputStream());
 		out.print(interested.toBytes());
-		out.close();
 	}
 	
 	public void sendNotInterested() throws IOException{
 		NotInterested notinterested = new NotInterested();
-		PrintWriter out = new PrintWriter(sender.getOutputStream());
 		out.print(notinterested.toBytes());
-		out.close();
 	}
 	
 	public void sendHave(int index) throws IOException{
 		Have have = new Have(index);
-		PrintWriter out = new PrintWriter(sender.getOutputStream());
 		out.print(have.toBytes());
-		out.close();
 	}
 	
 	public void sendBitfield(byte bitfield[]) throws IOException{
-		Bitfield thebitfield = new Bitfield(bitfield);
-		PrintWriter out = new PrintWriter(sender.getOutputStream());
-		out.print(thebitfield.toBytes());
-		out.close();
+		//TODO: Fix this 
 	}
 	
 	public void sendRequest(int index) throws IOException{
 		Request request = new Request(index);
-		PrintWriter out = new PrintWriter(sender.getOutputStream());
 		out.print(request.toBytes());
-		out.close();
 	}
 	
 	

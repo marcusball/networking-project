@@ -28,7 +28,7 @@ public class Peer {
 								 //if not, initiate tcp connections with others
 	
 	//File related variables
-	private boolean bitfield[]; //if bitfield[i] is true, the peer has piece i
+	private byte bitfield[]; //if bitfield[i] is true, the peer has piece i
 								//keeps track of which pieces the peer has
 
 	
@@ -41,7 +41,7 @@ public class Peer {
 	public Peer() throws IOException{
 		peerID = -1; //if for some reason you don't have a peerID but want to test
 		readCommon();
-		bitfield = new boolean[numOfPieces];
+		bitfield = new byte[numOfPieces];
 		readPeerInfo();
 	}
 	
@@ -49,14 +49,13 @@ public class Peer {
 		this.peerID = peerID;
 		others = new ArrayList<Edge>();
 		readCommon();
-		bitfield = new boolean[numOfPieces];
+		bitfield = new byte[numOfPieces];
 		readPeerInfo();
 	}
 	
 	public Peer(int peerID, String hostName, int listeningPort, boolean hasFile){
 		//this constructor is used to keep track of OTHER peers
 		//when keeping track of other peers, this info is all that is necessary
-
 		others = new ArrayList<Edge>();
 		this.peerID = peerID;
 		this.hostName = hostName;
@@ -139,7 +138,7 @@ public class Peer {
 		this.isFirstPeer = isFirstPeer;
 	}
 	
-	public boolean[] getBitfield(){
+	public byte[] getBitfield(){
 		return bitfield;		//this cannot be changed
 	}
 	
@@ -203,21 +202,21 @@ public class Peer {
 				this.hostName = parts[1]; //save the host name
 				this.listeningPort = Integer.parseInt(parts[2]); //save the listening port
 				if(Integer.parseInt(parts[3]) == 1){
-					//if it has the file, set all of the bitfield to be true
+					//if it has the file, set all of the bitfield to be 1
 					//this means is has every piece of the file
 					hasFile = true;
 					for(int i = 0; i < numOfPieces; i++){
-						bitfield[i] = true;
+						bitfield[i] = 1; 
 					}
 					
 				}else{
-					//if it does not have the file, set all of bitfield to be false
-					//at the beggining of the program, either the peer has the complete file 
+					//if it does not have the file, set all of bitfield to be 0
+					//at the begining of the program, either the peer has the complete file 
 					//or the peer does not have a single piece of the file
-					//therefore, we set all of the bitfield to be false, since it has no pieces
+					//therefore, we set all of the bitfield to be 0, since it has no pieces
 					hasFile = false;
 					for(int i = 0; i < numOfPieces; i++){
-						bitfield[i] = true;
+						bitfield[i] = 0;
 					}
 
 				}					

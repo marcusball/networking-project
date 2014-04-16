@@ -1,9 +1,20 @@
 package bitTorrentPkg.Messages;
 
+import java.util.Arrays;
+
+import bitTorrentPkg.Tools;
 public class Handshake implements IMessage {
 	private int peerId;
 	public Handshake(int peerID){
 		this.peerId = peerID;
+	}
+	public Handshake(byte[] message) throws Exception{
+		if(message.length != 32){
+			throw new Exception("Handshake message class expects byte array of length 32!");
+		}
+		
+		byte[] peerIdBytes = Arrays.copyOfRange(message, 27, 31);
+		this.peerId = Tools.bytesToInt(peerIdBytes);
 	}
 	
 	public byte[] toBytes() {
@@ -18,5 +29,7 @@ public class Handshake implements IMessage {
 		}
 		return output;
 	}
-
+	public int getPeerId(){
+		return this.peerId;
+	}
 }

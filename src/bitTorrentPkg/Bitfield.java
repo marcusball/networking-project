@@ -46,4 +46,8 @@ public class Bitfield {
 		this.container[containerIndex] = newByte;
 		Tools.debug("setValue: New byte:      %s",Tools.byteToBinString(this.container[containerIndex]));
 	}
+	
+	public byte[] toBytes(){
+		return this.container;
+	}
 }

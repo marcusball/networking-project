@@ -36,6 +36,7 @@ public class Edge {
 	
 	public Edge(Peer origin) throws IOException, SocketTimeoutException{
 		//if an edge is created without a destination, listen for one
+		this.origin = origin;
 		listener = new ServerSocket(origin.getListeningPort());
 		socket = listener.accept(); 
 		in = new DataInputStream(socket.getInputStream());
@@ -51,10 +52,16 @@ public class Edge {
 	}
 	
 	public Edge(Peer origin, Peer destination) throws IOException{
+		this.origin = origin;
 		socket = new Socket(destination.getHostName(), destination.getListeningPort());	
 		in = new DataInputStream(socket.getInputStream());
-		out = new PrintWriter(socket.getOutputStream());
-		sendHandshake(true);
+		out = new PrintWriter(socket.getOutputStream(),true);
+		Tools.debug("Sending handshake to %s.",destination.getHostName());
+		//sendHandshake(true);
+		socket.getOutputStream().write((new Handshake(this.origin.getPeerID())).toBytes());
+		while(true){
+			Tools.debug("Received: %s",in.readUTF());
+		}
 	}
 	
 	public byte[] getHandshake() throws IOException{
@@ -112,6 +119,10 @@ public class Edge {
 		if(newHandShake){
 			Handshake handshake = new Handshake(this.origin.getPeerID());
 			out.print(handshake.toBytes());
+			for(byte outByte : handshake.toBytes()){
+				System.out.printf("%2x ",outByte);
+			}
+			out.flush();
 		}
 		else{
 			this.sendHandshake();

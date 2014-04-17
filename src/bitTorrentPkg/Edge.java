@@ -12,17 +12,12 @@ import java.net.ServerSocket;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.net.InetSocketAddress;
+import java.util.Scanner;
 
 //Messages
-import bitTorrentPkg.Messages.BitfieldMessage;
-import bitTorrentPkg.Messages.Choke;
-import bitTorrentPkg.Messages.Handshake;
-import bitTorrentPkg.Messages.Have;
-import bitTorrentPkg.Messages.Interested;
-import bitTorrentPkg.Messages.NormalMessage;
-import bitTorrentPkg.Messages.NotInterested;
-import bitTorrentPkg.Messages.Request;
-import bitTorrentPkg.Messages.Unchoke;
+import bitTorrentPkg.Messages.*;
+
+import java.util.Arrays;
 
 public class Edge {
 	private Peer origin;
@@ -35,24 +30,61 @@ public class Edge {
 	PrintWriter out;
 	
 	public Edge(Peer origin) throws IOException, SocketTimeoutException{
+		this.origin = origin;
 		//if an edge is created without a destination, listen for one
 		this.origin = origin;
 		listener = new ServerSocket(origin.getListeningPort());
-		socket = listener.accept(); 
-		in = new DataInputStream(socket.getInputStream());
-		out = new PrintWriter(socket.getOutputStream());
-		byte[] handshake = getHandshake();
-		byte[] compare = "HELLO".getBytes();
-		boolean same = true;
-		for(int i = 0; i < 5; i++){
-			same = (handshake[i] == compare[i]);
+		Scanner input = new Scanner(System.in);
+		System.out.println("Press any key to terminate");
+		while(true){
+			Tools.debug("Waiting for connection...");
+			socket = listener.accept(); 
+			Tools.debug("Connection accepted from %s.",socket.getInetAddress().getHostAddress());
+			//in = new DataInputStream(socket.getInputStream());
+			out = new PrintWriter(socket.getOutputStream(),true);
+			InputStream inAlt = socket.getInputStream();
+
+			while(true){
+				if(inAlt.available() > 0){
+					int length = inAlt.available();
+					byte[] buffer = new byte[5 + this.origin.pieceSize()]; //This is the maximum length any message will ever take.
+					int read = inAlt.read(buffer);
+					
+					buffer = Arrays.copyOfRange(buffer, 0, read); //Trim off the excess buffer space.
+					
+					for(byte b : buffer){
+						System.out.printf("%2x ",b);
+					}
+					System.out.println();
+					
+					try {
+						IMessage received = MessageReceiver.OpenMessageBytes(buffer);
+						if(received instanceof Handshake){
+							Tools.debug("RECEIVED HANDSHAKE!");
+						}
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}
+//			while((in.available() > 0)){
+//				System.out.printf("%2x ",in.readByte());
+//			}
 		}
-		
+//		byte[] handshake = getHandshake();
+//		byte[] compare = "HELLO".getBytes();
+//		boolean same = true;
+//		for(int i = 0; i < 5; i++){
+//			same = (handshake[i] == compare[i]);
+//		}
+//		
 		
 	}
 	
 	public Edge(Peer origin, Peer destination) throws IOException{
 		this.origin = origin;
+
 		socket = new Socket(destination.getHostName(), destination.getListeningPort());	
 		in = new DataInputStream(socket.getInputStream());
 		out = new PrintWriter(socket.getOutputStream(),true);

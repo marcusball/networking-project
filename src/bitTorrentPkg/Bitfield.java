@@ -8,12 +8,18 @@ public class Bitfield {
 	}
 	public Bitfield(int length,boolean intialVal){
 		this.length = length;
-		container = new byte[(int)Math.ceil(length / 8.0)]; //Make sure we have enough bytes for all of the bits
+		this.container = new byte[(int)Math.ceil(length / 8.0)]; //Make sure we have enough bytes for all of the bits
 		Tools.debug("Bitfield: creating container of length %d.");
 		if(intialVal == true){
-			for(int i=0;i<container.length;i+=1){
-				container[i] = (byte)255;
+			for(int i=0;i<this.container.length;i+=1){
+				this.container[i] = (byte)255;
 			}
+		}
+	}
+	public void setValueAll(boolean value){
+		byte newValue = (byte) ((value)?255:0);
+		for(int i=0;i<this.container.length;i+=1){
+			this.container[i] = newValue;
 		}
 	}
 	public boolean getValue(int index){

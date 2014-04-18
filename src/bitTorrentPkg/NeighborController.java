@@ -4,41 +4,56 @@ import java.io.IOException;
 import java.util.*;
 
 public class NeighborController {
-	private Host host; 
+	public static Host host; 
 	
 	//ArrayList of peers and upload status
-	private ArrayList<Peer> peers;
-	private ArrayList<Boolean> isUnchocked = new ArrayList<Boolean>();
-	private int optimisticPeerIndex;
+	public static HashMap<Integer,Peer> peers;
+	
+	private static int optimisticPeerIndex;
 	
 	//intervals and timers for unchoking
-	private long unchokingInterval;
-	private long optUnchokingInterval;
-	private Timer changeNeighbors;
-	private Timer changeOptUnchoked;
+	private static long unchokingInterval;
+	private static long optUnchokingInterval;
+	private static Timer changeNeighbors;
+	private static Timer changeOptUnchoked;
 	
-	private long startTime;
+	//private long startTime;
 	
 	
 	//NeighborController constructor needs home peer to determine intervals
-	public NeighborController(Host host, long startTime){
-		this.host = host;
-		//get the intervals from the peer
-		unchokingInterval = (long) host.getUnchokingInterval();
-		optUnchokingInterval = (long) host.getOptUnchokingInterval();
-		//create the timers and add tasks to them at their respective intervals
+	public NeighborController(){
 		changeNeighbors = new Timer();
-		changeNeighbors.schedule(new Unchoke(), unchokingInterval*1000);
 		changeOptUnchoked = new Timer();
-		changeOptUnchoked.schedule(new OptimisticUnchoke(), optUnchokingInterval*1000);
-		this.startTime = startTime;
-		
 	}
 	
-	public void addPeer(Peer peer){
-		peers.add(peer);
-		//assume it's chocked to start
-		isUnchocked.add(false);
+	public static void setHost(Host h){
+		host = h;
+	}
+	public static void init(){
+		if(host == null){
+			throw new NullPointerException("Host is null! You must call setHost(Host h) before you can call init()!");
+		}
+		unchokingInterval = (long) host.getUnchokingInterval();
+		optUnchokingInterval = (long) host.getOptUnchokingInterval();
+		
+		changeNeighbors.schedule(new NeighborController().new Unchoke(), unchokingInterval*1000);
+		changeOptUnchoked.schedule(new NeighborController().new OptimisticUnchoke(), optUnchokingInterval*1000);	
+		//create the timers and add tasks to them at their respective intervals
+	}
+	
+	public static void addPeer(Peer other){
+		peers.put(other.getPeerID(), other);
+	}
+	
+	public static boolean hasPeer(int id){
+		return peers.containsKey(id);
+	}
+	
+	public static Peer getPeer(int id){
+		if(hasPeer(id)){
+			return peers.get(id);
+		}
+		return null;
 	}
 	
 	class Unchoke extends TimerTask{
@@ -58,6 +73,4 @@ public class NeighborController {
 			
 		}
 	}
-	
-	
 }

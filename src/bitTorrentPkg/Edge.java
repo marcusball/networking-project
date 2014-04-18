@@ -59,7 +59,7 @@ public class Edge extends Thread {
 	}
 	
 	public void sendHandshake(){
-		Handshake handshake = new Handshake(PeerManager.self.getPeerID());
+		Handshake handshake = new Handshake(NeighborController.host.getPeerID());
 		this.sendMessage(handshake);
 	}
 	
@@ -69,7 +69,7 @@ public class Edge extends Thread {
 			int bytesRead;
 			while(true){
 				if(this.in.available() > 0){
-					buffer = new byte[5 + PeerManager.self.pieceSize()]; //This is the maximum length any message will ever take.
+					buffer = new byte[5 + NeighborController.host.pieceSize()]; //This is the maximum length any message will ever take.
 					bytesRead = this.in.read(buffer);
 	
 					buffer = Arrays.copyOfRange(buffer, 0, bytesRead); //Trim off the excess buffer space.

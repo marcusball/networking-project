@@ -29,7 +29,7 @@ public class ServerEdge extends Thread {
 	}
 	
 	private void createServerListener() throws IOException{
-		this.server = new ServerSocket(PeerManager.self.getListeningPort());
+		this.server = new ServerSocket(NeighborController.host.getListeningPort());
 	}
 	
 	public void run(){

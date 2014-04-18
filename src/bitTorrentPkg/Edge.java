@@ -51,7 +51,9 @@ public class Edge {
 	}
 	
 	public Edge(Peer origin, Peer destination) throws IOException{
-		socket = new Socket(destination.getHostName(), destination.getListeningPort());	
+		this.origin = origin;
+		this.destination = destination;
+		socket = new Socket(this.destination.getHostName(), this.destination.getListeningPort());	
 		in = new DataInputStream(socket.getInputStream());
 		out = new PrintWriter(socket.getOutputStream());
 		sendHandshake(true);

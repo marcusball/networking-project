@@ -3,6 +3,7 @@ package bitTorrentPkg;
 //io related
 import java.io.InputStream;
 import java.io.DataInputStream;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.IOException;
 
@@ -19,8 +20,86 @@ import bitTorrentPkg.Messages.*;
 
 import java.util.Arrays;
 
-public class Edge {
-	private Peer origin;
+public class Edge extends Thread {
+	private Peer destination;
+	
+	private Socket client;
+	private InputStream in;
+	private OutputStream out;
+	
+	public Edge() throws IOException{
+		this(null);
+	}
+	public Edge(Peer destinationPeer) throws IOException{
+		this.destination = destinationPeer;
+	}
+	
+	public void setClientSocket(Socket s) throws IOException{
+		this.client = s;
+		this.in = this.client.getInputStream();
+		this.out = this.client.getOutputStream();
+	}
+	public void createClientSocket() throws UnknownHostException, IOException, NullPointerException{
+		if(this.destination == null){
+			throw new NullPointerException("Cannot create client socket with null destination peer!");
+		}
+		Socket s = new Socket(this.destination.getHostName(), this.destination.getListeningPort());
+		this.setClientSocket(s);
+	}
+	
+	public boolean sendMessage(Message message){
+		try {
+			this.out.write(message.toBytes());
+			return true;
+		} 
+		catch (IOException e) {
+			Tools.debug("Unable to send message to %s! IOException occurred: \"%s\".",this.destination.getHostName(),e.getMessage());
+		}
+		return false;
+	}
+	
+	public void sendHandshake(){
+		Handshake handshake = new Handshake(PeerManager.self.getPeerID());
+		this.sendMessage(handshake);
+	}
+	
+	public void run(){
+		try{
+			byte[] buffer;
+			int bytesRead;
+			while(true){
+				if(this.in.available() > 0){
+					buffer = new byte[5 + PeerManager.self.pieceSize()]; //This is the maximum length any message will ever take.
+					bytesRead = this.in.read(buffer);
+	
+					buffer = Arrays.copyOfRange(buffer, 0, bytesRead); //Trim off the excess buffer space.
+					
+					System.out.print("Received: ");
+					for(byte b : buffer){
+						System.out.printf("%2x ",b);
+					}
+					System.out.println();
+					
+					Message received = MessageReceiver.OpenMessageBytes(buffer);
+					this.handleMessage(received);
+				}
+			}
+		}
+		catch(IOException ioe){
+			Tools.debug("Error while checking for incoming messages! IOException: \"%s\".",ioe.getMessage());
+		}
+		catch(Exception e){
+			Tools.debug("Error while checking for incoming messages! Exception: \"%s\".",e.getMessage());
+		}
+	}
+	
+	private void handleMessage(Message received){
+		if(received instanceof Handshake){
+			Tools.debug("RECEIVED HANDSHAKE!");
+		}
+	}
+	
+	/*private Peer origin;
 	private Peer destination;
 	
 	Socket socket;
@@ -173,7 +252,7 @@ public class Edge {
 	public void sendRequest(int index) throws IOException{
 		Request request = new Request(index);
 		out.print(request.toBytes());
-	}
+	}*/
 	
 	
 }

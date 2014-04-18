@@ -1,5 +1,5 @@
 package bitTorrentPkg.Messages;
 
-public interface IMessage {
+public interface Message {
 	public byte[] toBytes();
 }

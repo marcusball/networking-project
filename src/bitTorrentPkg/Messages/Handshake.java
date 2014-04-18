@@ -3,7 +3,7 @@ package bitTorrentPkg.Messages;
 import java.util.Arrays;
 
 import bitTorrentPkg.Tools;
-public class Handshake implements IMessage {
+public class Handshake implements Message {
 	private int peerId;
 	public Handshake(int peerID){
 		this.peerId = peerID;

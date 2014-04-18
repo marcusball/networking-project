@@ -16,12 +16,33 @@ public class peerProcess {
 	
 	
 	public static void main(String[] args) throws IOException {		
+		/*
 		Scanner input = new Scanner(System.in);
 		System.out.println("Enter a peer ID:");
 		int peerID = input.nextInt();
 		System.out.println(peerID);
 		Host host = new Host(peerID);
 		System.out.println(host.isFirstPeer());
+
+		if(peer.isFirstPeer()){
+			
+		}
+		*/
+		Scanner input = new Scanner(System.in);
+		System.out.println("Enter a peer ID:");
+		int peerID = input.nextInt();
+		
+		System.out.println(peerID);
+		Peer peer = new Peer(peerID);
+		System.out.println(peer.isFirstPeer());
+		
+		PeerManager.self = peer;
+		
+		ServerEdge server = new ServerEdge();
+		server.start();
+		if(!peer.isFirstPeer()){
+			//peer.initiateTCPConnections(); //else, initiate tcp connections with previous peers
+		}
 		
 	}
 

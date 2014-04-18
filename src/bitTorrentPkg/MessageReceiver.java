@@ -2,9 +2,10 @@ package bitTorrentPkg;
 
 import bitTorrentPkg.Messages.*;
 
+import java.io.IOException;
 import java.util.Arrays;
 public class MessageReceiver {
-	public static IMessage OpenMessageBytes(byte[] message) throws Exception{
+	public static Message OpenMessageBytes(byte[] message) throws IOException,Exception{
 		if(MessageIsHandshake(message)){
 			return new Handshake(message);
 		}
@@ -13,7 +14,7 @@ public class MessageReceiver {
 		try{
 			int messageLength = GetMessageLength(lengthBytes);
 			if(messageLength > message.length - 5){ //HEARTBLEED
-				throw new Exception("Message supplied length that exceeds received message length! Stated length: " + messageLength + ", received: " + (message.length - 5));
+				throw new IOException("Message supplied length that exceeds received message length! Stated length: " + messageLength + ", received: " + (message.length - 5));
 			}
 			
 			byte messageType = message[4];
@@ -22,7 +23,7 @@ public class MessageReceiver {
 				System.arraycopy(message,5,messagePayload,0,messageLength);
 			}
 			
-			IMessage received = null;
+			Message received = null;
 			switch(messageType){
 				case 0:
 					received = new Choke();
@@ -47,7 +48,7 @@ public class MessageReceiver {
 					break;
 				case 7:
 					if(messageLength < 5){
-						throw new Exception("Received peice message with payload length less than 5!");
+						throw new IOException("Received peice message with payload length less than 5!");
 					}
 					byte[] indexBytes = Arrays.copyOfRange(messagePayload, 0, 3);
 					byte[] piece = Arrays.copyOfRange(messagePayload, 4, messageLength - 1);

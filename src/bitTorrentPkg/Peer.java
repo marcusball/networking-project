@@ -263,7 +263,12 @@ public class Peer {
 				currListeningPort = Integer.parseInt(parts[2]); //save the listening port
 				if(Integer.parseInt(parts[3]) == 1) currHasFile = true;
 				else currHasFile = false;
-				others.add(new Edge(this, new Peer(currPeerID, currHostName, currListeningPort, currHasFile)));
+				Peer destination =  new Peer(currPeerID, currHostName, currListeningPort, currHasFile);
+				Edge clientEdge = new Edge(destination);
+				clientEdge.createClientSocket();
+				clientEdge.start();
+				others.add(clientEdge);
+				System.out.println(others.get(others.size()).toString());
 			}
 			currLine = peerInfo.readLine();
 		}

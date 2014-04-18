@@ -1,6 +1,6 @@
 package bitTorrentPkg.Messages;
 
-public class NormalMessage implements IMessage {
+public class NormalMessage implements Message {
 	public byte messageType;
 	public byte[] payload;
 	

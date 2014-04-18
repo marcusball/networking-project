@@ -12,13 +12,14 @@ public class NeighborController {
 	//ArrayList of peers and upload status
 	private ArrayList<Peer> peers;
 	private ArrayList<Boolean> isUnchocked = new ArrayList<Boolean>();
-	private ArrayList<Boolean> isOptimistic = new ArrayList<Boolean>();
+	private int optimisticPeerIndex;
 	
 	//intervals and timers for unchoking
 	private long unchokingInterval;
 	private long optUnchokingInterval;
 	private Timer changeNeighbors;
 	private Timer changeOptUnchoked;
+	
 	
 	//NeighborController constructor needs home peer to determine intervals
 	public NeighborController(Peer client){
@@ -38,7 +39,6 @@ public class NeighborController {
 		peers.add(peer);
 		//assume it's chocked to start
 		isUnchocked.add(false);
-		isOptimistic.add(false);
 	}
 	
 	class Unchoke extends TimerTask{
@@ -52,14 +52,14 @@ public class NeighborController {
 	
 	class OptimisticUnchoke extends TimerTask{
 		public void run(){
-			int random = new Random(System.currentTimeMillis()).nextInt(peers.size());
-			//TODO: Send a unchoke message to peer "random"
+			optimisticPeerIndex = new Random(System.currentTimeMillis()).nextInt(peers.size());
+			//TODO: Send a unchoke message to peer "random" using a thread
 			//		Expect to receive an request message
 			try {
-				client.others.get(random).sendUnchoke();
+				client.others.get(optimisticPeerIndex).sendUnchoke();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
-				System.out.println("Could not send unchoke to optimisticly unchoked peer" + client.others.get(random).getDestination().getPeerID());
+				System.out.println("Could not send unchoke to optimisticly unchoked peer" + client.others.get(optimisticPeerIndex).getDestination().getPeerID());
 				e.printStackTrace();
 			}
 		}

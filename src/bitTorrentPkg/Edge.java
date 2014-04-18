@@ -132,42 +132,13 @@ public class Edge {
 		return message;
 	}
 	
-	public void sendHandshake() throws IOException {
-		char[] handshake = new char[32];
-		
-		// First five elements in char array is HELLO
-		handshake[0] = 'H';
-		handshake[1] = 'E';
-		handshake[2] = 'L';
-		handshake[3] = 'L';
-		handshake[4] = 'O';
-		
-		// 23 zeros
-		for (int i = 0; i < handshake.length-4;i++) {
-			// 23 zeros
-			handshake[i] = '0';
+	public void sendHandshake() throws IOException{
+		Handshake handshake = new Handshake(this.origin.getPeerID());
+		out.print(handshake.toBytes());
+		for(byte outByte : handshake.toBytes()){
+			System.out.printf("%2x ",outByte);
 		}
-		
-		for (int j = handshake.length-1; j >= handshake.length-4; j--) {
-			// Last 4 in handshake message 
-			handshake[j] = (char) (origin.getPeerID()%10);
-		}
-		
-		out.print(handshake);
-	}
-	
-	public void sendHandshake(boolean newHandShake) throws IOException{
-		if(newHandShake){
-			Handshake handshake = new Handshake(this.origin.getPeerID());
-			out.print(handshake.toBytes());
-			for(byte outByte : handshake.toBytes()){
-				System.out.printf("%2x ",outByte);
-			}
-			out.flush();
-		}
-		else{
-			this.sendHandshake();
-		}	
+		out.flush();	
 	}
 	
 	public void sendChoke() throws IOException{

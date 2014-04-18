@@ -30,15 +30,25 @@ public class Peer {
 	private boolean isFirstPeer; //if it's the first peer, just wait and listen
 								 //if not, initiate tcp connections with others
 	
+	boolean isUnchoked;
+	boolean isOptUnchoked;
+	
+	private Edge connection;
+	
+	int pieceSize;
 	int numOfPieces;
 	private Bitfield bitfield;
+	
+	long startTime; //in milliseconds since Jan 1 1970
+	int piecesDownloaded;
+	float dlRate;
 
 	
 	/*--------------------CONSTRUCTORS--------------------
 	 * All Peer class constructors are located here
 	 */
 	
-	public Peer(int peerID, String hostName, int listeningPort, boolean hasFile, boolean isFirstPeer, int numOfPieces){
+	public Peer(int peerID, String hostName, int listeningPort, boolean hasFile, boolean isFirstPeer, int pieceSize, int numOfPieces, long startTime){
 		//this constructor is used to keep track of OTHER peers
 		//when keeping track of other peers, this info is all that is necessary
 		this.peerID = peerID;
@@ -46,7 +56,27 @@ public class Peer {
 		this.listeningPort = listeningPort;
 		this.hasFile = hasFile;
 		this.isFirstPeer = isFirstPeer;
+		this.pieceSize = pieceSize;
 		this.numOfPieces = numOfPieces;
+		isUnchoked = false;
+		isOptUnchoked = false;
+		this.startTime = startTime;
+	}
+	
+	public Peer(int peerID, String hostName, int listeningPort, boolean hasFile, boolean isFirstPeer, int pieceSize, int numOfPieces, long startTime, Edge connection){
+		//this constructor is used to keep track of OTHER peers
+		//when keeping track of other peers, this info is all that is necessary
+		this.peerID = peerID;
+		this.hostName = hostName;
+		this.listeningPort = listeningPort;
+		this.hasFile = hasFile;
+		this.isFirstPeer = isFirstPeer;
+		this.pieceSize = pieceSize;
+		this.numOfPieces = numOfPieces;
+		isUnchoked = false;
+		isOptUnchoked = false;
+		this.startTime = startTime;
+		this.connection = connection;
 	}
 	
 	
@@ -94,6 +124,35 @@ public class Peer {
 	public Bitfield getBitfield(){
 		return bitfield;		//this cannot be changed manually
 	}
+	
+	public Edge getConnection(){
+		return connection;
+	}
+	
+	public void setConnection(Edge connection){
+		this.connection = connection;
+	}
+	
+	public int getPiecesDownloaded(){
+		return piecesDownloaded;
+	}
+	
+	public void incrementPiecesDownloaded(){
+		piecesDownloaded++;
+	}
+	
+	public void setPiecesDownloaded(int piecesDownloaded){
+		this.piecesDownloaded = piecesDownloaded;
+	}
+	
+	public void updateDLRate(){
+		dlRate = ((float)(piecesDownloaded*pieceSize)) / ( ((float)(System.currentTimeMillis() - startTime)) * 1000);
+	}
+	
+	public float getDLRate(){
+		return dlRate;
+	}
+	
 	
 	public String toString(){
 		//mainly for debugging- this can be converted into a log later maybe?

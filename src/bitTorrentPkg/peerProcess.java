@@ -20,17 +20,9 @@ public class peerProcess {
 		System.out.println("Enter a peer ID:");
 		int peerID = input.nextInt();
 		System.out.println(peerID);
-		Peer peer = new Peer(peerID);
-		System.out.println(peer.isFirstPeer());
-		if(peer.isFirstPeer()){
-			peer.listen(); //if it's the first peer, wait for incoming TCP connections
-		}else{
-			peer.initiateTCPConnections(); //else, initiate tcp connections with previous peers
-		}
+		Host host = new Host(peerID);
+		System.out.println(host.isFirstPeer());
 		
-		if(peer.isFirstPeer()){
-			
-		}
 	}
 
 }

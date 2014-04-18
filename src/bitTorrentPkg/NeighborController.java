@@ -7,7 +7,7 @@ import java.util.*;
 
 
 public class NeighborController {
-	private Peer client; //the peer representing this client
+	private Host host; 
 	
 	//ArrayList of peers and upload status
 	private ArrayList<Peer> peers;
@@ -20,18 +20,21 @@ public class NeighborController {
 	private Timer changeNeighbors;
 	private Timer changeOptUnchoked;
 	
+	private long startTime;
+	
 	
 	//NeighborController constructor needs home peer to determine intervals
-	public NeighborController(Peer client){
-		this.client = client;
+	public NeighborController(Host host, long startTime){
+		this.host = host;
 		//get the intervals from the peer
-		unchokingInterval = (long) this.client.getUnchokingInterval();
-		optUnchokingInterval = (long) this.client.getOptUnchokingInterval();
+		unchokingInterval = (long) host.getUnchokingInterval();
+		optUnchokingInterval = (long) host.getOptUnchokingInterval();
 		//create the timers and add tasks to them at their respective intervals
 		changeNeighbors = new Timer();
 		changeNeighbors.schedule(new Unchoke(), unchokingInterval*1000);
 		changeOptUnchoked = new Timer();
 		changeOptUnchoked.schedule(new OptimisticUnchoke(), optUnchokingInterval*1000);
+		this.startTime = startTime;
 		
 	}
 	
@@ -55,13 +58,7 @@ public class NeighborController {
 			optimisticPeerIndex = new Random(System.currentTimeMillis()).nextInt(peers.size());
 			//TODO: Send a unchoke message to peer "random" using a thread
 			//		Expect to receive an request message
-			try {
-				client.others.get(optimisticPeerIndex).sendUnchoke();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				System.out.println("Could not send unchoke to optimisticly unchoked peer" + client.others.get(optimisticPeerIndex).getDestination().getPeerID());
-				e.printStackTrace();
-			}
+			
 		}
 	}
 	

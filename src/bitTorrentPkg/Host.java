@@ -183,6 +183,7 @@ public class Host {
 		boolean foundOwnPeerID = false;
 		currLine = peerInfo.readLine();
 		while(currLine != null){
+			Tools.debug(currLine);
 			parts = currLine.split(" "); //split each line into peerID, hostname, listening port, has file
 			
 			//get the peer variables from the string array parts
@@ -200,8 +201,10 @@ public class Host {
 				currIsFirstPeer = false;
 			}
 			
+			Tools.debug("Comparing config id (%d) with host id (%d).",currPeerID,peerID);
 			//either save the info to the host or add a new peer with it
 			if(currPeerID == peerID){
+				foundOwnPeerID = true;
 				//if this line is representing the host
 				this.isFirstPeer = currIsFirstPeer;
 				this.hostName = currHostName; //save the host name

@@ -36,6 +36,9 @@ public class peerProcess {
 		Host host = new Host(peerID);
 		System.out.println(host.isFirstPeer());
 		
+		NeighborController.setHost(host);
+		NeighborController.init();
+		
 		ServerEdge server = new ServerEdge();
 		server.start();
 		if(!host.isFirstPeer()){

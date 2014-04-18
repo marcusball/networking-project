@@ -18,13 +18,7 @@ public class NeighborController {
 	private static Timer changeOptUnchoked;
 	
 	//private long startTime;
-	
-	
-	//NeighborController constructor needs home peer to determine intervals
-	public NeighborController(){
-		changeNeighbors = new Timer();
-		changeOptUnchoked = new Timer();
-	}
+
 	
 	public static void setHost(Host h){
 		host = h;
@@ -36,6 +30,8 @@ public class NeighborController {
 		unchokingInterval = (long) host.getUnchokingInterval();
 		optUnchokingInterval = (long) host.getOptUnchokingInterval();
 		
+		changeNeighbors = new Timer();
+		changeOptUnchoked = new Timer();
 		changeNeighbors.schedule(new NeighborController().new Unchoke(), unchokingInterval*1000);
 		changeOptUnchoked.schedule(new NeighborController().new OptimisticUnchoke(), optUnchokingInterval*1000);	
 		//create the timers and add tasks to them at their respective intervals

@@ -220,7 +220,8 @@ public class Host {
 					this.bitfield.setValueAll(false);
 				}					
 			}else{
-				peers.add(new Peer(currPeerID, currHostName, currListeningPort, currHasFile, currIsFirstPeer, this.numOfPieces));
+				peers.add(new Peer(currPeerID, currHostName, currListeningPort, currHasFile, currIsFirstPeer, 
+							this.pieceSize, this.numOfPieces, System.currentTimeMillis()));
 			}
 			currLine = peerInfo.readLine();
 			peerCount++;

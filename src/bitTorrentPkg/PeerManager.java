@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class PeerManager {
-	public static Peer self;
+	public static Host self;
 	public static HashMap<Integer,Peer> peers;
 	
 	public PeerManager(){

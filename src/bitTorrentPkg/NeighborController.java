@@ -3,9 +3,6 @@ package bitTorrentPkg;
 import java.io.IOException;
 import java.util.*;
 
-
-
-
 public class NeighborController {
 	private Host host; 
 	

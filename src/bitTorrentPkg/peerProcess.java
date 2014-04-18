@@ -15,7 +15,7 @@ import java.util.*;
 public class peerProcess {
 	
 	
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException {		
 		Scanner input = new Scanner(System.in);
 		System.out.println("Enter a peer ID:");
 		int peerID = input.nextInt();

@@ -97,6 +97,14 @@ public class Edge {
 		}
 	}
 	
+	public Peer  getOrigin(){
+		return origin;
+	}
+	
+	public Peer getDestination(){
+		return destination;
+	}
+	
 	public byte[] getHandshake() throws IOException{
 		byte[] handshake = new byte[32];
 		int count = 0;

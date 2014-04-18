@@ -145,6 +145,8 @@ public class Peer {
 		return bitfield;		//this cannot be changed
 	}
 	
+	
+	
 	/*--------------------READING CONFIG FILES--------------------
 	 * Methods to read Common.cfg and PeerInfo.cfg are located here
 	 */

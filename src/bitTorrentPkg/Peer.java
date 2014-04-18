@@ -28,8 +28,9 @@ public class Peer {
 								 //if not, initiate tcp connections with others
 	
 	//File related variables
-	private byte bitfield[]; //if bitfield[i] is true, the peer has piece i
+	//private byte bitfield[]; //if bitfield[i] is true, the peer has piece i
 								//keeps track of which pieces the peer has
+	private Bitfield bitfield;
 
 	
 	public ArrayList<Edge> others;
@@ -41,7 +42,8 @@ public class Peer {
 	public Peer() throws IOException{
 		peerID = -1; //if for some reason you don't have a peerID but want to test
 		readCommon();
-		bitfield = new byte[numOfPieces];
+		//bitfield = new byte[numOfPieces];
+		bitfield = new Bitfield(numOfPieces);
 		readPeerInfo();
 	}
 	
@@ -49,7 +51,8 @@ public class Peer {
 		this.peerID = peerID;
 		others = new ArrayList<Edge>();
 		readCommon();
-		bitfield = new byte[numOfPieces];
+		//bitfield = new byte[numOfPieces];
+		bitfield = new Bitfield(numOfPieces);
 		readPeerInfo();
 	}
 	
@@ -138,7 +141,7 @@ public class Peer {
 		this.isFirstPeer = isFirstPeer;
 	}
 	
-	public byte[] getBitfield(){
+	public Bitfield getBitfield(){
 		return bitfield;		//this cannot be changed
 	}
 	
@@ -205,9 +208,10 @@ public class Peer {
 					//if it has the file, set all of the bitfield to be 1
 					//this means is has every piece of the file
 					hasFile = true;
-					for(int i = 0; i < numOfPieces; i++){
-						bitfield[i] = 1; 
-					}
+//					for(int i = 0; i < numOfPieces; i++){
+//						bitfield[i] = 1; 
+//					}
+					this.bitfield.setValueAll(true);
 					
 				}else{
 					//if it does not have the file, set all of bitfield to be 0
@@ -215,9 +219,10 @@ public class Peer {
 					//or the peer does not have a single piece of the file
 					//therefore, we set all of the bitfield to be 0, since it has no pieces
 					hasFile = false;
-					for(int i = 0; i < numOfPieces; i++){
-						bitfield[i] = 0;
-					}
+//					for(int i = 0; i < numOfPieces; i++){
+//						bitfield[i] = 0;
+//					}
+					this.bitfield.setValueAll(false);
 
 				}					
 				break;

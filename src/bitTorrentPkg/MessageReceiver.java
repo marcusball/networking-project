@@ -1,6 +1,7 @@
 package bitTorrentPkg;
 
 import bitTorrentPkg.Messages.*;
+
 import java.util.Arrays;
 public class MessageReceiver {
 	public static IMessage OpenMessageBytes(byte[] message) throws Exception{
@@ -8,7 +9,7 @@ public class MessageReceiver {
 			return new Handshake(message);
 		}
 		
-		byte[] lengthBytes = Arrays.copyOfRange(message, 0, 3);
+		byte[] lengthBytes = Arrays.copyOfRange(message, 0, 4);
 		try{
 			int messageLength = GetMessageLength(lengthBytes);
 			if(messageLength > message.length - 5){ //HEARTBLEED
@@ -75,9 +76,18 @@ public class MessageReceiver {
 		return output;
 	}
 	private static boolean MessageIsHandshake(byte[] message){
-		if(message.length != 32) return false;
+		if(message.length != 32){
+			Tools.debug("Message isn't handshake, length is %d.",message.length);
+			return false;
+		}
 		
-		byte[] temp = Arrays.copyOfRange(message, 0, 27);
-		return GetHandshakeMagicBytes().equals(temp);
+		byte[] temp = Arrays.copyOfRange(message, 0, 28);
+		byte[] handshake = GetHandshakeMagicBytes();
+		for(int x=0;x<handshake.length;x+=1){
+			if(handshake[x] != temp[x]){
+				return false;
+			}
+		}
+		return true;
 	}
 }

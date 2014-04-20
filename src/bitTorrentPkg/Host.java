@@ -143,22 +143,22 @@ public class Host {
 		String parts[] = null;
 		BufferedReader config = new BufferedReader(new FileReader("Common.cfg"));
 		currLine = config.readLine(); //gets the line in a string
-		parts = currLine.split(" "); //splits the line at the space
+		parts = currLine.split("\\s+"); //splits the line at the space
 		this.numOfPrefNeighbors = Integer.parseInt(parts[1]); //reads the value after the space
 		currLine = config.readLine(); //repeat for all variables in config file
-		parts = currLine.split(" ");
+		parts = currLine.split("\\s+");
 		this.unchokingInterval = Integer.parseInt(parts[1]);
 		currLine = config.readLine();
-		parts = currLine.split(" ");
+		parts = currLine.split("\\s+");
 		this.optUnchokingInterval = Integer.parseInt(parts[1]);
 		currLine = config.readLine();
-		parts = currLine.split(" ");
+		parts = currLine.split("\\s+");
 		this.fileName = parts[1];
 		currLine = config.readLine();
-		parts = currLine.split(" ");
+		parts = currLine.split("\\s+");
 		this.fileSize = Integer.parseInt(parts[1]);
 		currLine = config.readLine();
-		parts = currLine.split(" ");
+		parts = currLine.split("\\s+");
 		this.pieceSize = Integer.parseInt(parts[1]);
 		config.close(); //close the config file
 		
@@ -184,7 +184,7 @@ public class Host {
 		currLine = peerInfo.readLine();
 		while(currLine != null){
 			Tools.debug(currLine);
-			parts = currLine.split(" "); //split each line into peerID, hostname, listening port, has file
+			parts = currLine.split("\\s+"); //split each line into peerID, hostname, listening port, has file
 			
 			//get the peer variables from the string array parts
 			currPeerID = Integer.parseInt(parts[0]);

@@ -27,6 +27,8 @@ public class NeighborController {
 		if(host == null){
 			throw new NullPointerException("Host is null! You must call setHost(Host h) before you can call init()!");
 		}
+		peers = new HashMap<Integer, Peer>();
+		
 		unchokingInterval = (long) host.getUnchokingInterval();
 		optUnchokingInterval = (long) host.getOptUnchokingInterval();
 		
@@ -63,7 +65,9 @@ public class NeighborController {
 	
 	class OptimisticUnchoke extends TimerTask{
 		public void run(){
-			optimisticPeerIndex = new Random(System.currentTimeMillis()).nextInt(peers.size());
+			if(peers.size() >= 1){ //Make sure we actually have peers. 
+				optimisticPeerIndex = new Random(System.currentTimeMillis()).nextInt(peers.size());
+			}
 			//TODO: Send a unchoke message to peer "random" using a thread
 			//		Expect to receive an request message
 			

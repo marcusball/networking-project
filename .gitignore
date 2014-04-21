@@ -64,3 +64,6 @@ local.properties
 
 # PDT-specific
 .buildpath
+
+
+peer_*/*

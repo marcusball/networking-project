@@ -16,9 +16,9 @@ public class Host {
 	private int unchokingInterval; //Time between each normal unchoke of an existing peer (in seconds)
 	private int optUnchokingInterval; //Time between each optimistic unchoke of a new peer (in seconds)
 	private String fileName; 
-	private int fileSize;	//in bytes
+	private long fileSize;	//in bytes
 	private int pieceSize;	//Size of each piece file will be broken up into (in bytes)
-	private int numOfPieces; //number of pieces in a file (fileSize divided by pieceSize, rounded up)
+	private long numOfPieces; //number of pieces in a file (fileSize divided by pieceSize, rounded up)
 	
 	//PeerInfo.cfg variables
 	private int peerID; //the peerID of THIS peer (inputted into command line)
@@ -37,17 +37,19 @@ public class Host {
 	 * All Peer class constructors are located here
 	 */
 	
-	public Host() throws IOException{
+	public Host(){
 		this(-1);
 	}
 	
-	public Host(int peerID) throws IOException{
+	public Host(int peerID){
 		this.peerID = peerID;
 		peerInfo = new HashMap<Integer, Peer>();
 		targetPeers = new ArrayList<Integer>();
-		readCommon();
-		bitfield = new Bitfield(numOfPieces);
+	}
+	
+	public void init() throws IOException{
 		readPeerInfo();
+		readCommon();
 	}
 	
 	/*--------------------GET/SET METHODS--------------------
@@ -81,7 +83,7 @@ public class Host {
 		return fileName; //this cannot be changed
 	}
 	
-	public int getFileSize(){
+	public long getFileSize(){
 		return fileSize; //this cannot be changed
 	}
 	
@@ -89,7 +91,7 @@ public class Host {
 		return pieceSize; //this cannot be changed
 	}
 	
-	public int numOfPieces(){
+	public long numOfPieces(){
 		return numOfPieces; //this cannot be changed
 	}
 	
@@ -155,15 +157,14 @@ public class Host {
 		this.fileName = parts[1];
 		currLine = config.readLine();
 		parts = currLine.split("\\s+");
-		this.fileSize = Integer.parseInt(parts[1]);
+		this.fileSize = Long.parseLong(parts[1]);
 		currLine = config.readLine();
 		parts = currLine.split("\\s+");
 		this.pieceSize = Integer.parseInt(parts[1]);
 		config.close(); //close the config file
 		
 		//reading from Common.cfg is complete, now finish calculations
-		numOfPieces = (fileSize + pieceSize - 1) / pieceSize; //integer division which rounds up
-		
+		this.readShareFileInfo();
 	}
 	
 
@@ -211,14 +212,12 @@ public class Host {
 					//if it has the file, set all of the bitfield to be 1
 					//this means is has every piece of the file
 					hasFile = true;
-					this.bitfield.setValueAll(true);
 				}else{
 					//if it does not have the file, set all of bitfield to be 0
 					//at the begining of the program, either the peer has the complete file 
 					//or the peer does not have a single piece of the file
 					//therefore, we set all of the bitfield to be 0, since it has no pieces
 					hasFile = false;
-					this.bitfield.setValueAll(false);
 				}					
 			}else{
 				Tools.debug("Adding peer %d to peer list.",currPeerID);
@@ -293,6 +292,19 @@ public class Host {
 				"\nOptimisticUnchokingInterval " + optUnchokingInterval + "\nFileName " + fileName + 
 				"\nFileSize " + fileSize + "\nPeerID " + peerID + "\nHostName " + hostName + 
 				"\nListeningPort " + listeningPort + "\nHasFile " + hasFile + "\n";		
+	}
+	
+	private void readShareFileInfo() throws IOException{
+		Tools.debug("Reading file info for %s...",this.fileName);
+		
+		FileManager.openSharedFile(this.fileName);
+		FileManager.FileInfo info = FileManager.getFileInfo();
+		if(info.getByteLength() != this.fileSize){
+			throw new IOException(String.format("File size of %s is %d; expected %d from config file!",this.fileName,info.getByteLength(),this.fileSize));
+		}
+		
+		this.numOfPieces = (long) Math.ceil(fileSize / pieceSize); 
+		bitfield = new Bitfield(numOfPieces,this.hasFile);
 	}
 
 }

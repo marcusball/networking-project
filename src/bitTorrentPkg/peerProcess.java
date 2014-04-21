@@ -33,16 +33,17 @@ public class peerProcess {
 		int peerID = input.nextInt();
 		
 		System.out.println(peerID);
-		Host host = new Host(peerID);
-		System.out.println(host.isFirstPeer());
 		
-		NeighborController.setHost(host);
+		NeighborController.setHost(new Host(peerID));
 		NeighborController.init();
+		NeighborController.host.init();
+		
+		System.out.println(NeighborController.host.isFirstPeer());
 		
 		ServerEdge server = new ServerEdge();
 		server.start();
-		if(!host.isFirstPeer()){
-			host.initiateTCPConnections(); //else, initiate tcp connections with previous peers
+		if(!NeighborController.host.isFirstPeer()){
+			NeighborController.host.initiateTCPConnections(); //else, initiate tcp connections with previous peers
 		}
 		
 	}

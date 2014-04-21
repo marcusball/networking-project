@@ -40,6 +40,15 @@ public class Edge extends Thread {
 	private final AtomicBoolean hasReceivedHandshake = new AtomicBoolean(false);
 	private final AtomicBoolean hasReceivedMessage = new AtomicBoolean(false);
 	private Message lastMessage;
+	private boolean hasSentHandshake = false;
+	
+	private int edgeState = 0;
+	
+	private final int EDGE_RECV_HANDSHAKE = 1;
+	private final int EDGE_SENT_HANDSHAKE = 2;
+	private final int EDGE_RECV_BITFIELD  = 4;
+	private final int EDGE_SENT_BITFIELD  = 8;
+	
 	
 	public Edge() throws IOException{
 		this(null);
@@ -47,6 +56,7 @@ public class Edge extends Thread {
 	public Edge(Peer destinationPeer) throws IOException{
 		this.destination = destinationPeer;
 		this.lastMessage = null;
+		this.edgeState = 0;
 	}
 	
 	public void setClientSocket(Socket s) throws IOException{
@@ -80,8 +90,16 @@ public class Edge extends Thread {
 	}
 	
 	public void sendHandshake(){
+		this.edgeState |= EDGE_SENT_HANDSHAKE;
+		
 		Handshake handshake = new Handshake(NeighborController.host.getPeerID());
 		this.sendMessage(handshake);
+	}
+	public void sendBitfield(){
+		this.edgeState |= EDGE_SENT_BITFIELD;
+		
+		BitfieldMessage bitfield = new BitfieldMessage(NeighborController.host.getBitfield());
+		this.sendMessage(bitfield);
 	}
 	
 	public void run(){
@@ -127,9 +145,21 @@ public class Edge extends Thread {
 				
 		if(received instanceof Handshake){
 			Tools.debug("RECEIVED HANDSHAKE!");
-			this.hasReceivedHandshake.set(true);
+			this.edgeState |= EDGE_RECV_HANDSHAKE;
 			
-			this.sendMessage(new Unchoke()); //Just because I want to send some random message back
+			if((this.edgeState & EDGE_SENT_HANDSHAKE) == 0){
+				this.sendHandshake();
+			}
+			else if((this.edgeState & EDGE_SENT_BITFIELD) == 0){
+				this.sendBitfield();
+			}
+		}
+		else if(received instanceof BitfieldMessage){
+			Tools.debug("RECEIVED BITFIELD");
+			this.edgeState |= EDGE_RECV_BITFIELD;
+			
+			this.destination.setBitfield(((BitfieldMessage)received).getBitfield());
+			Tools.debug("Bitfield assigned to peer object.");
 		}
 	}
 	

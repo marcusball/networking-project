@@ -36,7 +36,7 @@ public class Peer {
 	private Edge connection;
 	
 	int pieceSize;
-	int numOfPieces;
+	long numOfPieces;
 	private Bitfield bitfield;
 	
 	long startTime; //in milliseconds since Jan 1 1970
@@ -48,7 +48,7 @@ public class Peer {
 	 * All Peer class constructors are located here
 	 */
 	
-	public Peer(int peerID, String hostName, int listeningPort, boolean hasFile, boolean isFirstPeer, int pieceSize, int numOfPieces, long startTime){
+	public Peer(int peerID, String hostName, int listeningPort, boolean hasFile, boolean isFirstPeer, int pieceSize, long numOfPieces2, long startTime){
 		//this constructor is used to keep track of OTHER peers
 		//when keeping track of other peers, this info is all that is necessary
 		this.peerID = peerID;
@@ -57,7 +57,7 @@ public class Peer {
 		this.hasFile = hasFile;
 		this.isFirstPeer = isFirstPeer;
 		this.pieceSize = pieceSize;
-		this.numOfPieces = numOfPieces;
+		this.numOfPieces = numOfPieces2;
 		isUnchoked = false;
 		isOptUnchoked = false;
 		this.startTime = startTime;
@@ -132,7 +132,7 @@ public class Peer {
 		this.isFirstPeer = isFirstPeer;
 	}
 	
-	public int getNumOfPieces(){
+	public long getNumOfPieces(){
 		return numOfPieces; 	//this cannot be changed
 	}
 	
@@ -166,6 +166,10 @@ public class Peer {
 	
 	public float getDLRate(){
 		return dlRate;
+	}
+	
+	public void setBitfield(Bitfield bf){
+		this.bitfield = bf;
 	}
 	
 	

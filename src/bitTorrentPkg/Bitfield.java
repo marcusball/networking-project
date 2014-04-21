@@ -1,12 +1,12 @@
 package bitTorrentPkg;
 
 public class Bitfield {
-	private int length;
+	private long length;
 	private byte[] container;
-	public Bitfield(int length){
-		this(length,false);
+	public Bitfield(long numOfPieces){
+		this(numOfPieces,false);
 	}
-	public Bitfield(int length,boolean intialVal){
+	public Bitfield(long length,boolean intialVal){
 		this.length = length;
 		this.container = new byte[(int)Math.ceil(length / 8.0)]; //Make sure we have enough bytes for all of the bits
 		Tools.debug("Bitfield: creating container of length %d.");
@@ -15,6 +15,10 @@ public class Bitfield {
 				this.container[i] = (byte)255;
 			}
 		}
+	}
+	public Bitfield(byte[] bitfield){
+		this.length = bitfield.length;
+		this.container = bitfield;
 	}
 	public void setValueAll(boolean value){
 		byte newValue = (byte) ((value)?255:0);

@@ -60,7 +60,10 @@ public class Edge extends Thread {
 		if(this.destination == null){
 			throw new NullPointerException("Cannot create client socket with null destination peer!");
 		}
+		Tools.debug("Creating socket to host: %s:%d",this.destination.getHostName(), this.destination.getListeningPort());
 		Socket s = new Socket(this.destination.getHostName(), this.destination.getListeningPort());
+		Tools.debug("Socket created!");
+		
 		this.setClientSocket(s);
 	}
 	

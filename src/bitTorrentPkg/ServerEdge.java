@@ -48,6 +48,7 @@ public class ServerEdge extends Thread {
 					int peerId = newEdge.blockForHandshake();
 					if(peerId == -1){ //never received handshake
 						Tools.debug("No handshake received!");
+						socket.close();
 					}
 					else if(NeighborController.hasPeer(peerId)){ //If we're already connected to the peer with this ID
 						Tools.debug("Connection rejected from %s:%d; already connected to peer %d.",socket.getInetAddress().getHostAddress(),socket.getPort(),peerId);
@@ -62,14 +63,11 @@ public class ServerEdge extends Thread {
 					}
 					else{
 						Tools.debug("Rejecting handshake connection from unknown peer %d.",peerId);
+						socket.close();
 					}
 				}
 				else{
 					Tools.debug("Connection rejected from %s; already connected.",socket.getInetAddress().getHostAddress());
-				}
-				
-				if(!keepSocketOpen){
-					socket.close();
 				}
 			}
 		}
@@ -82,9 +80,25 @@ public class ServerEdge extends Thread {
 	private boolean isConnectedTo(Socket connection){
 		Peer peer = null;
 		for(Iterator<Peer> i = NeighborController.getPeers().iterator(); i.hasNext(); peer = i.next()){
-			if(peer.getConnection().getSocket().equals(connection)){
-				return true;
+			if(peer == null){
+				continue;
 			}
+			Edge conn = peer.getConnection();
+			if(conn != null){
+				Socket connSocket = conn.getSocket();
+				if(connSocket != null){
+					if(connection.equals(connSocket)){
+						return true;
+					}
+				}
+				else{
+					Tools.debug("isConnectedTo: Socket is null!");
+				}
+			}
+			else{
+				Tools.debug("isConnectedTo: Edge is null!");
+			}
+			
 		}
 		return false;
 	}

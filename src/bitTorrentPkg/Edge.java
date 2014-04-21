@@ -106,6 +106,7 @@ public class Edge extends Thread {
 		}
 		catch(IOException ioe){
 			Tools.debug("Edge exception checking for incoming messages! IOException: \"%s\".",ioe.getMessage());
+			e.printStackTrace();
 		}
 		catch(Exception e){
 			Tools.debug("Edge exception while checking for incoming messages! Exception: \"%s\".",e.getMessage());
@@ -119,6 +120,8 @@ public class Edge extends Thread {
 		if(received instanceof Handshake){
 			Tools.debug("RECEIVED HANDSHAKE!");
 			this.hasReceivedHandshake.set(true);
+			
+			this.sendHandshake();
 		}
 	}
 	

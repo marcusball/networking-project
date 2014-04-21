@@ -31,6 +31,7 @@ public class Host {
 	private Bitfield bitfield;
 
 	public HashMap<Integer,Peer> peerInfo; //This will contain the list of ALL peers listed in PeerInfo, not just the ones this host is connected to. 
+	public ArrayList<Integer> targetPeers; //This will contain the peer IDs of all of the peers above this host in the PeerInfo file. 
 	
 	/*--------------------CONSTRUCTORS--------------------
 	 * All Peer class constructors are located here
@@ -43,6 +44,7 @@ public class Host {
 	public Host(int peerID) throws IOException{
 		this.peerID = peerID;
 		peerInfo = new HashMap<Integer, Peer>();
+		targetPeers = new ArrayList<Integer>();
 		readCommon();
 		bitfield = new Bitfield(numOfPieces);
 		readPeerInfo();
@@ -175,7 +177,7 @@ public class Host {
 		int currListeningPort;
 		boolean currHasFile;
 		boolean currIsFirstPeer;
-
+		
 		BufferedReader peerInfoReader = new BufferedReader(new FileReader("PeerInfo.cfg"));
 		boolean foundOwnPeerID = false;
 		while((currLine = peerInfoReader.readLine()) != null){
@@ -222,6 +224,11 @@ public class Host {
 				Tools.debug("Adding peer %d to peer list.",currPeerID);
 				peerInfo.put(currPeerID, new Peer(currPeerID, currHostName, currListeningPort, currHasFile, currIsFirstPeer, 
 							this.pieceSize, this.numOfPieces, System.currentTimeMillis()));
+				
+				if(!foundOwnPeerID){	//If this is above the host in peerInfo (and thus we haven't yet found own own peerID), 
+										//then it is a peer we will be trying to connect to
+					targetPeers.add(currPeerID); //So we'll add it to the list of peers we will connect to. 
+				}
 			}
 			peerCount++;
 		}
@@ -236,20 +243,19 @@ public class Host {
 
 	
 	public void initiateTCPConnections() throws IOException{
-		if(this.peerInfo.size() > 0 ){
-			Iterator<Peer> peerIterator = this.peerInfo.values().iterator();
-			Peer nextPeer = null;
-			for(; peerIterator.hasNext(); nextPeer = peerIterator.next()){
-				if(nextPeer == null){
-					continue;
-				}
-				if(nextPeer.getPeerID() != this.peerID){
-					nextPeer.createEdgeConnection();
-					nextPeer.getConnection().sendHandshake();
-					NeighborController.addPeer(nextPeer);
-				}
-				else if(nextPeer.getPeerID() == this.peerID){
-					break;
+		if(this.targetPeers.size() > 0 ){
+			Peer nextPeer;
+			for(int nextPeerId : this.targetPeers){
+				if(this.peerInfo.containsKey(nextPeerId)){
+					nextPeer = this.peerInfo.get(nextPeerId);
+					if(nextPeer == null){
+						continue;
+					}
+					if(nextPeer.getPeerID() != this.peerID){ //This check shouldn't be necessary, but lets just be safe.
+						nextPeer.createEdgeConnection();
+						nextPeer.getConnection().sendHandshake();
+						NeighborController.addPeer(nextPeer);
+					}
 				}
 			}
 		}

@@ -252,11 +252,13 @@ public class Host {
 						continue;
 					}
 					if(nextPeer.getPeerID() != this.peerID){ //This check shouldn't be necessary, but lets just be safe.
-						Tools.debug("Initiating TCP connection with peer %d: %s:%d",nextPeerId,nextPeer.getHostName(),nextPeer.getListeningPort());
+						Tools.debug("Initiating TCP connection with peer %d: %s:%d...",nextPeerId,nextPeer.getHostName(),nextPeer.getListeningPort());
 						
 						nextPeer.createEdgeConnection();
 						nextPeer.getConnection().sendHandshake();
 						NeighborController.addPeer(nextPeer);
+						
+						Tools.debug("BAM! Connection established with %s!",nextPeer.getHostName());
 					}
 				}
 			}

@@ -87,6 +87,11 @@ public class Edge extends Thread {
 			int bytesRead;
 			Tools.debug("Edge: Now listening for responses...");
 			while(true){
+				if(!this.client.isConnected()){
+					Tools.debug("Edge: connection terminated!");
+					break;
+				}
+				
 				if(this.in.available() > 0){
 					buffer = new byte[5 + NeighborController.host.pieceSize()]; //This is the maximum length any message will ever take.
 					bytesRead = this.in.read(buffer);

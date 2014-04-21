@@ -36,11 +36,11 @@ public class ServerEdge extends Thread {
 	
 	public void run(){
 		try{
+			Socket socket;
 			while(true){
 				Tools.debug("Waiting for connection...");
-				Socket socket = this.server.accept(); 
+				socket = this.server.accept(); 
 				Tools.debug("Connection accepted from %s.",socket.getInetAddress().getHostAddress());
-				boolean keepSocketOpen = false;
 				if(!this.isConnectedTo(socket)){ //Make sure we're not already connected to this peer
 					Edge newEdge = new Edge();
 					newEdge.setClientSocket(socket);
@@ -59,7 +59,6 @@ public class ServerEdge extends Thread {
 						Peer newPeer = NeighborController.host.getPeer(peerId);
 						newPeer.setConnection(newEdge);
 						NeighborController.addPeer(newPeer);
-						keepSocketOpen = true;
 					}
 					else{
 						Tools.debug("Rejecting handshake connection from unknown peer %d.",peerId);

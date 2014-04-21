@@ -235,7 +235,7 @@ public class Host {
 
 	
 	public void initiateTCPConnections() throws IOException{
-		if(this.peerInfo.size() > 0){
+		if(this.peerInfo.size() > 0 && this.peerInfo.get(0) != null){
 			Peer nextPeer;
 			for(int x=0; (nextPeer = this.peerInfo.get(x)).getPeerID() != this.peerID; x += 1){ //get the next connection, as long as it's not to this host
 				nextPeer.createEdgeConnection();

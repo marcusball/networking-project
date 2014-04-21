@@ -30,22 +30,19 @@ public class Host {
 	
 	private Bitfield bitfield;
 
-	public ArrayList<Peer> peers;
+	public ArrayList<Peer> peerInfo; //This will contain the list of ALL peers listed in PeerInfo, not just the ones this host is connected to. 
 	
 	/*--------------------CONSTRUCTORS--------------------
 	 * All Peer class constructors are located here
 	 */
 	
 	public Host() throws IOException{
-		peerID = -1; //if for some reason you don't have a peerID but want to test
-		readCommon();
-		bitfield = new Bitfield(numOfPieces);
-		readPeerInfo();
+		this(-1);
 	}
 	
 	public Host(int peerID) throws IOException{
 		this.peerID = peerID;
-		peers = new ArrayList<Peer>();
+		peerInfo = new ArrayList<Peer>();
 		readCommon();
 		bitfield = new Bitfield(numOfPieces);
 		readPeerInfo();
@@ -179,10 +176,9 @@ public class Host {
 		boolean currHasFile;
 		boolean currIsFirstPeer;
 
-		BufferedReader peerInfo = new BufferedReader(new FileReader("PeerInfo.cfg"));
+		BufferedReader peerInfoReader = new BufferedReader(new FileReader("PeerInfo.cfg"));
 		boolean foundOwnPeerID = false;
-		currLine = peerInfo.readLine();
-		while(currLine != null){
+		while((currLine = peerInfoReader.readLine()) != null){
 			Tools.debug(currLine);
 			parts = currLine.split("\\s+"); //split each line into peerID, hostname, listening port, has file
 			
@@ -223,13 +219,12 @@ public class Host {
 					this.bitfield.setValueAll(false);
 				}					
 			}else{
-				peers.add(new Peer(currPeerID, currHostName, currListeningPort, currHasFile, currIsFirstPeer, 
+				peerInfo.add(new Peer(currPeerID, currHostName, currListeningPort, currHasFile, currIsFirstPeer, 
 							this.pieceSize, this.numOfPieces, System.currentTimeMillis()));
 			}
-			currLine = peerInfo.readLine();
 			peerCount++;
 		}
-		peerInfo.close();
+		peerInfoReader.close();
 		if(!foundOwnPeerID){
 			System.out.println("WARNING: This machine not found in tracker.  Terminating...");
 			System.exit(0);
@@ -240,6 +235,17 @@ public class Host {
 
 	
 	public void initiateTCPConnections() throws IOException{
+		if(this.peerInfo.size() > 0){
+			Peer nextPeer;
+			for(int x=0; (nextPeer = this.peerInfo.get(x)).getPeerID() != this.peerID; x += 1){ //get the next connection, as long as it's not to this host
+				nextPeer.createEdgeConnection();
+				nextPeer.getConnection().sendHandshake();
+				NeighborController.addPeer(nextPeer);
+			}
+		}
+		else{
+			Tools.debug("No peers to establish connection with!");
+		}
 		//TODO: I now have readPeerInfo actually creating all the peers
 		//This method now needs to loop through those peers and initiate TCP connections
 	}

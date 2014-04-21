@@ -45,7 +45,7 @@ public class Edge extends Thread {
 		this.in = this.client.getInputStream();
 		this.out = this.client.getOutputStream();
 		
-		Tools.debug("Edge socket set for %s:%d.",this.destination.getHostName(),this.destination.getListeningPort());
+		Tools.debug("Edge socket set for %s.",s.getRemoteSocketAddress().toString());
 	}
 	public void createClientSocket() throws UnknownHostException, IOException, NullPointerException{
 		if(this.destination == null){

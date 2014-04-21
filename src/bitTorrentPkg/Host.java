@@ -236,12 +236,18 @@ public class Host {
 
 	
 	public void initiateTCPConnections() throws IOException{
-		if(this.peerInfo.size() > 0 && this.peerInfo.get(0) != null){
+		if(this.peerInfo.size() > 0 ){
 			Peer nextPeer;
-			for(int x=0; (nextPeer = this.peerInfo.get(x)).getPeerID() != this.peerID; x += 1){ //get the next connection, as long as it's not to this host
-				nextPeer.createEdgeConnection();
-				nextPeer.getConnection().sendHandshake();
-				NeighborController.addPeer(nextPeer);
+			for(int x=0; x < this.peerInfo.size(); x+=1){ 
+				nextPeer = this.peerInfo.get(x);
+				if(nextPeer != null && nextPeer.getPeerID() != this.peerID){
+					nextPeer.createEdgeConnection();
+					nextPeer.getConnection().sendHandshake();
+					NeighborController.addPeer(nextPeer);
+				}
+				else if(nextPeer.getPeerID() == this.peerID){
+					break;
+				}
 			}
 		}
 		else{

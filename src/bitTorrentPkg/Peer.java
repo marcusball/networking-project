@@ -146,6 +146,7 @@ public class Peer {
 	
 	public void setConnection(Edge connection){
 		this.connection = connection;
+		this.connection.setDestination(this);
 	}
 	
 	public int getPiecesDownloaded(){

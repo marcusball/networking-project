@@ -59,6 +59,10 @@ public class Edge extends Thread {
 		this.edgeState = 0;
 	}
 	
+	public void setDestination(Peer dest){
+		this.destination = dest;
+	}
+	
 	public void setClientSocket(Socket s) throws IOException{
 		this.client = s;
 		this.in = this.client.getInputStream();
@@ -158,7 +162,9 @@ public class Edge extends Thread {
 			Tools.debug("RECEIVED BITFIELD");
 			this.edgeState |= EDGE_RECV_BITFIELD;
 			
-			this.destination.setBitfield(((BitfieldMessage)received).getBitfield());
+			BitfieldMessage bfMessage = (BitfieldMessage)received;
+			this.destination.setBitfield(bfMessage.getBitfield());
+			
 			Tools.debug("Bitfield assigned to peer object.");
 		}
 	}
@@ -185,6 +191,7 @@ public class Edge extends Thread {
 	public Socket getSocket(){
 		return this.client;
 	}
+
 	/*private Peer origin;
 	private Peer destination;
 	

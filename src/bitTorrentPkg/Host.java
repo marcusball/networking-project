@@ -295,12 +295,17 @@ public class Host {
 	}
 	
 	private void readShareFileInfo() throws IOException{
-		Tools.debug("Reading file info for %s...",this.fileName);
-		
-		FileManager.openSharedFile(this.fileName);
-		FileManager.FileInfo info = FileManager.getFileInfo();
-		if(info.getByteLength() != this.fileSize){
-			throw new IOException(String.format("File size of %s is %d; expected %d from config file!",this.fileName,info.getByteLength(),this.fileSize));
+		if(this.hasFile){
+			Tools.debug("Reading file info for %s...",this.fileName);
+			
+			FileManager.openSharedFile(this.fileName);
+			FileManager.FileInfo info = FileManager.getFileInfo();
+			if(info.getByteLength() != this.fileSize){
+				throw new IOException(String.format("File size of %s is %d; expected %d from config file!",this.fileName,info.getByteLength(),this.fileSize));
+			}
+		}
+		else{
+			Tools.debug("Not in possestion of file, skipping read attempt.");
 		}
 		
 		this.numOfPieces = (long) Math.ceil(fileSize / pieceSize); 

@@ -163,7 +163,12 @@ public class Edge extends Thread {
 			this.edgeState |= EDGE_RECV_BITFIELD;
 			
 			BitfieldMessage bfMessage = (BitfieldMessage)received;
-			this.destination.setBitfield(bfMessage.getBitfield());
+			if(this.destination == null){
+				Tools.debug("UGGGHH FIX ME!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"); //TODO: fix
+			}
+			else{
+				this.destination.setBitfield(bfMessage.getBitfield());
+			}
 			
 			Tools.debug("Bitfield assigned to peer object.");
 		}

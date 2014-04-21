@@ -43,13 +43,9 @@ public class ServerEdge extends Thread {
 				boolean keepSocketOpen = false;
 				if(!this.isConnectedTo(socket)){ //Make sure we're not already connected to this peer
 					Edge newEdge = new Edge();
-					Tools.debug("-a");
 					newEdge.setClientSocket(socket);
-					Tools.debug("a");
 					newEdge.start();
-					Tools.debug("b");
 					int peerId = newEdge.blockForHandshake();
-					Tools.debug("c");
 					if(peerId == -1){ //never received handshake
 						Tools.debug("No handshake received!");
 					}

@@ -16,6 +16,14 @@ import java.net.InetSocketAddress;
 import java.util.Scanner;
 
 
+
+
+
+
+
+
+
+
 //Messages
 import bitTorrentPkg.Messages.*;
 
@@ -58,6 +66,7 @@ public class Edge extends Thread {
 	public boolean sendMessage(Message message){
 		try {
 			this.out.write(message.toBytes());
+			this.out.flush();
 			return true;
 		} 
 		catch (IOException e) {
@@ -95,21 +104,23 @@ public class Edge extends Thread {
 			}
 		}
 		catch(IOException ioe){
-			Tools.debug("Error while checking for incoming messages! IOException: \"%s\".",ioe.getMessage());
+			Tools.debug("Edge exception checking for incoming messages! IOException: \"%s\".",ioe.getMessage());
 		}
 		catch(Exception e){
-			Tools.debug("Error while checking for incoming messages! Exception: \"%s\".",e.getMessage());
+			Tools.debug("Edge exception while checking for incoming messages! Exception: \"%s\".",e.getMessage());
+			Tools.debug(e.toString());
 		}
 	}
 	
 	private void handleMessage(Message received){
+		synchronized(this.lastMessage){
+			this.lastMessage = received;
+		}
+		
 		if(received instanceof Handshake){
 			Tools.debug("RECEIVED HANDSHAKE!");
 			synchronized(this.hasReceivedHandshake){
-				synchronized(this.lastMessage){
-					this.hasReceivedHandshake.set(true);
-					this.lastMessage = received;
-				}
+				this.hasReceivedHandshake.set(true);
 			}
 		}
 	}
@@ -118,12 +129,17 @@ public class Edge extends Thread {
 		synchronized(this.hasReceivedHandshake){
 			long startTime = System.currentTimeMillis();
 			long currentTime = System.currentTimeMillis();
-			while(this.hasReceivedHandshake.get() == false && (startTime - currentTime) <= 10000){
+			while(this.hasReceivedHandshake.get() == false && (currentTime - startTime) <= 10000){
 				currentTime = System.currentTimeMillis();
+			}
+			
+			if(this.hasReceivedHandshake.get() == false){ //Timeout
+				return -1; 
 			}
 		}
 		synchronized(this.lastMessage){
 			if(this.lastMessage instanceof Handshake){
+				Tools.debug("7");
 				return ((Handshake)this.lastMessage).getPeerId();
 			}
 		}

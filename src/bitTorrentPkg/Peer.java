@@ -85,6 +85,7 @@ public class Peer {
 		this.connection = new Edge(this);
 		this.connection.createClientSocket();
 		this.connection.start();
+		Tools.debug("Edge connection initiated!");
 	}
 	
 	public void createEdgeConnectionFromSocket(Socket s) throws IOException{

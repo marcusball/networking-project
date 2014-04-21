@@ -106,7 +106,7 @@ public class Edge extends Thread {
 		}
 		catch(IOException ioe){
 			Tools.debug("Edge exception checking for incoming messages! IOException: \"%s\".",ioe.getMessage());
-			e.printStackTrace();
+			ioe.printStackTrace();
 		}
 		catch(Exception e){
 			Tools.debug("Edge exception while checking for incoming messages! Exception: \"%s\".",e.getMessage());
@@ -121,7 +121,7 @@ public class Edge extends Thread {
 			Tools.debug("RECEIVED HANDSHAKE!");
 			this.hasReceivedHandshake.set(true);
 			
-			this.sendHandshake();
+			this.sendMessage(new Unchoke()); //Just because I want to send some random message back
 		}
 	}
 	

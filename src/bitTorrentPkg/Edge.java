@@ -38,6 +38,7 @@ public class Edge extends Thread {
 	private OutputStream out;
 	
 	private final AtomicBoolean hasReceivedHandshake = new AtomicBoolean(false);
+	private final AtomicBoolean hasReceivedMessage = new AtomicBoolean(false);
 	private Message lastMessage;
 	
 	public Edge() throws IOException{
@@ -84,7 +85,7 @@ public class Edge extends Thread {
 		try{
 			byte[] buffer;
 			int bytesRead;
-			Tools.debug("%s Edge: Now listening for responses...",this.destination.getHostName());
+			Tools.debug("Edge: Now listening for responses...");
 			while(true){
 				if(this.in.available() > 0){
 					buffer = new byte[5 + NeighborController.host.pieceSize()]; //This is the maximum length any message will ever take.
@@ -108,38 +109,32 @@ public class Edge extends Thread {
 		}
 		catch(Exception e){
 			Tools.debug("Edge exception while checking for incoming messages! Exception: \"%s\".",e.getMessage());
-			Tools.debug(e.toString());
+			e.printStackTrace();
 		}
 	}
 	
 	private void handleMessage(Message received){
-		synchronized(this.lastMessage){
-			this.lastMessage = received;
-		}
-		
+		this.lastMessage = received;
+				
 		if(received instanceof Handshake){
 			Tools.debug("RECEIVED HANDSHAKE!");
-			synchronized(this.hasReceivedHandshake){
-				this.hasReceivedHandshake.set(true);
-			}
+			this.hasReceivedHandshake.set(true);
 		}
 	}
 	
 	public int blockForHandshake(){
-		synchronized(this.hasReceivedHandshake){
-			long startTime = System.currentTimeMillis();
-			long currentTime = System.currentTimeMillis();
-			while(this.hasReceivedHandshake.get() == false && (currentTime - startTime) <= 10000){
-				currentTime = System.currentTimeMillis();
-			}
-			
-			if(this.hasReceivedHandshake.get() == false){ //Timeout
-				return -1; 
-			}
+		long startTime = System.currentTimeMillis();
+		long currentTime = System.currentTimeMillis();
+		while(this.hasReceivedHandshake.get() == false && (currentTime - startTime) <= 10000){
+			currentTime = System.currentTimeMillis();
 		}
-		synchronized(this.lastMessage){
+		
+		if(this.hasReceivedHandshake.get() == false){ //Timeout
+			return -1; 
+		}
+		
+		if(this.lastMessage != null){
 			if(this.lastMessage instanceof Handshake){
-				Tools.debug("7");
 				return ((Handshake)this.lastMessage).getPeerId();
 			}
 		}

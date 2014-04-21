@@ -13,7 +13,7 @@ public class Handshake implements Message {
 			throw new Exception("Handshake message class expects byte array of length 32!");
 		}
 		
-		byte[] peerIdBytes = Arrays.copyOfRange(message, 27, 31);
+		byte[] peerIdBytes = Arrays.copyOfRange(message, 28, 32);
 		this.peerId = Tools.bytesToInt(peerIdBytes);
 	}
 	

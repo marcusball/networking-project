@@ -87,6 +87,12 @@ public class Peer {
 		this.connection.start();
 	}
 	
+	public void createEdgeConnectionFromSocket(Socket s) throws IOException{
+		this.connection = new Edge(this);
+		this.connection.setClientSocket(s);
+		this.connection.start();
+	}
+	
 	
 	/*--------------------GET/SET METHODS--------------------
 	 * All Peer class get/set methods are located here

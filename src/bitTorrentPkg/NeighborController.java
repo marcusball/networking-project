@@ -54,6 +54,10 @@ public class NeighborController {
 		return null;
 	}
 	
+	public static Collection<Peer> getPeers(){
+		return peers.values();
+	}
+	
 	class Unchoke extends TimerTask{
 		public void run(){
 			//TODO: Calculate download rates of all peers 

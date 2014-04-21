@@ -30,7 +30,7 @@ public class Host {
 	
 	private Bitfield bitfield;
 
-	public ArrayList<Peer> peerInfo; //This will contain the list of ALL peers listed in PeerInfo, not just the ones this host is connected to. 
+	public HashMap<Integer,Peer> peerInfo; //This will contain the list of ALL peers listed in PeerInfo, not just the ones this host is connected to. 
 	
 	/*--------------------CONSTRUCTORS--------------------
 	 * All Peer class constructors are located here
@@ -42,7 +42,7 @@ public class Host {
 	
 	public Host(int peerID) throws IOException{
 		this.peerID = peerID;
-		peerInfo = new ArrayList<Peer>();
+		peerInfo = new HashMap<Integer, Peer>();
 		readCommon();
 		bitfield = new Bitfield(numOfPieces);
 		readPeerInfo();
@@ -219,7 +219,7 @@ public class Host {
 					this.bitfield.setValueAll(false);
 				}					
 			}else{
-				peerInfo.add(new Peer(currPeerID, currHostName, currListeningPort, currHasFile, currIsFirstPeer, 
+				peerInfo.put(currPeerID, new Peer(currPeerID, currHostName, currListeningPort, currHasFile, currIsFirstPeer, 
 							this.pieceSize, this.numOfPieces, System.currentTimeMillis()));
 			}
 			peerCount++;
@@ -253,6 +253,18 @@ public class Host {
 	public void listen() throws IOException{
 		//TODO: After changing Peer to represent OTHER PEERS ONLY, change this
 		
+	}
+	
+	
+	public boolean isExpectingPeerId(int id){ //Checks whether PeerInfo had connection configured for this ID
+		return this.peerInfo.containsKey(id);
+	}
+	
+	public Peer getPeer(int id){
+		if(this.peerInfo.containsKey(id)){
+			return this.peerInfo.get(id);
+		}
+		return null;
 	}
 	
 	public String toString(){

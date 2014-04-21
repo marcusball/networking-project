@@ -15,10 +15,12 @@ import java.net.UnknownHostException;
 import java.net.InetSocketAddress;
 import java.util.Scanner;
 
+
 //Messages
 import bitTorrentPkg.Messages.*;
 
 import java.util.Arrays;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Edge extends Thread {
 	private Peer destination;
@@ -27,17 +29,23 @@ public class Edge extends Thread {
 	private InputStream in;
 	private OutputStream out;
 	
+	private final AtomicBoolean hasReceivedHandshake = new AtomicBoolean(false);
+	private Message lastMessage;
+	
 	public Edge() throws IOException{
 		this(null);
 	}
 	public Edge(Peer destinationPeer) throws IOException{
 		this.destination = destinationPeer;
+		this.lastMessage = null;
 	}
 	
 	public void setClientSocket(Socket s) throws IOException{
 		this.client = s;
 		this.in = this.client.getInputStream();
 		this.out = this.client.getOutputStream();
+		
+		Tools.debug("Edge socket set for %s:%d.",this.destination.getHostName(),this.destination.getListeningPort());
 	}
 	public void createClientSocket() throws UnknownHostException, IOException, NullPointerException{
 		if(this.destination == null){
@@ -97,9 +105,34 @@ public class Edge extends Thread {
 	private void handleMessage(Message received){
 		if(received instanceof Handshake){
 			Tools.debug("RECEIVED HANDSHAKE!");
+			synchronized(this.hasReceivedHandshake){
+				synchronized(this.lastMessage){
+					this.hasReceivedHandshake.set(true);
+					this.lastMessage = received;
+				}
+			}
 		}
 	}
 	
+	public int blockForHandshake(){
+		synchronized(this.hasReceivedHandshake){
+			long startTime = System.currentTimeMillis();
+			long currentTime = System.currentTimeMillis();
+			while(this.hasReceivedHandshake.get() == false && (startTime - currentTime) <= 10000){
+				currentTime = System.currentTimeMillis();
+			}
+		}
+		synchronized(this.lastMessage){
+			if(this.lastMessage instanceof Handshake){
+				return ((Handshake)this.lastMessage).getPeerId();
+			}
+		}
+		return -1;
+	}
+	
+	public Socket getSocket(){
+		return this.client;
+	}
 	/*private Peer origin;
 	private Peer destination;
 	

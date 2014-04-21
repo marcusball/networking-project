@@ -240,7 +240,10 @@ public class Host {
 			Iterator<Peer> peerIterator = this.peerInfo.values().iterator();
 			Peer nextPeer = null;
 			for(; peerIterator.hasNext(); nextPeer = peerIterator.next()){
-				if(nextPeer != null && nextPeer.getPeerID() != this.peerID){
+				if(nextPeer == null){
+					continue;
+				}
+				if(nextPeer.getPeerID() != this.peerID){
 					nextPeer.createEdgeConnection();
 					nextPeer.getConnection().sendHandshake();
 					NeighborController.addPeer(nextPeer);

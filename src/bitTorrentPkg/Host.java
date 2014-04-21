@@ -219,6 +219,7 @@ public class Host {
 					this.bitfield.setValueAll(false);
 				}					
 			}else{
+				Tools.debug("Adding peer %d to peer list.",currPeerID);
 				peerInfo.put(currPeerID, new Peer(currPeerID, currHostName, currListeningPort, currHasFile, currIsFirstPeer, 
 							this.pieceSize, this.numOfPieces, System.currentTimeMillis()));
 			}

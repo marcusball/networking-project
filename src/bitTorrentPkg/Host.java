@@ -237,9 +237,9 @@ public class Host {
 	
 	public void initiateTCPConnections() throws IOException{
 		if(this.peerInfo.size() > 0 ){
-			Peer nextPeer;
-			for(int x=0; x < this.peerInfo.size(); x+=1){ 
-				nextPeer = this.peerInfo.get(x);
+			Iterator<Peer> peerIterator = this.peerInfo.values().iterator();
+			Peer nextPeer = null;
+			for(; peerIterator.hasNext(); nextPeer = peerIterator.next()){
 				if(nextPeer != null && nextPeer.getPeerID() != this.peerID){
 					nextPeer.createEdgeConnection();
 					nextPeer.getConnection().sendHandshake();

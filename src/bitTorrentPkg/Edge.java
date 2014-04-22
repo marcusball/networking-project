@@ -45,6 +45,19 @@ public class Edge extends Thread {
 	private final int EDGE_SENT_HANDSHAKE = 2;
 	private final int EDGE_RECV_BITFIELD  = 4;
 	private final int EDGE_SENT_BITFIELD  = 8;
+	private final int EDGE_RECV_CHOKE = 16;
+	private final int EDGE_SENT_CHOKE = 32;
+	private final int EDGE_RECV_UNCHOKE = 64;
+	private final int EDGE_SENT_UNCHOKE = 128;
+	private final int EDGE_RECV_INTERESTED = 256;
+	private final int EDGE_SENT_INTERESTED = 512;
+	private final int EDGE_RECV_NOTINTERESTED = 1024;
+	private final int EDGE_SENT_NOTINTERESTED = 2048;
+	private final int EDGE_RECV_HAVE = 4096;
+	private final int EDGE_SENT_HAVE = 8192;
+	private final int EDGE_RECV_PIECE = 16384;
+	private final int EDGE_SENT_PIECE = 32768;
+	
 	private final int EDGE_GREETING_COMPLETE = 15; 
 	
 	private final boolean cloned;
@@ -227,7 +240,6 @@ public class Edge extends Thread {
 				if(this.in.available() > 0){ //If there are any new data
 					buffer = new byte[(int) (5 + NeighborController.host.pieceSize())]; //This is the maximum length any message will ever take.
 					bytesRead = this.in.read(buffer); //Read the data
-
 					buffer = Arrays.copyOfRange(buffer, 0, bytesRead); //Trim off the excess buffer space.
 					
 					System.out.print("[Edge.run] Received: ");
@@ -315,6 +327,14 @@ public class Edge extends Thread {
 				}
 				
 				Tools.debug("[Edge.handleMessage] Bitfield assigned to peer object.");
+			}
+			else if(received instanceof Choke){
+				Tools.debug("RECEIVED CHOKE!");
+				this.edgeState.set(this.edgeState.get() | EDGE_RECV_CHOKE);
+			}
+			else if(received instanceof Unchoke){
+				Tools.debug("RECEIVED UNCHOKE!");
+				this.edgeState.set(this.edgeState.get() | EDGE_RECV_UNCHOKE);
 			}
 		}
 	}

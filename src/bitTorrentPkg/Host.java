@@ -13,11 +13,11 @@ public class Host {
 	//--------------------VARIABLES--------------------
 	//Common.cfg variables
 	private int numOfPrefNeighbors; //Number of neighbors this peer will share with
-	private int unchokingInterval; //Time between each normal unchoke of an existing peer (in seconds)
-	private int optUnchokingInterval; //Time between each optimistic unchoke of a new peer (in seconds)
+	private long unchokingInterval; //Time between each normal unchoke of an existing peer (in seconds)
+	private long optUnchokingInterval; //Time between each optimistic unchoke of a new peer (in seconds)
 	private String fileName; 
 	private long fileSize;	//in bytes
-	private int pieceSize;	//Size of each piece file will be broken up into (in bytes)
+	private long pieceSize;	//Size of each piece file will be broken up into (in bytes)
 	private long numOfPieces; //number of pieces in a file (fileSize divided by pieceSize, rounded up)
 	
 	//PeerInfo.cfg variables
@@ -63,19 +63,19 @@ public class Host {
 		this.numOfPrefNeighbors = numOfPrefNeighbors;
 	}
 	
-	public int getUnchokingInterval(){
+	public long getUnchokingInterval(){
 		return unchokingInterval;
 	}
 	
-	public void setUnchokingInterval(int unchokingInterval){
+	public void setUnchokingInterval(long unchokingInterval){
 		this.unchokingInterval = unchokingInterval;
 	}
 	
-	public int getOptUnchokingInterval(){
+	public long getOptUnchokingInterval(){
 		return optUnchokingInterval;
 	}
 	
-	public void setOptUnchokingInterval(int optUnchokingInterval){
+	public void setOptUnchokingInterval(long optUnchokingInterval){
 		this.optUnchokingInterval = optUnchokingInterval;
 	}
 	
@@ -87,7 +87,7 @@ public class Host {
 		return fileSize; //this cannot be changed
 	}
 	
-	public int pieceSize(){
+	public long pieceSize(){
 		return pieceSize; //this cannot be changed
 	}
 	
@@ -148,10 +148,10 @@ public class Host {
 		this.numOfPrefNeighbors = Integer.parseInt(parts[1]); //reads the value after the space
 		currLine = config.readLine(); //repeat for all variables in config file
 		parts = currLine.split("\\s+");
-		this.unchokingInterval = Integer.parseInt(parts[1]);
+		this.unchokingInterval = Long.parseLong(parts[1]);
 		currLine = config.readLine();
 		parts = currLine.split("\\s+");
-		this.optUnchokingInterval = Integer.parseInt(parts[1]);
+		this.optUnchokingInterval = Long.parseLong(parts[1]);
 		currLine = config.readLine();
 		parts = currLine.split("\\s+");
 		this.fileName = parts[1];
@@ -160,7 +160,7 @@ public class Host {
 		this.fileSize = Long.parseLong(parts[1]);
 		currLine = config.readLine();
 		parts = currLine.split("\\s+");
-		this.pieceSize = Integer.parseInt(parts[1]);
+		this.pieceSize = Long.parseLong(parts[1]);
 		config.close(); //close the config file
 		
 		//reading from Common.cfg is complete, now finish calculations

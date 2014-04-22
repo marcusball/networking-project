@@ -38,9 +38,9 @@ public class ServerEdge extends Thread {
 		try{
 			Socket socket;
 			while(true){
-				Tools.debug("Waiting for connection...");
+				Tools.debug("[ServerEdge.run] Waiting for connection...");
 				socket = this.server.accept(); 
-				Tools.debug("Connection accepted from %s.",socket.getInetAddress().getHostAddress());
+				Tools.debug("[ServerEdge.run] Connection accepted from %s.",socket.getInetAddress().getHostAddress());
 				if(!this.isConnectedTo(socket)){ //Make sure we're not already connected to this peer
 					Edge newEdge = new Edge();
 					newEdge.setClientSocket(socket);
@@ -50,31 +50,31 @@ public class ServerEdge extends Thread {
 					int peerId = newEdge.blockForHandshake();
 					newEdge.interrupt();
 					if(peerId == -1){ //never received handshake
-						Tools.debug("No handshake received!");
+						Tools.debug("[ServerEdge.run] No handshake received!");
 						socket.close();
 					}
 					else if(NeighborController.hasPeer(peerId)){ //If we're already connected to the peer with this ID
-						Tools.debug("Connection rejected from %s:%d; already connected to peer %d.",socket.getInetAddress().getHostAddress(),socket.getPort(),peerId);
+						Tools.debug("[ServerEdge.run] Connection rejected from %s:%d; already connected to peer %d.",socket.getInetAddress().getHostAddress(),socket.getPort(),peerId);
 					}
 					else if(NeighborController.host.isExpectingPeerId(peerId)){ //We've received a handshake from a valid peer
-						Tools.debug("Received valid handshake. Accepting peer %d.",peerId);
+						Tools.debug("[ServerEdge.run] Received valid handshake. Accepting peer %d.",peerId);
 						
 						Peer newPeer = NeighborController.host.getPeer(peerId);
 						newPeer.setConnection(newEdge);
 						NeighborController.addPeer(newPeer);
 					}
 					else{
-						Tools.debug("Rejecting handshake connection from unknown peer %d.",peerId);
+						Tools.debug("[ServerEdge.run] Rejecting handshake connection from unknown peer %d.",peerId);
 						socket.close();
 					}
 				}
 				else{
-					Tools.debug("Connection rejected from %s; already connected.",socket.getInetAddress().getHostAddress());
+					Tools.debug("[ServerEdge.run] Connection rejected from %s; already connected.",socket.getInetAddress().getHostAddress());
 				}
 			}
 		}
 		catch(IOException ioe){
-			Tools.debug("Error while checking for incoming messages! IOException: \"%s\".",ioe.getMessage());
+			Tools.debug("[ServerEdge.run] Error while checking for incoming messages! IOException: \"%s\".",ioe.getMessage());
 			Tools.debug(ioe.toString());
 		}
 	}
@@ -94,11 +94,11 @@ public class ServerEdge extends Thread {
 					}
 				}
 				else{
-					Tools.debug("isConnectedTo: Socket is null!");
+					Tools.debug("[ServerEdge.isConnectedTo] Socket is null!");
 				}
 			}
 			else{
-				Tools.debug("isConnectedTo: Edge is null!");
+				Tools.debug("[ServerEdge.isConnectedTo] Edge is null!");
 			}
 			
 		}

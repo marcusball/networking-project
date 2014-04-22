@@ -22,7 +22,7 @@ public class FileManager {
 			shareFile = new File(shareFilePath);
 			shareFileRAF = new RandomAccessFile(shareFile,"r");
 			
-			Tools.debug("Opened file: ",shareFilePath);
+			Tools.debug("[FileManager.openSharedFile] Opened file: %s.",shareFilePath);
 		} 
 		catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block

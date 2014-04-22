@@ -9,7 +9,7 @@ public class Bitfield {
 	public Bitfield(long length,boolean intialVal){
 		this.length = length;
 		this.container = new byte[(int)Math.ceil(length / 8.0)]; //Make sure we have enough bytes for all of the bits
-		Tools.debug("Bitfield: creating container of length %d.");
+		Tools.debug("[Bitfield] Creating container of length %d.",(int)Math.ceil(length / 8.0));
 		if(intialVal == true){
 			for(int i=0;i<this.container.length;i+=1){
 				this.container[i] = (byte)255;

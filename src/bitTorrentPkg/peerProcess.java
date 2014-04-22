@@ -32,13 +32,13 @@ public class peerProcess {
 		System.out.println("Enter a peer ID:");
 		int peerID = input.nextInt();
 		
-		System.out.println(peerID);
+		Tools.debug("[PeerProcess.main] My peer ID: %d",peerID);
 		
 		NeighborController.setHost(new Host(peerID));
 		NeighborController.init();
 		NeighborController.host.init();
 		
-		System.out.println(NeighborController.host.isFirstPeer());
+		Tools.debug("[PeerProcess.main] %s.",(NeighborController.host.isFirstPeer())?"Is first peer":"Is not first peer");
 		
 		ServerEdge server = new ServerEdge();
 		server.start();

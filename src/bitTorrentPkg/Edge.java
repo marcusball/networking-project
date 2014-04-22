@@ -255,7 +255,7 @@ public class Edge extends Thread {
 					bytesRead = this.in.read(buffer); //Read the data
 					buffer = Arrays.copyOfRange(buffer, 0, bytesRead); //Trim off the excess buffer space.
 					
-					System.out.print("[Edge.run] Received: ");
+					System.out.print("DEBUG: [Edge.run] Received: ");
 					for(byte b : buffer){
 						System.out.printf("%2x ",b);
 					}
@@ -293,16 +293,14 @@ public class Edge extends Thread {
 					}
 					else{ //If we have sent our handshake
 						if((state & EDGE_SENT_BITFIELD) == 0){ //If we havent sent this host's bitfield
-							//if((state & EDGE_RECV_BITFIELD) == 0){ //and we haven't received the other's bitfield
-								if(this.destination != null){
-									this.sendBitfield();
-								}
-							//}
+							if(this.destination != null){
+								this.sendBitfield();
+							}
 						}
 					}
 				}
 			}
-			else{
+			else{ // OKAY: We've exchanged handshakes and bitfields, let's continue... 
 				
 			}
 		}
@@ -318,22 +316,17 @@ public class Edge extends Thread {
 			
 		synchronized(this.edgeState){
 			if(received instanceof Handshake){
-				Tools.debug("[Edge.handleMessage] RECEIVED HANDSHAKE!");
+				Tools.debug("[Edge.handleMessage] Received Handshake!");
 				this.edgeState.set(this.edgeState.get() | EDGE_RECV_HANDSHAKE);
-	//			if((this.edgeState.get() & EDGE_SENT_HANDSHAKE) == 0){
-	//				this.sendHandshake();
-	//			}
-	//			else if((this.edgeState.get() & EDGE_SENT_BITFIELD) == 0){
-	//				this.sendBitfield();
-	//			}
 			}
+			
 			else if(received instanceof BitfieldMessage){
-				Tools.debug("[Edge.handleMessage] RECEIVED BITFIELD");
+				Tools.debug("[Edge.handleMessage] Received Bitfield!");
 				this.edgeState.set(this.edgeState.get() | EDGE_RECV_BITFIELD);
 				
 				BitfieldMessage bfMessage = (BitfieldMessage)received;
 				if(this.destination == null){
-					Tools.debug("[Edge.handleMessage] UGGGHH FIX ME!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"); //TODO: fix
+					throw new IOException("Can't handle bitfield message as this.destination is null.");
 				}
 				else{
 					this.destination.setBitfield(bfMessage.getBitfield());
@@ -342,11 +335,11 @@ public class Edge extends Thread {
 				Tools.debug("[Edge.handleMessage] Bitfield assigned to peer object.");
 			}
 			else if(received instanceof Choke){
-				Tools.debug("RECEIVED CHOKE!");
+				Tools.debug("[Edge.handleMessage] Received Choke!");
 				this.edgeState.set(this.edgeState.get() | EDGE_RECV_CHOKE);
 			}
 			else if(received instanceof Unchoke){
-				Tools.debug("RECEIVED UNCHOKE!");
+				Tools.debug("[Edge.handleMessage] Received Unchoke");
 				this.edgeState.set(this.edgeState.get() | EDGE_RECV_UNCHOKE);
 			}
 		}
@@ -363,18 +356,18 @@ public class Edge extends Thread {
 			currentTime = System.currentTimeMillis();
 		}
 		
-		Tools.debug("[BlockForHandshake] edgeState = %s.",Tools.byteToBinString((byte)this.edgeState.get()));
+		Tools.debug("[Edge.blockForHandshake] edgeState = %s.",Tools.byteToBinString((byte)this.edgeState.get()));
 		if((this.edgeState.get() & EDGE_RECV_HANDSHAKE) == 0){ //Timeout
 			return -1; 
 		}
 		
 		if(this.lastMessage != null){
-			Tools.debug("[BlockForHandshake] last message is NOT null");
+			Tools.debug("[Edge.blockForHandshake] last message is NOT null");
 			if(this.lastMessage instanceof Handshake){
 				return ((Handshake)this.lastMessage).getPeerId();
 			}
 		}
-		Tools.debug("[BlockForHandshake] reached final return.");
+		Tools.debug("[Edge.blockForHandshake] reached final return.");
 		return -1;
 	}
 	
@@ -398,6 +391,11 @@ public class Edge extends Thread {
 		return this.client;
 	}
 
+	/**
+	 * Set this to true to force this edge to stop performing actions after a handshake has been received.
+	 * This was created so an Edge can be cloned from this one, which will then perform everything else.
+	 * @param value True or False
+	 */
 	public void breakAfterHandshakeReceived(boolean value){
 		this.breakAtHandshakeRecv.set(value);
 	}

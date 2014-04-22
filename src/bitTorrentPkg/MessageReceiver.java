@@ -78,7 +78,6 @@ public class MessageReceiver {
 	}
 	private static boolean MessageIsHandshake(byte[] message){
 		if(message.length != 32){
-			Tools.debug("Message isn't handshake, length is %d.",message.length);
 			return false;
 		}
 		

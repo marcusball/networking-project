@@ -182,7 +182,7 @@ public class Host {
 		BufferedReader peerInfoReader = new BufferedReader(new FileReader("PeerInfo.cfg"));
 		boolean foundOwnPeerID = false;
 		while((currLine = peerInfoReader.readLine()) != null){
-			Tools.debug(currLine);
+			Tools.debug("[Host.readPeerInfo] %s",currLine);
 			parts = currLine.split("\\s+"); //split each line into peerID, hostname, listening port, has file
 			
 			//get the peer variables from the string array parts
@@ -200,7 +200,7 @@ public class Host {
 				currIsFirstPeer = false;
 			}
 			
-			Tools.debug("Comparing config id (%d) with host id (%d).",currPeerID,peerID);
+			//Tools.debug("Comparing config id (%d) with host id (%d).",currPeerID,peerID);
 			//either save the info to the host or add a new peer with it
 			if(currPeerID == peerID){
 				foundOwnPeerID = true;
@@ -220,7 +220,7 @@ public class Host {
 					hasFile = false;
 				}					
 			}else{
-				Tools.debug("Adding peer %d to peer list.",currPeerID);
+				//Tools.debug("[Host.readPeerInfo] Adding peer %d to peer list.",currPeerID);
 				peerInfo.put(currPeerID, new Peer(currPeerID, currHostName, currListeningPort, currHasFile, currIsFirstPeer, 
 							this.pieceSize, this.numOfPieces, System.currentTimeMillis()));
 				
@@ -233,7 +233,7 @@ public class Host {
 		}
 		peerInfoReader.close();
 		if(!foundOwnPeerID){
-			System.out.println("WARNING: This machine not found in tracker.  Terminating...");
+			Tools.debug("[Host.readPeerInfo] WARNING: This machine not found in tracker.  Terminating...");
 			System.exit(0);
 		}
 		
@@ -251,19 +251,19 @@ public class Host {
 						continue;
 					}
 					if(nextPeer.getPeerID() != this.peerID){ //This check shouldn't be necessary, but lets just be safe.
-						Tools.debug("Initiating TCP connection with peer %d: %s:%d...",nextPeerId,nextPeer.getHostName(),nextPeer.getListeningPort());
+						Tools.debug("[Host.intitiateTCPConnections] Initiating TCP connection with peer %d: %s:%d...",nextPeerId,nextPeer.getHostName(),nextPeer.getListeningPort());
 						
 						nextPeer.createEdgeConnection();
 						nextPeer.getConnection().sendHandshake();
 						NeighborController.addPeer(nextPeer);
 						
-						Tools.debug("BAM! Connection established with %s!",nextPeer.getHostName());
+						Tools.debug("[Host.intitiateTCPConnections] BAM! Connection established with %s!",nextPeer.getHostName());
 					}
 				}
 			}
 		}
 		else{
-			Tools.debug("No peers to establish connection with!");
+			Tools.debug("[Host.intitiateTCPConnections] No peers to establish connection with!");
 		}
 		//TODO: I now have readPeerInfo actually creating all the peers
 		//This method now needs to loop through those peers and initiate TCP connections
@@ -296,7 +296,7 @@ public class Host {
 	
 	private void readShareFileInfo() throws IOException{
 		if(this.hasFile){
-			Tools.debug("Reading file info for %s...",this.fileName);
+			Tools.debug("[Host.readShareFileInfo] Reading file info for %s...",this.fileName);
 			
 			FileManager.openSharedFile(this.fileName);
 			FileManager.FileInfo info = FileManager.getFileInfo();
@@ -305,7 +305,7 @@ public class Host {
 			}
 		}
 		else{
-			Tools.debug("Not in possestion of file, skipping read attempt.");
+			Tools.debug("[Host.readShareFileInfo] Not in possestion of file, skipping read attempt.");
 		}
 		
 		this.numOfPieces = (long) Math.ceil(fileSize / pieceSize); 

@@ -40,7 +40,7 @@ public class NeighborController {
 	}
 	
 	public static void addPeer(Peer other){
-		peers.add(other.getPeerID(), other);
+		peers.add(other);
 	}
 	
 	public static boolean hasPeer(int id){

@@ -48,6 +48,18 @@ public class Edge extends Thread {
 	private final int EDGE_SENT_HANDSHAKE = 2;
 	private final int EDGE_RECV_BITFIELD  = 4;
 	private final int EDGE_SENT_BITFIELD  = 8;
+	private final int EDGE_RECV_CHOKE = 16;
+	private final int EDGE_SENT_CHOKE = 32;
+	private final int EDGE_RECV_UNCHOKE = 64;
+	private final int EDGE_SENT_UNCHOKE = 128;
+	private final int EDGE_RECV_INTERESTED = 256;
+	private final int EDGE_SENT_INTERESTED = 512;
+	private final int EDGE_RECV_NOTINTERESTED = 1024;
+	private final int EDGE_SENT_NOTINTERESTED = 2048;
+	private final int EDGE_RECV_HAVE = 4096;
+	private final int EDGE_SENT_HAVE = 8192;
+	private final int EDGE_RECV_PIECE = 16384;
+	private final int EDGE_SENT_PIECE = 32768;
 	
 	
 	public Edge() throws IOException{
@@ -157,6 +169,18 @@ public class Edge extends Thread {
 			else if((this.edgeState & EDGE_SENT_BITFIELD) == 0){
 				this.sendBitfield();
 			}
+		}else if(received instanceof Choke){
+			Tools.debug("RECEIVED CHOKE!");
+			this.edgeState |= EDGE_RECV_CHOKE;
+			
+			
+
+		}else if(received instanceof Unchoke){
+			Tools.debug("RECEIVED UNCHOKE!");
+			this.edgeState |= EDGE_RECV_UNCHOKE;
+			
+			
+			
 		}
 		else if(received instanceof BitfieldMessage){
 			Tools.debug("RECEIVED BITFIELD");

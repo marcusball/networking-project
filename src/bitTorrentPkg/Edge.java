@@ -40,6 +40,7 @@ public class Edge extends Thread {
 	protected Message lastMessage;
 	
 	protected final AtomicInteger edgeState;
+	protected final AtomicBoolean breakAtHandshakeRecv;
 	
 	private final int EDGE_RECV_HANDSHAKE = 1;
 	private final int EDGE_SENT_HANDSHAKE = 2;
@@ -77,6 +78,7 @@ public class Edge extends Thread {
 		this.destination = null;
 		this.lastMessage = null;
 		this.edgeState = new AtomicInteger(0);
+		this.breakAtHandshakeRecv = new AtomicBoolean(false);
 		this.cloned = false;
 	}
 	
@@ -89,6 +91,7 @@ public class Edge extends Thread {
 		this.destination = destinationPeer;
 		this.lastMessage = null;
 		this.edgeState = new AtomicInteger(0);
+		this.breakAtHandshakeRecv = new AtomicBoolean(false);
 		this.cloned = false;
 	}
 	
@@ -108,6 +111,7 @@ public class Edge extends Thread {
 		this.lastMessage = other.lastMessage;
 		
 		this.edgeState = other.edgeState;
+		this.breakAtHandshakeRecv = new AtomicBoolean(false);
 		
 		if(other.isAlive()){
 			this.run();
@@ -130,13 +134,14 @@ public class Edge extends Thread {
 		
 		this.lastMessage = other.lastMessage;
 		this.edgeState = other.edgeState;
+		this.breakAtHandshakeRecv = new AtomicBoolean(false);
 		Tools.debug("[Edge] Cloned Edge");
 		
 		if(this.destination == null){
 			Tools.debug("[Edge] Destination is still null.");
 		}
 		
-		if(other.isAlive()){
+		if(this.edgeState.get() != 0){
 			Tools.debug("[Edge] Running new Edge...");
 			this.start();
 		}
@@ -195,20 +200,22 @@ public class Edge extends Thread {
 	 * @throws IOException
 	 */
 	public void sendHandshake() throws IOException{
-		Tools.debug("[Edge.sendHandshake] blocking for peer...");
+		Tools.debug("[Edge.sendHandshake] blocking for peer... (%s)",(this.cloned)?"Clone":"Not clone");
 		synchronized(this.edgeState){
 			if(this.blockForPeer()){
-					this.edgeState.set(this.edgeState.get() | EDGE_SENT_HANDSHAKE);
-					
-					Handshake handshake = new Handshake(NeighborController.host.getPeerID());
-					this.sendMessage(handshake);
-				}
-				else{
-					Tools.debug("[Edge.sendHandshake] %s",(this.cloned)?"is clone":"is not clone");
-					throw new IOException("[Edge.sendHandshake] Unable to find destination peer!");
-				}
+				Tools.debug("[Edge.sendHandshake] sending handshake...");
+				this.edgeState.set(this.edgeState.get() | EDGE_SENT_HANDSHAKE);
+				
+				Tools.debug("[Edge.sendHandshake] edge state is now %s.",Tools.byteToBinString((byte)this.edgeState.get()));
+				Handshake handshake = new Handshake(NeighborController.host.getPeerID());
+				this.sendMessage(handshake);
+			}
+			else{
+				Tools.debug("[Edge.sendHandshake] %s",(this.cloned)?"is clone":"is not clone");
+				throw new IOException("[Edge.sendHandshake] Unable to find destination peer!");
 			}
 		}
+	}
 	
 	/**
 	 * Sends the bitfield this host possesses (NeighborController.host.getBitfield()).
@@ -232,6 +239,12 @@ public class Edge extends Thread {
 			while(!this.interrupted()){
 				if(!this.client.isConnected()){
 					Tools.debug("[Edge.run] connection terminated!");
+					break;
+				}
+				
+				if((this.edgeState.get() == this.EDGE_RECV_HANDSHAKE) && this.breakAtHandshakeRecv.get() == true){
+					//This if statement requires that EDGE_RECV_HANDSHAKE be 1. 
+					Tools.debug("[Edge.run] Handshake received, breaking...");
 					break;
 				}
 				
@@ -279,12 +292,12 @@ public class Edge extends Thread {
 						this.sendHandshake(); //Send our handshake
 					}
 					else{ //If we have sent our handshake
-						if((state & EDGE_RECV_BITFIELD) != 0){ //If we've received the client's bitfield
-							if((state & EDGE_SENT_BITFIELD) == 0){ //but, we haven't sent our bitfield
+						if((state & EDGE_SENT_BITFIELD) == 0){ //If we havent sent this host's bitfield
+							//if((state & EDGE_RECV_BITFIELD) == 0){ //and we haven't received the other's bitfield
 								if(this.destination != null){
 									this.sendBitfield();
 								}
-							}
+							//}
 						}
 					}
 				}
@@ -371,6 +384,7 @@ public class Edge extends Thread {
 	 * @return
 	 */
 	public boolean blockForPeer(){
+		Tools.debug("[Edge.blockForPeer] destination %s null.",(this.destination == null)?"is":"is not");
 		long startTime = System.currentTimeMillis();
 		long currentTime = System.currentTimeMillis();
 		while(this.destination == null && (currentTime - startTime) <= 10000){ //Wait until destination is not null, or the loop times out. 
@@ -384,7 +398,9 @@ public class Edge extends Thread {
 		return this.client;
 	}
 
-	
+	public void breakAfterHandshakeReceived(boolean value){
+		this.breakAtHandshakeRecv.set(value);
+	}
 	
 	
 }

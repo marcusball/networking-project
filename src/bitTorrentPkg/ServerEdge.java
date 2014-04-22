@@ -44,6 +44,7 @@ public class ServerEdge extends Thread {
 				if(!this.isConnectedTo(socket)){ //Make sure we're not already connected to this peer
 					Edge newEdge = new Edge();
 					newEdge.setClientSocket(socket);
+					newEdge.breakAfterHandshakeReceived(true);
 					newEdge.start();
 					
 					int peerId = newEdge.blockForHandshake();

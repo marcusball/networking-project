@@ -7,7 +7,7 @@ public class NeighborController {
 	public static Host host; 
 	
 	//ArrayList of peers and upload status
-	public static HashMap<Integer,Peer> peers;
+	public static ArrayList<Peer> peers;
 	
 	private static int optimisticPeerIndex;
 	
@@ -27,7 +27,7 @@ public class NeighborController {
 		if(host == null){
 			throw new NullPointerException("Host is null! You must call setHost(Host h) before you can call init()!");
 		}
-		peers = new HashMap<Integer, Peer>();
+		peers = new ArrayList<Peer>();
 		
 		unchokingInterval = (long) host.getUnchokingInterval();
 		optUnchokingInterval = (long) host.getOptUnchokingInterval();
@@ -40,11 +40,17 @@ public class NeighborController {
 	}
 	
 	public static void addPeer(Peer other){
-		peers.put(other.getPeerID(), other);
+		peers.add(other.getPeerID(), other);
 	}
 	
 	public static boolean hasPeer(int id){
-		return peers.containsKey(id);
+		boolean hasPeer = false;
+		for(int i = 0; i < peers.size(); i++){
+			if(peers.get(i).getPeerID() == id){
+				hasPeer = true;
+			}
+		}
+		return hasPeer;
 	}
 	
 	public static Peer getPeer(int id){
@@ -54,16 +60,16 @@ public class NeighborController {
 		return null;
 	}
 	
-	public static Collection<Peer> getPeers(){
-		return peers.values();
+	public static ArrayList<Peer> getPeers(){
+		return peers;
 	}
 	
 	class Unchoke extends TimerTask{
 		public void run(){
-			//TODO: Calculate download rates of all peers 
-			//		Then unchoke the peers with the highest rates 
-			//		Only unchoke if the peer is interested
-			
+			if(peers.size() >= 1){
+				
+			}
+	
 		}
 	}
 	

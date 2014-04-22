@@ -45,6 +45,7 @@ public class ServerEdge extends Thread {
 					Edge newEdge = new Edge();
 					newEdge.setClientSocket(socket);
 					newEdge.start();
+					
 					int peerId = newEdge.blockForHandshake();
 					if(peerId == -1){ //never received handshake
 						Tools.debug("No handshake received!");

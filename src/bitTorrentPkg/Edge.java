@@ -28,59 +28,137 @@ import java.util.Scanner;
 import bitTorrentPkg.Messages.*;
 
 import java.util.Arrays;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.*;
 
 public class Edge extends Thread {
-	private Peer destination;
+	protected final Peer destination;
 	
-	private Socket client;
-	private InputStream in;
-	private OutputStream out;
+	protected Socket client;
+	protected InputStream in;
+	protected OutputStream out;
 	
-	private final AtomicBoolean hasReceivedHandshake = new AtomicBoolean(false);
-	private final AtomicBoolean hasReceivedMessage = new AtomicBoolean(false);
-	private Message lastMessage;
-	private boolean hasSentHandshake = false;
+	protected Message lastMessage;
 	
-	private int edgeState = 0;
+	protected final AtomicInteger edgeState;
 	
 	private final int EDGE_RECV_HANDSHAKE = 1;
 	private final int EDGE_SENT_HANDSHAKE = 2;
 	private final int EDGE_RECV_BITFIELD  = 4;
 	private final int EDGE_SENT_BITFIELD  = 8;
+	private final int EDGE_GREETING_COMPLETE = 15; 
 	
+	/**
+	 * Constructors. 
+	 * These all have different functionality, so choose wisely. 
+	 * Once destination is set, because it's final, it can't be changed to anything new.
+	 * So, Edge() is mostly used as a placeholder until the connection can be copied to
+	 * a new edge using Edge(edgeToClone). 
+	 */
 	
-	public Edge() throws IOException{
-		this(null);
+	/**
+	 * Creates a new edge with no destination set.
+	 */
+	public Edge(){
+		this.destination = null;
+		this.lastMessage = null;
+		this.edgeState = new AtomicInteger(0);
 	}
+	
+	/**
+	 * Creates a new Edge with destination set,
+	 * @param destinationPeer
+	 * @throws IOException
+	 */
 	public Edge(Peer destinationPeer) throws IOException{
 		this.destination = destinationPeer;
 		this.lastMessage = null;
-		this.edgeState = 0;
+		this.edgeState = new AtomicInteger(0);
 	}
 	
-	public void setDestination(Peer dest){
-		this.destination = dest;
+	/**
+	 * Creates a new edge by copying the contents of another edge. 
+	 * Uses other's destination. 
+	 * @param other Edge to clone
+	 */
+	public Edge(Edge other){
+		synchronized(this.destination){
+			synchronized(this.edgeState){
+				this.destination = other.destination;
+				
+				this.client = other.client;
+				this.in = other.in;
+				this.out = other.out;
+				
+				this.lastMessage = other.lastMessage;
+				
+				this.edgeState = other.edgeState;
+			}
+		}
+		if(other.isAlive()){
+			this.run();
+		}
 	}
 	
+	/**
+	 * Creates a new edge by copying the contents of another edge.
+	 * Uses the supplied destination and ignores the supplied Edge.
+	 * @param destinationPeer
+	 * @param other
+	 */
+	public Edge(Peer destinationPeer, Edge other){
+		this.destination = destinationPeer;
+		
+		synchronized(this.destination){
+			synchronized(this.edgeState){
+				this.client = other.client;
+				this.in = other.in;
+				this.out = other.out;
+				
+				this.lastMessage = other.lastMessage;
+				this.edgeState = other.edgeState;
+			}
+		}
+		if(other.isAlive()){
+			this.run();
+		}
+	}
+	
+	
+	/**
+	 * Let's create a connection based on an already existing socket.
+	 * @param s Socket to use for this Edge.
+	 * @throws IOException
+	 */
 	public void setClientSocket(Socket s) throws IOException{
 		this.client = s;
 		this.in = this.client.getInputStream();
 		this.out = this.client.getOutputStream();
 		
-		Tools.debug("Edge socket set for %s.",s.getRemoteSocketAddress().toString());
+		Tools.debug("[Edge.setClientEdge] Edge socket set for %s.",s.getRemoteSocketAddress().toString());
 	}
+	
+	/**
+	 * Create our own socket for this connection. Requires a destination be set in the constructor. 
+	 * @throws UnknownHostException
+	 * @throws IOException
+	 * @throws NullPointerException
+	 */
 	public void createClientSocket() throws UnknownHostException, IOException, NullPointerException{
 		if(this.destination == null){
-			throw new NullPointerException("Cannot create client socket with null destination peer!");
+			throw new NullPointerException("[Edge.createClientSocket] Cannot create client socket with null destination peer!");
 		}
-		Tools.debug("Creating socket to host: %s:%d",this.destination.getHostName(), this.destination.getListeningPort());
+		Tools.debug("[Edge.createClientSocket] Creating socket to host: %s:%d",this.destination.getHostName(), this.destination.getListeningPort());
 		Socket s = new Socket(this.destination.getHostName(), this.destination.getListeningPort());
-		Tools.debug("Socket created!");
+		Tools.debug("[Edge.createClientSocket] Socket created!");
 		
 		this.setClientSocket(s);
 	}
 	
+	/**
+	 * Send a message through the current edge
+	 * @param message
+	 * @return
+	 */
 	public boolean sendMessage(Message message){
 		try {
 			this.out.write(message.toBytes());
@@ -88,42 +166,60 @@ public class Edge extends Thread {
 			return true;
 		} 
 		catch (IOException e) {
-			Tools.debug("Unable to send message to %s! IOException occurred: \"%s\".",this.destination.getHostName(),e.getMessage());
+			Tools.debug("[Edge.sendMessage] Unable to send message to %s! IOException occurred: \"%s\".",this.destination.getHostName(),e.getMessage());
 		}
 		return false;
 	}
 	
-	public void sendHandshake(){
-		this.edgeState |= EDGE_SENT_HANDSHAKE;
-		
-		Handshake handshake = new Handshake(NeighborController.host.getPeerID());
-		this.sendMessage(handshake);
+	/**
+	 * Sends a handshake
+	 * @throws IOException
+	 */
+	public void sendHandshake() throws IOException{
+		if(this.blockForPeer()){
+			this.edgeState.set(this.edgeState.get() | EDGE_SENT_HANDSHAKE);
+			
+			Handshake handshake = new Handshake(NeighborController.host.getPeerID());
+			this.sendMessage(handshake);
+		}
+		else{
+			throw new IOException("[Edge.sendHandshake] Unable to find destination peer!");
+		}
 	}
+	
+	/**
+	 * Sends the bitfield this host possesses (NeighborController.host.getBitfield()).
+	 */
 	public void sendBitfield(){
-		this.edgeState |= EDGE_SENT_BITFIELD;
+		this.edgeState.set(this.edgeState.get() | EDGE_SENT_BITFIELD);
 		
 		BitfieldMessage bitfield = new BitfieldMessage(NeighborController.host.getBitfield());
 		this.sendMessage(bitfield);
 	}
 	
+	/**
+	 * Thread method: Perpetually listens for responses. 
+	 */
 	public void run(){
 		try{
 			byte[] buffer;
 			int bytesRead;
-			Tools.debug("Edge: Now listening for responses...");
-			while(true){
+			Tools.debug("[Edge.run] Now listening for responses...");
+			while(!this.interrupted()){
 				if(!this.client.isConnected()){
-					Tools.debug("Edge: connection terminated!");
+					Tools.debug("[Edge.run] connection terminated!");
 					break;
 				}
 				
-				if(this.in.available() > 0){
+				this.runTasks(); //Do anything that needs to be done now.
+				
+				if(this.in.available() > 0){ //If there are any new data
 					buffer = new byte[(int) (5 + NeighborController.host.pieceSize())]; //This is the maximum length any message will ever take.
-					bytesRead = this.in.read(buffer);
-	
+					bytesRead = this.in.read(buffer); //Read the data
+
 					buffer = Arrays.copyOfRange(buffer, 0, bytesRead); //Trim off the excess buffer space.
 					
-					System.out.print("Received: ");
+					System.out.print("[Edge.run] Received: ");
 					for(byte b : buffer){
 						System.out.printf("%2x ",b);
 					}
@@ -135,62 +231,116 @@ public class Edge extends Thread {
 			}
 		}
 		catch(IOException ioe){
-			Tools.debug("Edge exception checking for incoming messages! IOException: \"%s\".",ioe.getMessage());
+			Tools.debug("[Edge.run] Edge exception checking for incoming messages! IOException: \"%s\".",ioe.getMessage());
 			ioe.printStackTrace();
 		}
 		catch(Exception e){
-			Tools.debug("Edge exception while checking for incoming messages! Exception: \"%s\".",e.getMessage());
+			Tools.debug("[Edge.run] Edge exception while checking for incoming messages! Exception: \"%s\".",e.getMessage());
 			e.printStackTrace();
 		}
 	}
 	
-	private void handleMessage(Message received){
-		this.lastMessage = received;
-				
-		if(received instanceof Handshake){
-			Tools.debug("RECEIVED HANDSHAKE!");
-			this.edgeState |= EDGE_RECV_HANDSHAKE;
-			
-			if((this.edgeState & EDGE_SENT_HANDSHAKE) == 0){
-				this.sendHandshake();
-			}
-			else if((this.edgeState & EDGE_SENT_BITFIELD) == 0){
-				this.sendBitfield();
-			}
-		}
-		else if(received instanceof BitfieldMessage){
-			Tools.debug("RECEIVED BITFIELD");
-			this.edgeState |= EDGE_RECV_BITFIELD;
-			
-			BitfieldMessage bfMessage = (BitfieldMessage)received;
-			if(this.destination == null){
-				Tools.debug("UGGGHH FIX ME!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"); //TODO: fix
+	
+	private void runTasks() throws IOException{
+		synchronized(this.edgeState){
+			int state = this.edgeState.get();
+			if((state & this.EDGE_GREETING_COMPLETE) != this.EDGE_GREETING_COMPLETE){
+				if((state & EDGE_RECV_HANDSHAKE) != 0){ //If we've received the handshake
+					if((state & EDGE_SENT_HANDSHAKE) == 0){ //If we have not yet sent our handshake
+						this.sendHandshake(); //Send our handshake
+					}
+					else{ //If we have sent our handshake
+						if((state & EDGE_RECV_BITFIELD) != 0){ //If we've received the client's bitfield
+							if((state & EDGE_SENT_BITFIELD) == 0){ //but, we haven't sent our bitfield
+								if(this.destination != null){
+									this.sendBitfield();
+								}
+							}
+						}
+					}
+				}
 			}
 			else{
-				this.destination.setBitfield(bfMessage.getBitfield());
+				
 			}
-			
-			Tools.debug("Bitfield assigned to peer object.");
 		}
 	}
 	
+	/**
+	 * Process and perform events relevant to the message that has been received.
+	 * @param received
+	 * @throws IOException
+	 */
+	private void handleMessage(Message received) throws IOException{
+		this.lastMessage = received;
+			
+		synchronized(this.edgeState){
+			if(received instanceof Handshake){
+				Tools.debug("[Edge.handleMessage] RECEIVED HANDSHAKE!");
+				this.edgeState.set(this.edgeState.get() | EDGE_RECV_HANDSHAKE);
+	//			if((this.edgeState.get() & EDGE_SENT_HANDSHAKE) == 0){
+	//				this.sendHandshake();
+	//			}
+	//			else if((this.edgeState.get() & EDGE_SENT_BITFIELD) == 0){
+	//				this.sendBitfield();
+	//			}
+			}
+			else if(received instanceof BitfieldMessage){
+				Tools.debug("[Edge.handleMessage] RECEIVED BITFIELD");
+				this.edgeState.set(this.edgeState.get() | EDGE_RECV_BITFIELD);
+				
+				BitfieldMessage bfMessage = (BitfieldMessage)received;
+				if(this.destination == null){
+					Tools.debug("[Edge.handleMessage] UGGGHH FIX ME!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"); //TODO: fix
+				}
+				else{
+					this.destination.setBitfield(bfMessage.getBitfield());
+				}
+				
+				Tools.debug("[Edge.handleMessage] Bitfield assigned to peer object.");
+			}
+		}
+	}
+	
+	/**
+	 * Pause this thread until we receive a handshake from the client. 
+	 * @return Peer ID of the client, taken from the handshake. 
+	 */
 	public int blockForHandshake(){
 		long startTime = System.currentTimeMillis();
 		long currentTime = System.currentTimeMillis();
-		while((this.edgeState & EDGE_RECV_HANDSHAKE) == 0 && (currentTime - startTime) <= 10000){
+		while((this.edgeState.get() & EDGE_RECV_HANDSHAKE) == 0 && (currentTime - startTime) <= 10000){
 			currentTime = System.currentTimeMillis();
 		}
 		
-		if((this.edgeState & EDGE_RECV_HANDSHAKE) == 0){ //Timeout
+		Tools.debug("[BlockForHandshake] edgeState = %s.",Tools.byteToBinString((byte)this.edgeState.get()));
+		if((this.edgeState.get() & EDGE_RECV_HANDSHAKE) == 0){ //Timeout
 			return -1; 
 		}
 		
 		if(this.lastMessage != null){
+			Tools.debug("[BlockForHandshake] last message is NOT null");
 			if(this.lastMessage instanceof Handshake){
 				return ((Handshake)this.lastMessage).getPeerId();
 			}
 		}
+		Tools.debug("[BlockForHandshake] reached final return.");
 		return -1;
+	}
+	
+	/**
+	 * Wait until this.destination is no longer null. 
+	 * This is mostly to solve bugs with NullPointerExceptions on dependencies of this.destination. 
+	 * @return
+	 */
+	public boolean blockForPeer(){
+		long startTime = System.currentTimeMillis();
+		long currentTime = System.currentTimeMillis();
+		while(this.destination == null && (currentTime - startTime) <= 10000){ //Wait until destination is not null, or the loop times out. 
+			currentTime = System.currentTimeMillis();
+		}
+		
+		return !(this.destination == null);
 	}
 	
 	public Socket getSocket(){

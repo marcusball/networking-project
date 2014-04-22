@@ -23,21 +23,21 @@ public class Peer {
 	//--------------------VARIABLES--------------------
 	
 	//PeerInfo.cfg variables
-	private int peerID; //the peerID of THIS peer (inputted into command line)
-	private String hostName; //host name of THIS peer
-	private int listeningPort; 	//listening port for THIS peer
-	private boolean hasFile;
-	private boolean isFirstPeer; //if it's the first peer, just wait and listen
+	protected int peerID; //the peerID of THIS peer (inputted into command line)
+	protected String hostName; //host name of THIS peer
+	protected int listeningPort; 	//listening port for THIS peer
+	protected boolean hasFile;
+	protected boolean isFirstPeer; //if it's the first peer, just wait and listen
 								 //if not, initiate tcp connections with others
 	
 	boolean isUnchoked;
 	boolean isOptUnchoked;
 	
-	private Edge connection;
+	protected Edge connection;
 	
 	long pieceSize;
 	long numOfPieces;
-	private Bitfield bitfield;
+	protected Bitfield bitfield;
 	
 	long startTime; //in milliseconds since Jan 1 1970
 	int piecesDownloaded;
@@ -77,9 +77,7 @@ public class Peer {
 		isOptUnchoked = false;
 		this.startTime = startTime;
 		this.connection = connection;
-	}
-	
-	
+	}	
 	
 	public void createEdgeConnection() throws IOException{
 		this.connection = new Edge(this);
@@ -145,8 +143,7 @@ public class Peer {
 	}
 	
 	public void setConnection(Edge connection){
-		this.connection = connection;
-		this.connection.setDestination(this);
+		this.connection = new Edge(this,connection);
 	}
 	
 	public int getPiecesDownloaded(){

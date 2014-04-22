@@ -44,18 +44,19 @@ public class NeighborController {
 	}
 	
 	public static boolean hasPeer(int id){
-		boolean hasPeer = false;
 		for(int i = 0; i < peers.size(); i++){
 			if(peers.get(i).getPeerID() == id){
-				hasPeer = true;
+				return true;
 			}
 		}
-		return hasPeer;
+		return false;
 	}
 	
 	public static Peer getPeer(int id){
-		if(hasPeer(id)){
-			return peers.get(id);
+		for(int i = 0; i < peers.size(); i++){
+			if(peers.get(i).getPeerID() == id){
+				return peers.get(i);
+			}
 		}
 		return null;
 	}

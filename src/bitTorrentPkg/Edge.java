@@ -47,6 +47,8 @@ public class Edge extends Thread {
 	private final int EDGE_SENT_BITFIELD  = 8;
 	private final int EDGE_GREETING_COMPLETE = 15; 
 	
+	private final boolean cloned;
+	
 	/**
 	 * Constructors. 
 	 * These all have different functionality, so choose wisely. 
@@ -62,6 +64,7 @@ public class Edge extends Thread {
 		this.destination = null;
 		this.lastMessage = null;
 		this.edgeState = new AtomicInteger(0);
+		this.cloned = false;
 	}
 	
 	/**
@@ -73,6 +76,7 @@ public class Edge extends Thread {
 		this.destination = destinationPeer;
 		this.lastMessage = null;
 		this.edgeState = new AtomicInteger(0);
+		this.cloned = false;
 	}
 	
 	/**
@@ -81,19 +85,17 @@ public class Edge extends Thread {
 	 * @param other Edge to clone
 	 */
 	public Edge(Edge other){
-		synchronized(this.destination){
-			synchronized(this.edgeState){
-				this.destination = other.destination;
-				
-				this.client = other.client;
-				this.in = other.in;
-				this.out = other.out;
-				
-				this.lastMessage = other.lastMessage;
-				
-				this.edgeState = other.edgeState;
-			}
-		}
+		this.cloned = true;
+		this.destination = other.destination;
+		
+		this.client = other.client;
+		this.in = other.in;
+		this.out = other.out;
+		
+		this.lastMessage = other.lastMessage;
+		
+		this.edgeState = other.edgeState;
+		
 		if(other.isAlive()){
 			this.run();
 		}
@@ -106,20 +108,24 @@ public class Edge extends Thread {
 	 * @param other
 	 */
 	public Edge(Peer destinationPeer, Edge other){
+		this.cloned = true;
 		this.destination = destinationPeer;
 		
-		synchronized(this.destination){
-			synchronized(this.edgeState){
-				this.client = other.client;
-				this.in = other.in;
-				this.out = other.out;
-				
-				this.lastMessage = other.lastMessage;
-				this.edgeState = other.edgeState;
-			}
+		this.client = other.client;
+		this.in = other.in;
+		this.out = other.out;
+		
+		this.lastMessage = other.lastMessage;
+		this.edgeState = other.edgeState;
+		Tools.debug("[Edge] Cloned Edge");
+		
+		if(this.destination == null){
+			Tools.debug("[Edge] Destination is still null.");
 		}
+		
 		if(other.isAlive()){
-			this.run();
+			Tools.debug("[Edge] Running new Edge...");
+			this.start();
 		}
 	}
 	
@@ -176,16 +182,20 @@ public class Edge extends Thread {
 	 * @throws IOException
 	 */
 	public void sendHandshake() throws IOException{
-		if(this.blockForPeer()){
-			this.edgeState.set(this.edgeState.get() | EDGE_SENT_HANDSHAKE);
-			
-			Handshake handshake = new Handshake(NeighborController.host.getPeerID());
-			this.sendMessage(handshake);
+		Tools.debug("[Edge.sendHandshake] blocking for peer...");
+		synchronized(this.edgeState){
+			if(this.blockForPeer()){
+					this.edgeState.set(this.edgeState.get() | EDGE_SENT_HANDSHAKE);
+					
+					Handshake handshake = new Handshake(NeighborController.host.getPeerID());
+					this.sendMessage(handshake);
+				}
+				else{
+					Tools.debug("[Edge.sendHandshake] %s",(this.cloned)?"is clone":"is not clone");
+					throw new IOException("[Edge.sendHandshake] Unable to find destination peer!");
+				}
+			}
 		}
-		else{
-			throw new IOException("[Edge.sendHandshake] Unable to find destination peer!");
-		}
-	}
 	
 	/**
 	 * Sends the bitfield this host possesses (NeighborController.host.getBitfield()).
@@ -205,6 +215,7 @@ public class Edge extends Thread {
 			byte[] buffer;
 			int bytesRead;
 			Tools.debug("[Edge.run] Now listening for responses...");
+			Tools.debug("[Edge.run] State is %s.",Tools.byteToBinString((byte)this.edgeState.get()));
 			while(!this.interrupted()){
 				if(!this.client.isConnected()){
 					Tools.debug("[Edge.run] connection terminated!");
@@ -229,6 +240,7 @@ public class Edge extends Thread {
 					this.handleMessage(received);
 				}
 			}
+			Tools.debug("[Edge.run] Loop stopping...");
 		}
 		catch(IOException ioe){
 			Tools.debug("[Edge.run] Edge exception checking for incoming messages! IOException: \"%s\".",ioe.getMessage());
@@ -247,6 +259,11 @@ public class Edge extends Thread {
 			if((state & this.EDGE_GREETING_COMPLETE) != this.EDGE_GREETING_COMPLETE){
 				if((state & EDGE_RECV_HANDSHAKE) != 0){ //If we've received the handshake
 					if((state & EDGE_SENT_HANDSHAKE) == 0){ //If we have not yet sent our handshake
+						Tools.debug("[Edge.runTasks] Sending handshake!");
+						if(this.destination == null){
+							Tools.debug("[Edge.runTasks] destination is null");
+						}
+						
 						this.sendHandshake(); //Send our handshake
 					}
 					else{ //If we have sent our handshake

@@ -316,7 +316,7 @@ public class Host {
 		return this.bitfield.checkForInterest(other.getBitfield());
 	}
 	
-	public int getPieceIdToSend(){
+	public int getPieceIdToRequest(){
 		return this.bitfield.getRandomIndex(true);
 	}
 

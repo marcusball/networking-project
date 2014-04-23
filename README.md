@@ -10,3 +10,9 @@ Because I'm a bad person ad I enjoy wasting time doing things that aren't produc
 You just need to add it to eclipse, now. In Eclipse, go to Project > Properties. In the window menu, select "Java Build Path", then click the "Libraries" tab. Use the "Add External JARs" button to open the jansi jar file that is in the "dependencies" folder of this repository. 
 
 ![Imgur](http://i.imgur.com/Gnhx1Mz.png)
+
+-----
+RUN!
+====
+
+java -cp bin/:dependencies/jansi-1.11.jar bitTorrentPkg.peerProcss 

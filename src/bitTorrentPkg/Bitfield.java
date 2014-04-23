@@ -16,8 +16,22 @@ public class Bitfield {
 			}
 		}
 	}
+	/**
+	 * Creates a bitfield given the byte format of a bitfield. 
+	 * NOTE: This constructor is imprecise as the private length field might not be correct
+	 * if not all of the last byte is actually used. Use Bitfield(byte[],long length) to specify correct length
+	 * @param bitfield
+	 */
 	public Bitfield(byte[] bitfield){
 		this.length = bitfield.length * 8;
+		this.container = bitfield;
+	}
+	public Bitfield(byte[] bitfield, long l){
+		if((int)Math.ceil(l / 8.0) != bitfield.length){
+			throw new IllegalArgumentException(String.format("The given length of %d, corresponding to %d container bytes, does not match the given byte array length %d!",l,(int)Math.ceil(l / 8.0),bitfield.length));
+		}
+		
+		this.length = l;
 		this.container = bitfield;
 	}
 	public void setValueAll(boolean value){
@@ -93,5 +107,47 @@ public class Bitfield {
 	
 	public byte[] toBytes(){
 		return this.container;
+	}
+	
+	/**
+	 * Gets a random index containing any value.
+	 * @return
+	 */
+	public int getRandomIndex(){
+		int randomPiece = (int)Math.floor(Math.random() * (this.length + 1));
+		return randomPiece;
+	}
+	
+	/**
+	 * Gets a random index which contains the given value
+	 * @param withValue The value which must be at the randomly chosen index.
+	 * @return
+	 */
+	public int getRandomIndex(boolean withValue){
+		int randomChunk = (int)Math.floor(Math.random() * (this.container.length + 1));
+		byte testByte = (byte)((withValue)?255:0);
+		
+		while((this.container[randomChunk] ^ testByte) == 0){
+			randomChunk = (int)Math.floor(Math.random() * (this.container.length + 1));
+		}
+		
+		int maxByteIndex = 8;
+		if(randomChunk == this.container.length - 1){ //If this is the last byte (of which, not all bits may be used).
+			maxByteIndex = (int)(this.length % 8);
+		}
+		int randomPiece = (int)Math.floor(Math.random() * (maxByteIndex + 1));
+		while(this.getValue(randomChunk * 8 + randomPiece) != withValue){
+			randomPiece = (int)Math.floor(Math.random() * (maxByteIndex + 1));
+		}
+		return randomChunk * 8 + randomPiece;
+	}
+	
+	/**
+	 * Gets the number of pieces this bitfield represents.
+	 * Warning: this is imprecise if the Bitfield(byte[]) constructor is used without the length argument. 
+	 * @return
+	 */
+	public long getLength(){
+		return this.length;
 	}
 }

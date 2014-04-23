@@ -317,11 +317,7 @@ public class Host {
 	}
 	
 	public int getPieceIdToSend(){
-		int randomPiece = (int)Math.floor(Math.random() * (this.numOfPieces + 1));
-		while(!this.hasPiece(randomPiece)){
-			randomPiece = (int)Math.floor(Math.random() * (this.numOfPieces + 1));
-		}
-		return randomPiece; 
+		return this.bitfield.getRandomIndex(true);
 	}
 
 	public boolean hasPiece(int id){

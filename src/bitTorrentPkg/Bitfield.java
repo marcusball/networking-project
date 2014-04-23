@@ -1,7 +1,7 @@
 package bitTorrentPkg;
 
 public class Bitfield {
-	protected long length;
+	private long length;
 	protected byte[] container;
 	public Bitfield(long numOfPieces){
 		this(numOfPieces,false);
@@ -17,7 +17,7 @@ public class Bitfield {
 		}
 	}
 	public Bitfield(byte[] bitfield){
-		this.length = bitfield.length;
+		this.length = bitfield.length * 8;
 		this.container = bitfield;
 	}
 	public void setValueAll(boolean value){
@@ -58,8 +58,8 @@ public class Bitfield {
 	}
 	
 	public boolean checkForInterest(Bitfield other){
-		if(other.length != this.length){
-			throw new IllegalArgumentException("Other bitfield length does not equal this bitfield length!");
+		if(other.container.length != this.container.length){
+			throw new IllegalArgumentException(String.format("Other bitfield length (%d) does not equal this bitfield length (%d)!",other.length,this.length));
 		}
 		
 		if(other.isAll(false)){

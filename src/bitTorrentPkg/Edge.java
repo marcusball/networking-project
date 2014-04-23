@@ -59,6 +59,8 @@ public class Edge extends Thread {
 	private final int EDGE_RECV_PIECE = 16384;
 	private final int EDGE_SENT_PIECE = 32768;
 	
+	private final int EDGE_CLEAR_SENT_INTEREST = Integer.MAX_VALUE & ~(EDGE_SENT_INTERESTED | EDGE_SENT_NOTINTERESTED);
+	
 	private final int EDGE_GREETING_COMPLETE = 15; 
 	
 	private final boolean cloned;
@@ -314,7 +316,7 @@ public class Edge extends Thread {
 				}
 			}
 			else{ // OKAY: We've exchanged handshakes and bitfields, let's continue... 
-				if((state & this.EDGE_SENT_INTERESTED) == 0 || (state & this.EDGE_SENT_NOTINTERESTED) == 0){
+				if((state & this.EDGE_SENT_INTERESTED) == 0 && (state & this.EDGE_SENT_NOTINTERESTED) == 0){
 					Tools.debug("[Edge.runTasks] Sending interested status...");
 					this.sendInterestedStatus();
 				}
@@ -339,6 +341,7 @@ public class Edge extends Thread {
 			else if(received instanceof BitfieldMessage){
 				Tools.debug("[Edge.handleMessage] Received Bitfield!");
 				this.edgeState.set(this.edgeState.get() | EDGE_RECV_BITFIELD);
+				this.edgeState.set(this.edgeState.get() & EDGE_CLEAR_SENT_INTEREST);
 				
 				BitfieldMessage bfMessage = (BitfieldMessage)received;
 				if(this.destination == null){

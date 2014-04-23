@@ -60,6 +60,10 @@ public class Edge extends Thread {
 	private final int EDGE_SENT_PIECE = 32768;
 	
 	private final int EDGE_CLEAR_SENT_INTEREST = Integer.MAX_VALUE & ~(EDGE_SENT_INTERESTED | EDGE_SENT_NOTINTERESTED);
+	private final int EDGE_CLEAR_RECV_CHOKE = Integer.MAX_VALUE & ~(EDGE_RECV_CHOKE);
+	private final int EDGE_CLEAR_RECV_UNCHOKE = Integer.MAX_VALUE & ~(EDGE_RECV_UNCHOKE);
+	private final int EDGE_CLEAR_RECV_HAVE = Integer.MAX_VALUE & ~(EDGE_RECV_HAVE);
+	
 	
 	private final int EDGE_GREETING_COMPLETE = 15; 
 	
@@ -292,7 +296,7 @@ public class Edge extends Thread {
 	}
 	
 	
-	private void runTasks() throws IOException{
+	private void runTasks() throws IOException, Exception{
 		synchronized(this.edgeState){
 			int state = this.edgeState.get();
 			if((state & this.EDGE_GREETING_COMPLETE) != this.EDGE_GREETING_COMPLETE){
@@ -320,6 +324,25 @@ public class Edge extends Thread {
 					Tools.debug("[Edge.runTasks] Sending interested status...");
 					this.sendInterestedStatus();
 				}
+				
+				if((state & this.EDGE_RECV_UNCHOKE) ==  this.EDGE_RECV_UNCHOKE){
+					//if an unchoke message has been received, send interested
+					Tools.debug("[Edge.runTasks] Sending interested status in response to unchoke...");
+					this.sendInterestedStatus();
+					//clear the unchoke flag
+					this.edgeState.set(state & this.EDGE_CLEAR_RECV_UNCHOKE);
+				}
+				if((state & this.EDGE_RECV_HAVE) == this.EDGE_RECV_HAVE){
+					//if a HAVE is received, update the bitfield of the destination
+					Have have = (Have) lastMessage;
+					int index = have.GetPayloadValue();
+					destination.bitfield.setValue(index, true);
+					//recalculate interest and send interest status
+					sendInterestedStatus();
+					//clear the receive have flag
+					this.edgeState.set(state & this.EDGE_CLEAR_RECV_HAVE);
+				}
+				
 			}
 		}
 	}
@@ -442,5 +465,6 @@ public class Edge extends Thread {
 			this.sendNotInterested();
 		}
 	}
+
 	
 }

@@ -8,6 +8,8 @@ import java.net.Socket;
 import java.net.ServerSocket;
 import java.util.*;
 
+import bitTorrentPkg.Messages.*;
+
 /* CLASS: Peer
  * 		-Peer is a stripped down version of class Host
  * 		-It is made to represent "other" peers with respect to the Host (the machine executing the program)
@@ -164,12 +166,8 @@ public class Peer {
 		this.piecesDownloaded = piecesDownloaded;
 	}
 	
-	public void updateDLRate(){
-		//represents average dl rate since last unchoke
-		dlRate = ((float)(piecesSinceUnchoke*pieceSize)) / ((float)((lastUnchokeTime)*1000));
-	}
-	
 	public float getDLRate(){
+		dlRate = ((float)(piecesDownloaded*pieceSize)) / ((float)((System.currentTimeMillis() - startTime)*1000));
 		return dlRate;
 	}
 	
@@ -186,10 +184,14 @@ public class Peer {
 	
 	public void choke(){
 		unchoked = false;
+		Choke choke = new Choke();
+		connection.sendMessage(choke);
 	}
 	
 	public void unchoke(){
 		unchoked = true;
+		Unchoke unchoke = new Unchoke();
+		connection.sendMessage(unchoke);
 	}
 	
 	public boolean isUnchoked(){
@@ -198,10 +200,14 @@ public class Peer {
 	
 	public void optUnchoke(){
 		optUnchoked = true;
+		Unchoke unchoke = new Unchoke();
+		connection.sendMessage(unchoke);
 	}
 	
 	public void optChoke(){
 		optUnchoked = false;
+		Choke choke = new Choke();
+		connection.sendMessage(choke);
 	}
 	
 	public boolean isOptUnchoked(){

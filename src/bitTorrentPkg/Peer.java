@@ -219,6 +219,10 @@ public class Peer {
 		return "PeerID " + peerID + "\nHostName " + hostName + 
 				"\nListeningPort " + listeningPort + "\nHasFile " + hasFile + "\n";		
 	}
+	
+	public void setHasPiece(long pieceId, boolean has){
+		this.bitfield.setValue(pieceId, has);
+	}
 
 }
 

@@ -51,13 +51,13 @@ public class Bitfield {
 		Tools.debug("getValue: byte: %s, getting bit at %d.",Tools.byteToBinString(this.container[containerIndex]),(index % 8));
 		return ((this.container[containerIndex] >> byteIndex) & 0x01) == 1;
 	}
-	public void setValue(int index, boolean value){
+	public void setValue(long index, boolean value){
 		if(index > this.length - 1){
 			throw new java.lang.ArrayIndexOutOfBoundsException(String.format("Index %d is out of bounds. Bitfield size is %d!", index,this.length));
 		}
 		
 		int containerIndex = (int)Math.floor(index / 8);
-		int byteIndex = 7 - (index % 8);
+		int byteIndex = (int)(7 - (index % 8));
 		
 		byte modifier = (byte)(1 << byteIndex);
 		byte bitClear = (byte)(255 ^ modifier);

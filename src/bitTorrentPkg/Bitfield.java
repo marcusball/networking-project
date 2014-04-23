@@ -74,7 +74,7 @@ public class Bitfield {
 				xcheck = (byte)(other.container[x] & xor);
 				
 				Tools.debug("%s ^ %s = %s. check = %s.",Tools.byteToBinString(this.container[x]),Tools.byteToBinString(other.container[x]),Tools.byteToBinString(xor),Tools.byteToBinString(xcheck));
-				if(xcheck != 0 && xcheck < xor){ //There were differences, and at least one difference corresponded to a 1 bit in other
+				if(xcheck != 0 && xcheck <= xor){ //There were differences, and at least one difference corresponded to a 1 bit in other
 					//Therefore, other contains a piece we do not have
 					return true;
 				}

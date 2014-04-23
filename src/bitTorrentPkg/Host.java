@@ -318,8 +318,13 @@ public class Host {
 		return this.bitfield.checkForInterest(other.getBitfield());
 	}
 	
-	public int getPieceIdToRequest(){
-		return this.bitfield.getRandomIndex(true);
+	public int getPieceIdToRequestFrom(Peer other){
+		//return this.bitfield.getRandomIndex(true);
+		Bitfield possiblePieces = this.bitfield.not().and(other.getBitfield());
+		if(possiblePieces.isAll(false)){
+			return -1; //Other has no pieces that we do not already have. 
+		}
+		return possiblePieces.getRandomIndex(true);
 	}
 
 	public boolean hasPiece(int id){

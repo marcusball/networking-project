@@ -97,9 +97,27 @@ public class Bitfield {
 	
 	public boolean isAll(boolean check){
 		byte comp = (byte)((check)?255:0);
-		for(byte b : this.container){
+		byte b;
+		for(int x=0;x<this.container.length;x+=1){
+			b = this.container[x];
 			if((b ^ comp) != 0){ //If there were any dissimilarities between the bytes
-				return false;
+				if(x == this.container.length - 1){
+					int shift = (int)(this.length % 8);
+					if(shift == 0){
+						return false; //the last byte is all used, and we already know the initial check is false.
+					}
+					
+					byte clear = (byte)(0x80 >> (shift - 1)); // 1000 0000 >> (remainder - 1)
+					Tools.debug("[Bitfield.isAll] clear byte is %s.",Tools.byteToBinString(clear));
+					byte test = (byte)(b & clear); //Zero out any of the unused bits
+					
+					if(((test ^ comp) & clear) != 0){ //Do the test again (and zero out the unused bits of the result).
+						return false;
+					}
+				}
+				else{
+					return false;
+				}
 			}
 		}
 		return true;
@@ -125,8 +143,13 @@ public class Bitfield {
 	 */
 	public int getRandomIndex(boolean withValue){
 		int randomChunk = (int)Math.floor(Math.random() * (this.container.length));
-		byte testByte = (byte)((withValue)?255:0);
+		byte testByte = (byte)((withValue)?0:255); //If we're looking for a zero, we want to XOR with all 1s; if we want a 1, we want to XOR all 0s. 
 		
+		if(this.isAll(!withValue)){ //There 
+			return -1; 
+		}
+		
+		Tools.debug("[Bitfield.getRandomIndex] Let's do that random chunk thang");
 		while((this.container[randomChunk] ^ testByte) == 0){
 			randomChunk = (int)Math.floor(Math.random() * (this.container.length));
 		}
@@ -136,10 +159,33 @@ public class Bitfield {
 			maxByteIndex = (int)(this.length % 8);
 		}
 		int randomPiece = (int)Math.floor(Math.random() * (maxByteIndex + 1));
+		Tools.debug("[Bitfield.getRandomIndex] git dat piece from %s.",Tools.byteToBinString(this.container[randomChunk]));
 		while(this.getValue(randomChunk * 8 + randomPiece) != withValue){
 			randomPiece = (int)Math.floor(Math.random() * (maxByteIndex + 1));
 		}
 		return randomChunk * 8 + randomPiece;
+	}
+	
+	public Bitfield xor(Bitfield other){
+		byte[] xorField = new byte[this.container.length];
+		for(int x=0;x<this.container.length;x+=1){
+			xorField[x] = (byte)(this.container[x] ^ other.container[x]);
+		}
+		return new Bitfield(xorField,this.length);
+	}
+	public Bitfield not(){
+		byte[] notField = new byte[this.container.length];
+		for(int x=0;x<this.container.length;x+=1){
+			notField[x] = (byte)(~this.container[x]);
+		}
+		return new Bitfield(notField,this.length);
+	}
+	public Bitfield and(Bitfield other){
+		byte[] andField = new byte[this.container.length];
+		for(int x=0;x<this.container.length;x+=1){
+			andField[x] = (byte)(this.container[x] & other.container[x]);
+		}
+		return new Bitfield(andField,this.length);
 	}
 	
 	/**

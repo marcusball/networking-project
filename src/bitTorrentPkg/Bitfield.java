@@ -1,8 +1,8 @@
 package bitTorrentPkg;
 
 public class Bitfield {
-	private long length;
-	private byte[] container;
+	protected long length;
+	protected byte[] container;
 	public Bitfield(long numOfPieces){
 		this(numOfPieces,false);
 	}
@@ -55,6 +55,40 @@ public class Bitfield {
 		}
 		this.container[containerIndex] = newByte;
 		Tools.debug("setValue: New byte:      %s",Tools.byteToBinString(this.container[containerIndex]));
+	}
+	
+	public boolean checkForInterest(Bitfield other){
+		if(other.length != this.length){
+			throw new IllegalArgumentException("Other bitfield length does not equal this bitfield length!");
+		}
+		
+		if(other.isAll(false)){
+			return false;
+		}
+		
+		byte xor, xcheck;
+		for(int x=0;x<this.length;x+=1){
+			xor = (byte)(this.container[x] ^ other.container[x]);
+			if(xor != 0){ //There were dissimilarities
+				xcheck = (byte)(other.container[x] & xor);
+				if(xcheck != 0 && xcheck < xor){ //There were differences, and at least one difference corresponded to a 1 bit in other
+					//Therefore, other contains a piece we do not have
+					return true;
+				}
+			}
+		}
+		
+		return false;
+	}
+	
+	public boolean isAll(boolean check){
+		byte comp = (byte)((check)?255:0);
+		for(byte b : this.container){
+			if((b ^ comp) != 0){ //If there were any dissimilarities between the bytes
+				return false;
+			}
+		}
+		return true;
 	}
 	
 	public byte[] toBytes(){

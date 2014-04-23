@@ -1,6 +1,7 @@
 package bitTorrentPkg;
 
 public class Tools {
+	private final static boolean useFancyOutput = true;
 	public static int bytesToInt(byte[] fourBytes) throws Exception{
 		if(fourBytes.length != 4){
 			throw new Exception(String.format("Expected four byte input! Received %d bytes!",fourBytes.length));
@@ -13,10 +14,20 @@ public class Tools {
 	}
 	
 	public static void debug(String message){
-		System.out.println("DEBUG: " + message);
+		if(!useFancyOutput){
+			System.out.println("DEBUG: " + message);
+		}
+		else{
+			ConsoleManager.println(message);
+		}
 	}
 	public static void debug(String message,Object... args){
-		System.out.printf("DEBUG: " + message + '\n',args);
+		if(!useFancyOutput){
+			System.out.printf("DEBUG: " + message + '\n',args);
+		}
+		else{
+			ConsoleManager.println(String.format(message,args));
+		}
 	}
 	public static String byteToBinString(byte val){
 		String s = Integer.toBinaryString(val);

@@ -311,6 +311,10 @@ public class Host {
 		this.numOfPieces = (long) Math.ceil(fileSize / pieceSize); 
 		bitfield = new Bitfield(numOfPieces,this.hasFile);
 	}
+	
+	public boolean hasInterestIn(Peer other){
+		return this.bitfield.checkForInterest(other.getBitfield());
+	}
 
 }
 

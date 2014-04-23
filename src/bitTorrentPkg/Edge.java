@@ -227,6 +227,18 @@ public class Edge extends Thread {
 		this.sendMessage(bitfield);
 	}
 	
+	public void sendInterested(){
+		this.edgeState.set(this.edgeState.get() | EDGE_SENT_INTERESTED);
+		
+		this.sendMessage(new Interested());
+	}
+	
+	public void sendNotInterested(){
+		this.edgeState.set(this.edgeState.get() | EDGE_SENT_NOTINTERESTED);
+		
+		this.sendMessage(new NotInterested());
+	}
+	
 	/**
 	 * Thread method: Perpetually listens for responses. 
 	 */
@@ -284,7 +296,7 @@ public class Edge extends Thread {
 			if((state & this.EDGE_GREETING_COMPLETE) != this.EDGE_GREETING_COMPLETE){
 				if((state & EDGE_RECV_HANDSHAKE) != 0){ //If we've received the handshake
 					if((state & EDGE_SENT_HANDSHAKE) == 0){ //If we have not yet sent our handshake
-						Tools.debug("[Edge.runTasks] Sending handshake!");
+						Tools.debug("[Edge.runTasks] Sending handshake...");
 						if(this.destination == null){
 							Tools.debug("[Edge.runTasks] destination is null");
 						}
@@ -294,6 +306,7 @@ public class Edge extends Thread {
 					else{ //If we have sent our handshake
 						if((state & EDGE_SENT_BITFIELD) == 0){ //If we havent sent this host's bitfield
 							if(this.destination != null){
+								Tools.debug("[Edge.runTasks] Sending bitfield...");
 								this.sendBitfield();
 							}
 						}
@@ -301,7 +314,10 @@ public class Edge extends Thread {
 				}
 			}
 			else{ // OKAY: We've exchanged handshakes and bitfields, let's continue... 
-				
+				if((state & this.EDGE_SENT_INTERESTED) == 0 || (state & this.EDGE_SENT_NOTINTERESTED) == 0){
+					Tools.debug("[Edge.runTasks] Sending interested status...");
+					this.sendInterestedStatus();
+				}
 			}
 		}
 	}
@@ -341,6 +357,18 @@ public class Edge extends Thread {
 			else if(received instanceof Unchoke){
 				Tools.debug("[Edge.handleMessage] Received Unchoke");
 				this.edgeState.set(this.edgeState.get() | EDGE_RECV_UNCHOKE);
+			}
+			else if(received instanceof Interested){
+				Tools.debug("[Edge.handleMessage] Received interested from %s!",this.destination.getPeerID());
+				this.edgeState.set(this.edgeState.get() | EDGE_RECV_INTERESTED);
+				
+				this.destination.setInterest(true);
+			}
+			else if(received instanceof NotInterested){
+				Tools.debug("[Edge.handleMessage] Received not interested from %s!",this.destination.getPeerID());
+				this.edgeState.set(this.edgeState.get() | EDGE_RECV_NOTINTERESTED);
+				
+				this.destination.setInterest(false);
 			}
 		}
 	}
@@ -400,5 +428,16 @@ public class Edge extends Thread {
 		this.breakAtHandshakeRecv.set(value);
 	}
 	
+	
+	private void sendInterestedStatus(){
+		if(NeighborController.host.hasInterestIn(this.destination)){
+			Tools.debug("[Edge.sendInterestedStatus] Sending interest!");
+			this.sendInterested();
+		}
+		else{
+			Tools.debug("[Edge.sendInterestedStatus] Sending lack of interest.");
+			this.sendNotInterested();
+		}
+	}
 	
 }

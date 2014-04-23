@@ -42,6 +42,8 @@ public class Peer {
 	long startTime; //in milliseconds since Jan 1 1970
 	int piecesDownloaded;
 	float dlRate;
+	
+	protected boolean isInterested; 
 
 	
 	/*--------------------CONSTRUCTORS--------------------
@@ -168,6 +170,13 @@ public class Peer {
 	
 	public void setBitfield(Bitfield bf){
 		this.bitfield = bf;
+	}
+	
+	public void setInterest(boolean isIntr){
+		this.isInterested = isIntr;
+	}
+	public boolean isInterested(){
+		return this.isInterested;
 	}
 	
 	

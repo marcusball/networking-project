@@ -1,5 +1,7 @@
 package bitTorrentPkg.Messages;
 
+import bitTorrentPkg.Tools;
+
 public class Have extends NormalMessage{
 	public Have(int index){
 		this.messageType = 4;
@@ -21,10 +23,7 @@ public class Have extends NormalMessage{
 		if(this.payload.length != 4){
 			throw new Exception(String.format("Expected payload to be 4 bytes! Payload was %d bytes.",this.payload.length));
 		}
-		int length = 0;
-		for(int i=0;i<4;i+=1){
-			length |= this.payload[i] << (8 * (3-i));
-		}
-		return length;
+		int pieceId = Tools.bytesToInt(this.payload);
+		return pieceId;
 	}
 }

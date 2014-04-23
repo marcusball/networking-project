@@ -24,6 +24,7 @@ public class NeighborController {
 	public static void setHost(Host h){
 		host = h;
 	}
+	
 	public static void init(){
 		if(host == null){
 			throw new NullPointerException("Host is null! You must call setHost(Host h) before you can call init()!");
@@ -39,6 +40,8 @@ public class NeighborController {
 		changeOptUnchoked.schedule(new NeighborController().new OptimisticUnchoke(), optUnchokingInterval*1000);	
 		//create the timers and add tasks to them at their respective intervals
 	}
+	
+	
 	
 	public static void addPeer(Peer other){
 		peers.add(other);

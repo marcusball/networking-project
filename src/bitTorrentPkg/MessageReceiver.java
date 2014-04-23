@@ -41,7 +41,7 @@ public class MessageReceiver {
 					received = new Have(messagePayload);
 					break;
 				case 5:
-					received = new BitfieldMessage(messagePayload);
+					received = new BitfieldMessage(messagePayload,NeighborController.host.numOfPieces());
 					break;
 				case 6:
 					received = new Request(messagePayload);

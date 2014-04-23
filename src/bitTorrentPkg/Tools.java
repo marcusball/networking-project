@@ -2,9 +2,9 @@ package bitTorrentPkg;
 
 public class Tools {
 	private final static boolean useFancyOutput = true;
-	public static int bytesToInt(byte[] fourBytes) throws Exception{
+	public static int bytesToInt(byte[] fourBytes) throws IllegalArgumentException{
 		if(fourBytes.length != 4){
-			throw new Exception(String.format("Expected four byte input! Received %d bytes!",fourBytes.length));
+			throw new IllegalArgumentException(String.format("Expected four byte input! Received %d bytes!",fourBytes.length));
 		}
 		int val = 0;
 		for(int i=0;i<4;i+=1){

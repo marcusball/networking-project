@@ -332,17 +332,6 @@ public class Edge extends Thread {
 					//clear the unchoke flag
 					this.edgeState.set(state & this.EDGE_CLEAR_RECV_UNCHOKE);
 				}
-				if((state & this.EDGE_RECV_HAVE) == this.EDGE_RECV_HAVE){
-					//if a HAVE is received, update the bitfield of the destination
-					Have have = (Have) lastMessage;
-					int index = have.GetPayloadValue();
-					destination.bitfield.setValue(index, true);
-					//recalculate interest and send interest status
-					sendInterestedStatus();
-					//clear the receive have flag
-					this.edgeState.set(state & this.EDGE_CLEAR_RECV_HAVE);
-				}
-				
 			}
 		}
 	}
@@ -350,9 +339,10 @@ public class Edge extends Thread {
 	/**
 	 * Process and perform events relevant to the message that has been received.
 	 * @param received
-	 * @throws IOException
+	 * @throws IllegalArgumentException 
+	 * @throws IOException 
 	 */
-	private void handleMessage(Message received) throws IOException{
+	private void handleMessage(Message received) throws IllegalArgumentException, IOException{
 		this.lastMessage = received;
 			
 		synchronized(this.edgeState){
@@ -395,6 +385,13 @@ public class Edge extends Thread {
 				this.edgeState.set(this.edgeState.get() | EDGE_RECV_NOTINTERESTED);
 				
 				this.destination.setInterest(false);
+			}
+			else if(received instanceof Have){
+				Have have = (Have)received;
+				int index = have.GetPayloadValue();
+				
+				this.destination.setHasPiece(index,true);
+				this.edgeState.set(this.edgeState.get() & this.EDGE_CLEAR_SENT_INTEREST); //Because we've just received a HAVE, we may change our interest in this peer.
 			}
 		}
 	}

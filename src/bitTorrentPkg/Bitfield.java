@@ -67,7 +67,7 @@ public class Bitfield {
 		}
 		
 		byte xor, xcheck;
-		for(int x=0;x<this.length;x+=1){
+		for(int x=0;x<this.container.length;x+=1){
 			xor = (byte)(this.container[x] ^ other.container[x]);
 			if(xor != 0){ //There were dissimilarities
 				xcheck = (byte)(other.container[x] & xor);

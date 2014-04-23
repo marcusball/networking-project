@@ -37,7 +37,7 @@ public final class ConsoleManager {
 			String sub;
 			int end;
 			for(int i=0;i<=Math.ceil(message.length() / messageWidth);i+=1){
-				end = (i + 1) * (messageWidth) - 1;
+				end = (i + 1) * (messageWidth);
 				if(end > message.length()){
 					end = message.length() - 1;
 				}

@@ -63,6 +63,7 @@ public class Bitfield {
 		}
 		
 		if(other.isAll(false)){
+			Tools.debug("[Bitfield.checkForInterest] Other possesses no pieces.");
 			return false;
 		}
 		
@@ -71,6 +72,8 @@ public class Bitfield {
 			xor = (byte)(this.container[x] ^ other.container[x]);
 			if(xor != 0){ //There were dissimilarities
 				xcheck = (byte)(other.container[x] & xor);
+				
+				Tools.debug("%s ^ %s = %s. check = %s.",Tools.byteToBinString(this.container[x]),Tools.byteToBinString(other.container[x]),Tools.byteToBinString(xor),Tools.byteToBinString(xcheck));
 				if(xcheck != 0 && xcheck < xor){ //There were differences, and at least one difference corresponded to a 1 bit in other
 					//Therefore, other contains a piece we do not have
 					return true;

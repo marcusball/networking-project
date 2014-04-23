@@ -8,6 +8,7 @@ public class NeighborController {
 	
 	//ArrayList of peers and upload status
 	public static ArrayList<Peer> peers;
+	public static ArrayList<Peer> unchokedPeers;
 	
 	private static int optimisticPeerIndex;
 	
@@ -68,9 +69,80 @@ public class NeighborController {
 	class Unchoke extends TimerTask{
 		public void run(){
 			if(peers.size() >= 1){
+				LinkedList<Peer> peersToUnchoke = new LinkedList<Peer>();
+				//first fill peersToUnchoke with peers until it has numOfPrefNeighbors
+				int count = 0;
+				while(peersToUnchoke.size() < host.getNumOfPrefNeighbors()){
+					peersToUnchoke.add(peers.get(count));
+					count++;
+				}
 				
+				//for each peer, find the min dl speed in peersToUnchoke and compare
+					//if peer has greater download speed then the min, replace the peer in peersToUnchoke with the curr peer
+				//TODO: This is a loop in a loop (O(n^2)).  We shouldn't have a large enough n for it to cause problems, but
+					//if we ever get performance issues, check this loop out, maybe optmize
+				for(int i = 0; i < peers.size(); i++){
+					int j = 0;
+					float min = peersToUnchoke.get(0).getDLRate();
+					int minIndex = 0;
+					while(j < host.getNumOfPrefNeighbors()){
+						//test this peerToUnchoke against the min
+						if(peersToUnchoke.get(j).getDLRate() < min){
+							//if it's less than the min, save the position and overwrite min
+							min = peersToUnchoke.get(j).getDLRate();
+							minIndex = j;
+						}
+						j++;
+					}
+					//now that min has been calculated, compare this peer against it
+					if(peers.get(i).getDLRate() > min){
+						//if the curr peer is faster, replace the min peer with the curr peer
+						peersToUnchoke.remove(minIndex);
+						peersToUnchoke.add(peers.get(i));
+					}
+				}
+				
+				//now that peers have been found, reiterate through peers and peersToUnchoke, sending choke and unchoke messages when necessary
+					//also change the state of "boolean unchoked" in the Peer object
+				
+				for(int i = 0; i < peers.size(); i++){
+					//for each peer...
+					if(peers.get(i).isUnchoked()){
+						//if this peer is already unchoked, see if you need to send a choke message
+						boolean sendChoked = true;
+						for(int j = 0; j < peersToUnchoke.size(); j++){
+							if(peers.get(i).getPeerID() == peersToUnchoke.get(j).getPeerID()){
+								//if we find that our peer is in peersToUnchoke, then we keep it unchoked
+								//so we don't send a choked message
+								sendChoked = false;
+							}
+						}
+						if(sendChoked){
+							//the peer has been switched from unchoked to choked\
+							peers.get(i).choke();
+						}
+					}else{
+						//if this peer is choked, see if we need to unchoke it
+						boolean sendUnchoked = false;
+						for(int j = 0; j < peersToUnchoke.size(); j++){
+							if(peers.get(i).getPeerID() == peersToUnchoke.get(j).getPeerID()){
+								//if we find that our peer is in peersToUnchoke, then we keep it unchoked
+								//so we don't send a choked message
+								sendUnchoked = true;
+							}
+						}
+						if(sendUnchoked){
+							//the peer has been switched from choked to unchoked
+							peers.get(i).unchoke();
+						}
+					}
+					//if the peer was unchoked and remains unchoked
+						//or if the peer was choked and remains choked
+						//then don't do anything
+					
+				}
 			}
-	
+			
 		}
 	}
 	
@@ -79,6 +151,7 @@ public class NeighborController {
 			if(peers.size() >= 1){ //Make sure we actually have peers. 
 				optimisticPeerIndex = new Random(System.currentTimeMillis()).nextInt(peers.size());
 			}
+			
 			//TODO: Send a unchoke message to peer "random" using a thread
 			//		Expect to receive an request message
 			

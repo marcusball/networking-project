@@ -27,23 +27,27 @@ public class Peer {
 	protected String hostName; //host name of THIS peer
 	protected int listeningPort; 	//listening port for THIS peer
 	protected boolean hasFile;
-	protected boolean isFirstPeer; //if it's the first peer, just wait and listen
+	protected boolean firstPeer; //if it's the first peer, just wait and listen
 								 //if not, initiate tcp connections with others
 	
-	boolean isUnchoked;
-	boolean isOptUnchoked;
+	protected boolean unchoked;
+	protected boolean optUnchoked;
+	protected boolean interested; 
 	
 	protected Edge connection;
 	
-	long pieceSize;
-	long numOfPieces;
+	protected long pieceSize;
+	protected long numOfPieces;
 	protected Bitfield bitfield;
 	
-	long startTime; //in milliseconds since Jan 1 1970
-	int piecesDownloaded;
-	float dlRate;
-	
-	protected boolean isInterested; 
+	protected long startTime; //in milliseconds since Jan 1 1970
+	protected long totalDLTime; //in milliseconds
+	//after every unchoke, lastUnchokeTime is saved the current time
+	protected long lastUnchokeTime; //time this peer was last unchoked
+	protected int piecesDownloaded;
+	protected int piecesSinceUnchoke;
+	protected float dlRate; //represents average download rate since last unchoke
+
 
 	
 	/*--------------------CONSTRUCTORS--------------------
@@ -57,11 +61,11 @@ public class Peer {
 		this.hostName = hostName;
 		this.listeningPort = listeningPort;
 		this.hasFile = hasFile;
-		this.isFirstPeer = isFirstPeer;
+		this.firstPeer = isFirstPeer;
 		this.pieceSize = pieceSize;
 		this.numOfPieces = numOfPieces;
-		isUnchoked = false;
-		isOptUnchoked = false;
+		unchoked = false;
+		optUnchoked = false;
 		this.startTime = startTime;
 	}
 	
@@ -72,11 +76,11 @@ public class Peer {
 		this.hostName = hostName;
 		this.listeningPort = listeningPort;
 		this.hasFile = hasFile;
-		this.isFirstPeer = isFirstPeer;
+		this.firstPeer = isFirstPeer;
 		this.pieceSize = pieceSize;
 		this.numOfPieces = numOfPieces;
-		isUnchoked = false;
-		isOptUnchoked = false;
+		unchoked = false;
+		optUnchoked = false;
 		this.startTime = startTime;
 		this.connection = connection;
 	}	
@@ -125,11 +129,11 @@ public class Peer {
 	}
 	
 	public boolean isFirstPeer(){
-		return isFirstPeer;
+		return firstPeer;
 	}
 	
 	public void setIsFirstPeer(boolean isFirstPeer){
-		this.isFirstPeer = isFirstPeer;
+		this.firstPeer = isFirstPeer;
 	}
 	
 	public long getNumOfPieces(){
@@ -161,7 +165,8 @@ public class Peer {
 	}
 	
 	public void updateDLRate(){
-		dlRate = ((float)(piecesDownloaded*pieceSize)) / ( ((float)(System.currentTimeMillis() - startTime)) * 1000);
+		//represents average dl rate since last unchoke
+		dlRate = ((float)(piecesSinceUnchoke*pieceSize)) / ((float)((lastUnchokeTime)*1000));
 	}
 	
 	public float getDLRate(){
@@ -173,12 +178,35 @@ public class Peer {
 	}
 	
 	public void setInterest(boolean isIntr){
-		this.isInterested = isIntr;
+		this.interested = isIntr;
 	}
 	public boolean isInterested(){
-		return this.isInterested;
+		return this.interested;
 	}
 	
+	public void choke(){
+		unchoked = false;
+	}
+	
+	public void unchoke(){
+		unchoked = true;
+	}
+	
+	public boolean isUnchoked(){
+		return unchoked;
+	}
+	
+	public void optUnchoke(){
+		optUnchoked = true;
+	}
+	
+	public void optChoke(){
+		optUnchoked = false;
+	}
+	
+	public boolean isOptUnchoked(){
+		return optUnchoked;
+	}
 	
 	public String toString(){
 		//mainly for debugging- this can be converted into a log later maybe?

@@ -315,7 +315,18 @@ public class Host {
 	public boolean hasInterestIn(Peer other){
 		return this.bitfield.checkForInterest(other.getBitfield());
 	}
+	
+	public int getPieceIdToSend(){
+		int randomPiece = (int)Math.floor(Math.random() * (this.numOfPieces + 1));
+		while(!this.hasPiece(randomPiece)){
+			randomPiece = (int)Math.floor(Math.random() * (this.numOfPieces + 1));
+		}
+		return randomPiece; 
+	}
 
+	public boolean hasPiece(int id){
+		return this.bitfield.getValue(id);
+	}
 }
 
 

@@ -58,6 +58,8 @@ public class Edge extends Thread {
 	private final int EDGE_SENT_HAVE = 8192;
 	private final int EDGE_RECV_PIECE = 16384;
 	private final int EDGE_SENT_PIECE = 32768;
+	private final int EDGE_SENT_REQUEST = 65536;
+	private final int EDGE_RECV_REQUEST = 131072;
 	
 	private final int EDGE_CLEAR_SENT_INTEREST = Integer.MAX_VALUE & ~(EDGE_SENT_INTERESTED | EDGE_SENT_NOTINTERESTED);
 	private final int EDGE_CLEAR_RECV_CHOKE = Integer.MAX_VALUE & ~(EDGE_RECV_CHOKE);
@@ -245,6 +247,12 @@ public class Edge extends Thread {
 		this.sendMessage(new NotInterested());
 	}
 	
+	public void sendRequest(Request message){
+		this.edgeState.set(this.edgeState.get() | EDGE_SENT_REQUEST);
+		
+		this.sendMessage(message);
+	}
+	
 	/**
 	 * Thread method: Perpetually listens for responses. 
 	 */
@@ -273,11 +281,12 @@ public class Edge extends Thread {
 					bytesRead = this.in.read(buffer); //Read the data
 					buffer = Arrays.copyOfRange(buffer, 0, bytesRead); //Trim off the excess buffer space.
 					
-					System.out.print("DEBUG: [Edge.run] Received: ");
+					StringBuilder out = new StringBuilder();
+					out.append("[Edge.run] Received: ");
 					for(byte b : buffer){
-						System.out.printf("%2x ",b);
+						out.append(String.format("%2x ",b));
 					}
-					System.out.println();
+					Tools.debug(out.toString());
 					
 					Message received = MessageReceiver.OpenMessageBytes(buffer);
 					this.handleMessage(received);
@@ -332,6 +341,17 @@ public class Edge extends Thread {
 					//clear the unchoke flag
 					this.edgeState.set(state & this.EDGE_CLEAR_RECV_UNCHOKE);
 				}
+				
+				//if((state & this.EDGE_RECV_UNCHOKE) != 0){ //Same condition as above, but I want to keep this logic separate for now. 
+					if((state & this.EDGE_SENT_REQUEST) == 0 && NeighborController.host.hasInterestIn(this.destination)){
+						Tools.debug("[Edge.runTasks] Getting ready to request a piece...");
+						int requestPiece = NeighborController.host.getPieceIdToRequest();
+						Request requestMessage = new Request(requestPiece);
+						
+						Tools.debug("[Edge.runTasks] Requesting piece %d from peer %d...",requestPiece,this.destination.getPeerID());
+						this.sendRequest(requestMessage);
+					}
+				//}
 			}
 		}
 	}
@@ -392,6 +412,12 @@ public class Edge extends Thread {
 				
 				this.destination.setHasPiece(index,true);
 				this.edgeState.set(this.edgeState.get() & this.EDGE_CLEAR_SENT_INTEREST); //Because we've just received a HAVE, we may change our interest in this peer.
+			}
+			else if(received instanceof Request){
+				Request req = (Request)received;
+				Tools.debug("[Edge.handleMessage] Received request of piece %d!",req.GetPayloadValue());
+				
+				this.edgeState.set(this.edgeState.get() | this.EDGE_RECV_REQUEST);
 			}
 		}
 	}

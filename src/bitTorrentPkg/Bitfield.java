@@ -48,7 +48,7 @@ public class Bitfield {
 		int containerIndex = (int)Math.floor(index / 8);
 		int byteIndex = 7 - (index % 8);
 		
-		Tools.debug("getValue: byte: %s, getting bit at %d.",Tools.byteToBinString(this.container[containerIndex]),(index % 8));
+		//Tools.debug("getValue: byte: %s, getting bit at %d.",Tools.byteToBinString(this.container[containerIndex]),(index % 8));
 		return ((this.container[containerIndex] >> byteIndex) & 0x01) == 1;
 	}
 	public void setValue(long index, boolean value){
@@ -124,11 +124,11 @@ public class Bitfield {
 	 * @return
 	 */
 	public int getRandomIndex(boolean withValue){
-		int randomChunk = (int)Math.floor(Math.random() * (this.container.length + 1));
+		int randomChunk = (int)Math.floor(Math.random() * (this.container.length));
 		byte testByte = (byte)((withValue)?255:0);
 		
 		while((this.container[randomChunk] ^ testByte) == 0){
-			randomChunk = (int)Math.floor(Math.random() * (this.container.length + 1));
+			randomChunk = (int)Math.floor(Math.random() * (this.container.length));
 		}
 		
 		int maxByteIndex = 8;

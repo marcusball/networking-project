@@ -345,11 +345,13 @@ public class Edge extends Thread {
 				//if((state & this.EDGE_RECV_UNCHOKE) != 0){ //Same condition as above, but I want to keep this logic separate for now. 
 					if((state & this.EDGE_SENT_REQUEST) == 0 && NeighborController.host.hasInterestIn(this.destination)){
 						Tools.debug("[Edge.runTasks] Getting ready to request a piece...");
-						int requestPiece = NeighborController.host.getPieceIdToRequest();
-						Request requestMessage = new Request(requestPiece);
-						
-						Tools.debug("[Edge.runTasks] Requesting piece %d from peer %d...",requestPiece,this.destination.getPeerID());
-						this.sendRequest(requestMessage);
+						int requestPiece = NeighborController.host.getPieceIdToRequestFrom(this.destination);
+						if(requestPiece != -1){ //If there are pieces we can actually request
+							Request requestMessage = new Request(requestPiece);
+							
+							Tools.debug("[Edge.runTasks] Requesting piece %d from peer %d...",requestPiece,this.destination.getPeerID());
+							this.sendRequest(requestMessage);
+						}
 					}
 				//}
 			}

@@ -19,6 +19,7 @@ public class Host {
 	private long fileSize;	//in bytes
 	private long pieceSize;	//Size of each piece file will be broken up into (in bytes)
 	private long numOfPieces; //number of pieces in a file (fileSize divided by pieceSize, rounded up)
+	private long requestTTL;
 	
 	//PeerInfo.cfg variables
 	private int peerID; //the peerID of THIS peer (inputted into command line)
@@ -29,6 +30,7 @@ public class Host {
 								 //if not, initiate tcp connections with others
 	
 	private Bitfield bitfield;
+	private ArrayList<RequestedPiece> requests;
 
 	public HashMap<Integer,Peer> peerInfo; //This will contain the list of ALL peers listed in PeerInfo, not just the ones this host is connected to. 
 	public ArrayList<Integer> targetPeers; //This will contain the peer IDs of all of the peers above this host in the PeerInfo file. 
@@ -326,6 +328,56 @@ public class Host {
 
 	public boolean hasPiece(int id){
 		return this.bitfield.getValue(id);
+	}
+	
+	public void setRequestTTL(long TTL){
+		this.requestTTL = TTL;
+	}
+	
+	public long getRequestTTL(){
+		return requestTTL;
+	}
+	
+	public void addRequest(int peerID, int pieceIndex){
+		RequestedPiece request = new RequestedPiece(peerID, pieceIndex);
+		requests.add(request);
+	}
+	
+	public RequestedPiece getRequest(int pieceIndex){
+		for(int i = 0; i < requests.size(); i++){
+			if(requests.get(i).getPieceIndex() == pieceIndex){
+				return requests.get(i);
+			}
+		}
+		Tools.debug("Piece index " + pieceIndex + " not found in outstanding requests!");
+		return null;
+	}
+	
+	public int getRequestIndex(int pieceIndex){
+		//every time you get a request, make sure the requests are clean
+		cleanRequests();
+		for(int i = 0; i < requests.size(); i++){
+			if(requests.get(i).getPieceIndex() == pieceIndex){
+				return i;
+			}
+		}
+		Tools.debug("Piece index " + pieceIndex + " not found in outstanding requests!");
+		return -1; 
+	}
+	
+	public void removeRequest(int pieceIndex){
+		requests.remove(getRequestIndex(pieceIndex));
+	}
+	
+	public void cleanRequests(){
+		for(int i = 0; i < requests.size(); i++){
+			if(System.currentTimeMillis() - requests.get(i).getTimestamp() > requestTTL){
+				//if the request is greater than the request TTL
+				//delete the request so that it has a chance of being resent
+				requests.remove(i);
+				
+			}
+		}
 	}
 }
 

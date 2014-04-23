@@ -345,7 +345,7 @@ public class Host {
 				return requests.get(i);
 			}
 		}
-		Tools.debug("Piece index " + pieceIndex + " not found in outstanding requests!");
+		Tools.debug("[Host] Piece index " + pieceIndex + " not found in outstanding requests!");
 		return null;
 	}
 	
@@ -357,12 +357,16 @@ public class Host {
 				return i;
 			}
 		}
-		Tools.debug("Piece index " + pieceIndex + " not found in outstanding requests!");
+		Tools.debug("[Host] Piece index " + pieceIndex + " not found in outstanding requests!");
 		return -1; 
 	}
 	
 	public void removeRequest(int pieceIndex){
-		requests.remove(getRequestIndex(pieceIndex));
+		if(getRequestIndex(pieceIndex) != -1){
+			requests.remove(getRequestIndex(pieceIndex));
+		}else{
+			Tools.debug("[Host] Piece index " + pieceIndex + " could not be removed, because it was not found in oustanding requests!");
+		}
 	}
 	
 	public void cleanRequests(){
@@ -371,6 +375,8 @@ public class Host {
 				//if the request is greater than the request TTL
 				//delete the request so that it has a chance of being resent
 				requests.remove(i);
+				Tools.debug("[Host] Request of piece index " + requests.get(i).pieceIndex + " from peer " 
+						+ requests.get(i).getPeerID() + " has exceeded it's time to live, and has been removed.");
 				
 			}
 		}

@@ -16,9 +16,6 @@ public class FileManager {
 	private static String shareFilePath;
 	private static File shareFile;
 	private static RandomAccessFile shareFileRAF;
-	static{
-		
-	}
 	
 	public static void openSharedFile(String fileName){
 		try {

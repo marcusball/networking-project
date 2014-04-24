@@ -37,6 +37,7 @@ public class Logger {
 		if(peerID != -1){	
 			//this log has been tested and works
 			writer.println(new Date().toString() + ": Test log. Peer ID = " + peerID);
+			writer.flush();
 		}else{
 			Tools.debug("[Logger] Log not set!");
 		}
@@ -46,9 +47,11 @@ public class Logger {
 	//TODO: All logs beneath here have not been tested, with the exception of closeLog()
 	
 	public static void logTCPConnectionTo(int targetPeerID){
+		Tools.debug("[Logger] TCP Connection logged.");
 		if(peerID != -1){	
 			writer.println(new Date().toString() + ": Peer " + peerID + " makes a connection to Peer " 
 						+ targetPeerID);
+			writer.flush();
 		}else{
 			Tools.debug("[Logger] Log not set!");
 		}	
@@ -58,6 +61,7 @@ public class Logger {
 		if(peerID != -1){	
 			writer.println(new Date().toString() + ": Peer " + peerID + " makes a connection from Peer " 
 						+ targetPeerID);
+			writer.flush();
 		}else{
 			Tools.debug("[Logger] Log not set!");
 		}	
@@ -74,6 +78,7 @@ public class Logger {
 			
 			}
 			writer.println(new Date().toString() + "Peer " + peerID + " has the preferred neighbors " + IDs);
+			writer.flush();
 		}else{
 			Tools.debug("[Logger] Log not set!");
 		}	
@@ -82,8 +87,9 @@ public class Logger {
 	
 	public static void logChangeOfOptUnchokedNeighbor(int neighborID){
 		if(peerID != -1){	
-			writer.println(new Date().toString() + "Peer " + peerID + " has optimistically unchoked neighbor "
+			writer.println(new Date().toString() + ": Peer " + peerID + " has optimistically unchoked neighbor "
 						+ neighborID);
+			writer.flush();
 		}else{
 			Tools.debug("[Logger] Log not set!");
 		}	
@@ -91,7 +97,8 @@ public class Logger {
 	
 	public static void logUnchoking(int source){
 		if(peerID != -1){	
-			writer.println(new Date().toString() + "Peer " + peerID + " is unchoked by " + source);
+			writer.println(new Date().toString() + ": Peer " + peerID + " is unchoked by " + source);
+			writer.flush();
 		}else{
 			Tools.debug("[Logger] Log not set!");
 		}	
@@ -99,7 +106,8 @@ public class Logger {
 	
 	public static void logChoking(int source){
 		if(peerID != -1){	
-			writer.println(new Date().toString() + "Peer " + peerID + " is choked by " + source);
+			writer.println(new Date().toString() + ": Peer " + peerID + " is choked by " + source);
+			writer.flush();
 		}else{
 			Tools.debug("[Logger] Log not set!");
 		}	
@@ -112,8 +120,9 @@ public class Logger {
 	// pID is a quick way of denoting peer 2's ID
 	public static void logHave(int pID, int pieceIndex) {
 		if(peerID != -1){	
-			writer.println(new Date().toString() + "Peer " + peerID + "received a have message from Peer "
+			writer.println(new Date().toString() + ": Peer " + peerID + " received a have message from Peer "
 					+ pID + " for the piece " + pieceIndex);
+			writer.flush();
 		}else{
 			Tools.debug("[Logger] Log not set!");
 		}	
@@ -122,8 +131,9 @@ public class Logger {
 	// Same definition of pID as above method
 	public static void logInterested(int pID) {
 		if(peerID != -1){	
-			writer.println(new Date().toString() + " Peer " + peerID + "received an interested message from Peer "
+			writer.println(new Date().toString() + ": Peer " + peerID + " received an interested message from Peer "
 					+ pID);
+			writer.flush();
 		}else{
 			Tools.debug("[Logger] Log not set!");
 		}	
@@ -131,8 +141,9 @@ public class Logger {
 	
 	public static void logNotInterested(int pID) {
 		if(peerID != -1){	
-			writer.println(new Date().toString() + " Peer " + peerID + "received a not interested message from Peer "
+			writer.println(new Date().toString() + ": Peer " + peerID + " received a not interested message from Peer "
 					+ pID);
+			writer.flush();
 		}else{
 			Tools.debug("[Logger] Log not set!");
 		}	
@@ -141,8 +152,10 @@ public class Logger {
 	// Same pieceIndex used a few methods above; numPieces introduced for the first time
 	public static void logPiece(int pID, int pieceIndex, int numPieces) {
 		if(peerID != -1){	
-			writer.println(new Date().toString() + " Peer " + peerID + "has downloaded the piece " + pieceIndex + " from " + pID);
+			writer.println(new Date().toString() + ": Peer " + peerID + " has downloaded the piece " + pieceIndex + " from " + pID);
+			writer.flush();
 			writer.println("Now the number of pieces it has is: " + numPieces);
+			writer.flush();
 		}else{
 			Tools.debug("[Logger] Log not set!");
 		}	
@@ -150,7 +163,8 @@ public class Logger {
 	
 	public static void logDownloadComplete() {
 		if(peerID != -1){	
-			writer.println(new Date().toString() + " Peer " + peerID + "has downloaded the complete file.");
+			writer.println(new Date().toString() + ": Peer " + peerID + " has downloaded the complete file.");
+			writer.flush();
 		}else{
 			Tools.debug("[Logger] Log not set!");
 		}	
@@ -159,6 +173,7 @@ public class Logger {
 	public static void closeLog(){
 		if(peerID != -1){	
 			writer.println(new Date().toString() + ": Log file closed.");
+			writer.flush();
 			writer.close();
 			
 		}else{

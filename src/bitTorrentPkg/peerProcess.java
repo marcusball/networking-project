@@ -32,7 +32,7 @@ public class peerProcess {
 		System.out.println("Enter a peer ID:");
 		int peerID = input.nextInt();
 		Logger.setPeerID(peerID);
-		
+		Logger.testLog();
 		Tools.debug("[PeerProcess.main] My peer ID: %d",peerID);
 		
 		NeighborController.setHost(new Host(peerID));

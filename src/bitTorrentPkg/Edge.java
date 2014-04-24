@@ -358,7 +358,7 @@ public class Edge extends Thread {
 			}
 			else{ // OKAY: We've exchanged handshakes and bitfields, let's continue... 
 				if((state & this.EDGE_SENT_INTERESTED) == 0 && (state & this.EDGE_SENT_NOTINTERESTED) == 0){
-					Tools.debug("[Edge.runTasks] Sending interested status...");
+					//Tools.debug("[Edge.runTasks] Sending interested status...");
 					this.sendInterestedStatus();
 				}
 				

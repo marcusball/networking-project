@@ -86,9 +86,6 @@ public class FileManager {
 		if(!piece.exists()){
 			piece.createNewFile();
 		}
-		else{
-			Tools.debug("[FileManager.writeBytesToFile] File already exists?");
-		}
 
 		FileOutputStream out = new FileOutputStream(piece);
 		out.write(toWrite);

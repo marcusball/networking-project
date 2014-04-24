@@ -45,30 +45,30 @@ public class Bitfield {
 			throw new java.lang.ArrayIndexOutOfBoundsException(String.format("Index %d is out of bounds. Bitfield size is %d!", index,this.length));
 		}
 		
-		int containerIndex = (int)Math.floor(index / 8);
+		int containerIndex = (int)Math.floor(index / 8.0);
 		int byteIndex = 7 - (index % 8);
 		
 		//Tools.debug("getValue: byte: %s, getting bit at %d.",Tools.byteToBinString(this.container[containerIndex]),(index % 8));
 		return ((this.container[containerIndex] >> byteIndex) & 0x01) == 1;
 	}
-	public void setValue(long index, boolean value){
+	public void setValue(int index, boolean value){
 		if(index > this.length - 1){
 			throw new java.lang.ArrayIndexOutOfBoundsException(String.format("Index %d is out of bounds. Bitfield size is %d!", index,this.length));
 		}
 		
-		int containerIndex = (int)Math.floor(index / 8);
+		int containerIndex = (int)Math.floor(index / 8.0);
 		int byteIndex = (int)(7 - (index % 8));
 		
 		byte modifier = (byte)(1 << byteIndex);
 		byte bitClear = (byte)(255 ^ modifier);
 		//Tools.debug("setValue: modifier byte: %s; bitclear byte: %s",Tools.byteToBinString(modifier),Tools.byteToBinString(bitClear));
-		Tools.debug("setValue: Original byte: %s",Tools.byteToBinString(this.container[containerIndex]));
+		Tools.debug("[Bitfield.setValue] Original byte: %s",Tools.byteToBinString(this.container[containerIndex]));
 		byte newByte = (byte)((this.container[containerIndex] & bitClear)); //Zeros out the bit at the specified index
 		if(value == true){
 			newByte |= modifier; //Set the bit at the specified index equal to 1.
 		}
 		this.container[containerIndex] = newByte;
-		Tools.debug("setValue: New byte:      %s",Tools.byteToBinString(this.container[containerIndex]));
+		Tools.debug("[Bitfield.setValue] New byte:      %s",Tools.byteToBinString(this.container[containerIndex]));
 	}
 	
 	public boolean checkForInterest(Bitfield other){
@@ -153,15 +153,31 @@ public class Bitfield {
 		while((this.container[randomChunk] ^ testByte) == 0){
 			randomChunk = (int)Math.floor(Math.random() * (this.container.length));
 		}
-		
-		int maxByteIndex = 8;
+		Tools.debug("[Bitfield.getRandomIndex] Chunk = %d",randomChunk);
+		int maxByteIndex = 7;
 		if(randomChunk == this.container.length - 1){ //If this is the last byte (of which, not all bits may be used).
+			Tools.debug("[Bitfield.getRandomIndex] yeah, this is the last chunk");
 			maxByteIndex = (int)(this.length % 8);
 		}
 		int randomPiece = (int)Math.floor(Math.random() * (maxByteIndex + 1));
 		Tools.debug("[Bitfield.getRandomIndex] git dat piece from %s.",Tools.byteToBinString(this.container[randomChunk]));
-		while(this.getValue(randomChunk * 8 + randomPiece) != withValue){
+		
+		int tries = 0;
+		while(this.getValue(randomChunk * 8 + randomPiece) != withValue && tries < 30){
 			randomPiece = (int)Math.floor(Math.random() * (maxByteIndex + 1));
+			tries += 1;
+		}
+		if(this.getValue(randomChunk * 8 + randomPiece) != withValue && tries >= 30){
+			Tools.debug("[Bitfield.getRandomIndex] Using backup.");
+			for(int i=0;i<8;i+=1){
+				if(this.getValue(randomChunk * 8 + i) == withValue){
+					randomPiece = i;
+					break;
+				}
+			}
+		}
+		if(this.getValue(randomChunk * 8 + randomPiece) != withValue){
+			Tools.debug("WHAT THE SHIT");
 		}
 		return randomChunk * 8 + randomPiece;
 	}

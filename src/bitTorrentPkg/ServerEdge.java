@@ -62,6 +62,8 @@ public class ServerEdge extends Thread {
 						Peer newPeer = NeighborController.host.getPeer(peerId);
 						newPeer.setConnection(newEdge);
 						NeighborController.addPeer(newPeer);
+						
+						Logger.logTCPConnectionFrom(peerId);
 					}
 					else{
 						Tools.debug("[ServerEdge.run] Rejecting handshake connection from unknown peer %d.",peerId);

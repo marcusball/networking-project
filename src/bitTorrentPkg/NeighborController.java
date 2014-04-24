@@ -152,6 +152,13 @@ public class NeighborController {
 						//then don't do anything
 					
 				}
+				
+				//also save the ids in an array to be sent to the Logger
+				int peerIDs[] = new int[peersToUnchoke.size()];
+				for(int i = 0; i < peersToUnchoke.size(); i++){
+					peerIDs[i] = peersToUnchoke.get(i).getPeerID();
+				}
+				Logger.logChangeOfPrefNeighbors(peerIDs);
 			}
 			
 		}
@@ -167,6 +174,7 @@ public class NeighborController {
 				peers.get(optimisticPeerIndex).optChoke();
 				optimisticPeerIndex = randIndex;
 				peers.get(optimisticPeerIndex).optUnchoke();
+				Logger.logChangeOfOptUnchokedNeighbor(optimisticPeerIndex);
 			}
 			
 		}

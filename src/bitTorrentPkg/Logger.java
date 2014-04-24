@@ -45,9 +45,18 @@ public class Logger {
 	
 	//TODO: All logs beneath here have not been tested, with the exception of closeLog()
 	
-	public static void logTCPConnection(int targetPeerID){
+	public static void logTCPConnectionTo(int targetPeerID){
 		if(peerID != -1){	
 			writer.println(new Date().toString() + ": Peer " + peerID + " makes a connection to Peer " 
+						+ targetPeerID);
+		}else{
+			Tools.debug("[Logger] Log not set!");
+		}	
+	}
+	
+	public static void logTCPConnectionFrom(int targetPeerID){
+		if(peerID != -1){	
+			writer.println(new Date().toString() + ": Peer " + peerID + " makes a connection from Peer " 
 						+ targetPeerID);
 		}else{
 			Tools.debug("[Logger] Log not set!");
@@ -80,17 +89,17 @@ public class Logger {
 		}	
 	}
 	
-	public static void logUnchoking(int unchokedID){
+	public static void logUnchoking(int source){
 		if(peerID != -1){	
-			writer.println(new Date().toString() + "Peer " + peerID + " is unchoked by " + unchokedID);
+			writer.println(new Date().toString() + "Peer " + peerID + " is unchoked by " + source);
 		}else{
 			Tools.debug("[Logger] Log not set!");
 		}	
 	}
 	
-	public static void logChoking(int chokedID){
+	public static void logChoking(int source){
 		if(peerID != -1){	
-			writer.println(new Date().toString() + "Peer " + peerID + " is choked by " + chokedID);
+			writer.println(new Date().toString() + "Peer " + peerID + " is choked by " + source);
 		}else{
 			Tools.debug("[Logger] Log not set!");
 		}	
@@ -101,9 +110,9 @@ public class Logger {
 	//		Also consider creating non-required logs for debugging in the future
 	
 	// pID is a quick way of denoting peer 2's ID
-	public static void receiveHaveMessage(int pID, int pieceIndex) {
+	public static void logHave(int pID, int pieceIndex) {
 		if(peerID != -1){	
-			writer.println(new Date().toString() + "Peer " + peerID + "received a 'have' message from Peer "
+			writer.println(new Date().toString() + "Peer " + peerID + "received a have message from Peer "
 					+ pID + " for the piece " + pieceIndex);
 		}else{
 			Tools.debug("[Logger] Log not set!");
@@ -111,18 +120,18 @@ public class Logger {
 	}
 	
 	// Same definition of pID as above method
-	public static void receiveInterestedMessage(int pID) {
+	public static void logInterested(int pID) {
 		if(peerID != -1){	
-			writer.println(new Date().toString() + " Peer " + peerID + "received an 'interested' message from Peer "
+			writer.println(new Date().toString() + " Peer " + peerID + "received an interested message from Peer "
 					+ pID);
 		}else{
 			Tools.debug("[Logger] Log not set!");
 		}	
 	}
 	
-	public static void receiveNotInterestedMessage(int pID) {
+	public static void logNotInterested(int pID) {
 		if(peerID != -1){	
-			writer.println(new Date().toString() + " Peer " + peerID + "received a 'not interested' message from Peer "
+			writer.println(new Date().toString() + " Peer " + peerID + "received a not interested message from Peer "
 					+ pID);
 		}else{
 			Tools.debug("[Logger] Log not set!");
@@ -130,7 +139,7 @@ public class Logger {
 	}
 	
 	// Same pieceIndex used a few methods above; numPieces introduced for the first time
-	public static void downloadingPiece(int pID, int pieceIndex, int numPieces) {
+	public static void logPiece(int pID, int pieceIndex, int numPieces) {
 		if(peerID != -1){	
 			writer.println(new Date().toString() + " Peer " + peerID + "has downloaded the piece " + pieceIndex + " from " + pID);
 			writer.println("Now the number of pieces it has is: " + numPieces);
@@ -139,7 +148,7 @@ public class Logger {
 		}	
 	}
 	
-	public static void downloadComplete() {
+	public static void logDownloadComplete() {
 		if(peerID != -1){	
 			writer.println(new Date().toString() + " Peer " + peerID + "has downloaded the complete file.");
 		}else{

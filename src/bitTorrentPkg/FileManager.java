@@ -8,6 +8,9 @@ import java.io.RandomAccessFile;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class FileManager {
 	private final static String directoryPath = "peer_%d";
@@ -60,16 +63,20 @@ public class FileManager {
 	}
 	
 	public static byte[] getFilePiece(int pieceIndex, int pieceSize) throws IOException{
-		FileChannel f = shareFileRAF.getChannel();
-		f.position(pieceSize * pieceIndex);
+		if(NeighborController.host.hasFile()){
+			FileChannel f = shareFileRAF.getChannel();
+			f.position(pieceSize * pieceIndex);
 		
-		ByteBuffer buffer = ByteBuffer.allocate(pieceSize);
-		int readBytes = f.read(buffer);
-		if(readBytes < pieceSize){
-			Tools.debug("[FileManager.getFile] Short piece! Read %d bytes, for pieces of %d bytes.",readBytes,pieceSize);
+			ByteBuffer buffer = ByteBuffer.allocate(pieceSize);
+			int readBytes = f.read(buffer);
+			if(readBytes < pieceSize){
+				Tools.debug("[FileManager.getFile] Short piece! Read %d bytes, for pieces of %d bytes.",readBytes,pieceSize);
+			}
+			buffer.limit(readBytes);
+			return buffer.array();
+		}else{
+			return Files.readAllBytes(Paths.get(getPiecePath(pieceIndex)));
 		}
-		buffer.limit(readBytes);
-		return buffer.array();
 	}
 	
 	public static void writeFilePiece(int pieceId,byte[] data) throws IOException{

@@ -222,7 +222,7 @@ public class Peer {
 				"\nListeningPort " + listeningPort + "\nHasFile " + hasFile + "\n";		
 	}
 	
-	public void setHasPiece(long pieceId, boolean has){
+	public void setHasPiece(int pieceId, boolean has){
 		this.bitfield.setValue(pieceId, has);
 	}
 	

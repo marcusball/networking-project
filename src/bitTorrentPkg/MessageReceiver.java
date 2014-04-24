@@ -3,6 +3,7 @@ package bitTorrentPkg;
 import bitTorrentPkg.Messages.*;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicBoolean;
 public class MessageReceiver {
@@ -10,11 +11,20 @@ public class MessageReceiver {
 	private byte[] pieceBuffer;
 	private int bytesReceived;
 	
+	private ByteBuffer buffer;
+	private byte[] currentMessage;
+	
 	private int offset = 0;
 	public MessageReceiver(){
 		this.isAwaitingPiece = new AtomicBoolean(false);
+		this.buffer = ByteBuffer.allocate(NeighborController.host.pieceSize() * 2);
 	}
 	public Message OpenMessageBytes(byte[] message) throws IOException,Exception{
+		ByteBuffer incoming = ByteBuffer.wrap(message);
+		if(buffer.hasRemaining()){
+			//buffer.
+		}
+		
 		synchronized(this.isAwaitingPiece){
 			if(this.isAwaitingPiece.get()){ //If we've received some of a messages bytes, then this is the continuation of those bytes.
 				Tools.debug("[MessageReceiver] pieceBuffer length: %d; message length: %d; bytes received: %d",pieceBuffer.length, message.length, this.bytesReceived);

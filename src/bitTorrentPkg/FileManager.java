@@ -128,8 +128,9 @@ public class FileManager {
 		FileInputStream in;
 		
 		for(int i = 0; i < NeighborController.host.getNumOfPieces(); i++){
-			//for every piece, read and write to the file
-			piece = new File(getPiecePath(NeighborController.host.getPeerID()));
+			//for every piece, read and write to the file 
+			Tools.debug("[FileManager.combinePiecesToFile] Writing file %s",getPiecePath(i));
+			piece = new File(getPiecePath(i));
 			in = new FileInputStream(piece);
 			while(in.available() > 0){
 				out.write(in.read());

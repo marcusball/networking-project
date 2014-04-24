@@ -409,6 +409,7 @@ public class Edge extends Thread {
 						
 						FileManager.combinePiecesToFile();
 						Tools.debug("[Edge.runTasks] A'ight.");
+						NeighborController.host.setHasFile(true);
 					}
 				//}
 

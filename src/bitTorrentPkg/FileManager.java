@@ -2,6 +2,7 @@ package bitTorrentPkg;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.RandomAccessFile;
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -55,6 +56,12 @@ public class FileManager {
 		}
 		buffer.limit(readBytes);
 		return buffer.array();
+	}
+	
+	public static void writeBytesToFile(String file,byte[] toWrite) throws IOException{
+		FileOutputStream out = new FileOutputStream(file);
+		out.write(toWrite);
+		out.close();
 	}
 	
 	public class FileInfo{

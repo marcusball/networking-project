@@ -4,72 +4,113 @@ import bitTorrentPkg.Messages.*;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.concurrent.atomic.AtomicBoolean;
 public class MessageReceiver {
-	public static Message OpenMessageBytes(byte[] message) throws IOException,Exception{
-		if(MessageIsHandshake(message)){
-			return new Handshake(message);
-		}
-		
-		byte[] lengthBytes = Arrays.copyOfRange(message, 0, 4);
-		try{
-			Tools.debug("[MessageReceiver] Length: [%s], value: %d",Tools.byteArrayToString(lengthBytes),Tools.bytesToInt(lengthBytes));
-			int messageLength = GetMessageLength(lengthBytes);
-			if(messageLength > message.length - 5){ //HEARTBLEED
-				throw new IOException("Message supplied length that exceeds received message length! Stated length: " + messageLength + ", received: " + (message.length - 5));
-			}
-			
-			byte messageType = message[4];
-			byte[] messagePayload = new byte[messageLength];
-			if(messageLength > 0){
-				System.arraycopy(message,5,messagePayload,0,messageLength);
-			}
-			
-			Message received = null;
-			switch(messageType){
-				case 0:
-					received = new Choke();
-					break;
-				case 1:
-					received = new Unchoke();
-					break;
-				case 2:
-					received = new Interested();
-					break;
-				case 3:
-					received = new NotInterested();
-					break;
-				case 4:
-					received = new Have(messagePayload);
-					break;
-				case 5:
-					received = new BitfieldMessage(messagePayload,NeighborController.host.numOfPieces());
-					break;
-				case 6:
-					received = new Request(messagePayload);
-					break;
-				case 7:
-					if(messageLength < 5){
-						throw new IOException("Received peice message with payload length less than 5!");
-					}
-					byte[] indexBytes = Arrays.copyOfRange(messagePayload, 0, 3);
-					byte[] piece = Arrays.copyOfRange(messagePayload, 4, messageLength - 1);
-					
-					received = new Piece(Tools.bytesToInt(indexBytes),piece);
-					break;
-				default:
-					break;
+	private final AtomicBoolean isAwaitingPiece;
+	private byte[] pieceBuffer;
+	private int bytesReceived;
+	public MessageReceiver(){
+		this.isAwaitingPiece = new AtomicBoolean(false);
+	}
+	public Message OpenMessageBytes(byte[] message) throws IOException,Exception{
+		synchronized(this.isAwaitingPiece){
+			if(this.isAwaitingPiece.get()){ //If we've received some of a messages bytes, then this is the continuation of those bytes.
+				System.arraycopy(message, 0, pieceBuffer, this.bytesReceived, message.length);
+				this.bytesReceived += message.length;
 				
+				if(this.bytesReceived == this.pieceBuffer.length){
+					Tools.debug("[MessageReceiver] Finished receiving pieces [%d/%d bytes]!",this.bytesReceived,this.pieceBuffer.length);
+					
+					this.isAwaitingPiece.set(false);
+					Message m = this.OpenMessageBytes(pieceBuffer);
+					this.pieceBuffer = null;
+					this.bytesReceived =0;
+					return m;
+				}
+				else{
+					Tools.debug("[MessageReceiver] Received partial message %d [Total: %d/%d bytes].",message.length,this.bytesReceived,this.pieceBuffer.length);
+					return null;
+				}
 			}
-			return received;
-		}
-		catch(Exception e){
-			throw e;
+			else{
+				if(MessageIsHandshake(message)){
+					return new Handshake(message);
+				}
+				
+				byte[] lengthBytes = Arrays.copyOfRange(message, 0, 4);
+				try{
+					Tools.debug("[MessageReceiver] Length: [%s], value: %d",Tools.byteArrayToString(lengthBytes),Tools.bytesToInt(lengthBytes));
+					int messageLength = GetMessageLength(lengthBytes);
+					if(messageLength > message.length - 5){
+						//throw new IOException("Message supplied length that exceeds received message length! Stated length: " + messageLength + ", received: " + (message.length - 5));
+
+						this.isAwaitingPiece.set(true);
+						this.pieceBuffer = new byte[messageLength + 5]; //We're going to include message header
+						this.bytesReceived = 0;
+						System.arraycopy(message, 0, pieceBuffer, this.bytesReceived, message.length);
+						this.bytesReceived += message.length;
+						
+						Tools.debug("[MessageReceiver] Received partial message %d [Total: %d/%d bytes].",message.length,this.bytesReceived,this.pieceBuffer.length);
+						
+						return null;
+					}
+					else{
+						byte messageType = message[4];
+						byte[] messagePayload = new byte[messageLength];
+						if(messageLength > 0){
+							System.arraycopy(message,5,messagePayload,0,messageLength);
+						}
+						
+						Message received = null;
+						switch(messageType){
+							case 0:
+								received = new Choke();
+								break;
+							case 1:
+								received = new Unchoke();
+								break;
+							case 2:
+								received = new Interested();
+								break;
+							case 3:
+								received = new NotInterested();
+								break;
+							case 4:
+								received = new Have(messagePayload);
+								break;
+							case 5:
+								received = new BitfieldMessage(messagePayload,NeighborController.host.numOfPieces());
+								break;
+							case 6:
+								received = new Request(messagePayload);
+								break;
+							case 7:
+								if(messageLength < 5){
+									throw new IOException("Received peice message with payload length less than 5!");
+								}
+								byte[] indexBytes = Arrays.copyOfRange(messagePayload, 0, 4);
+								byte[] piece = Arrays.copyOfRange(messagePayload, 5, messageLength);
+								
+								received = new Piece(Tools.bytesToInt(indexBytes),piece);
+								break;
+							default:
+								break;
+							
+						}
+						return received;
+					}
+				}
+				catch(Exception e){
+					throw e;
+				}
+			}
+			
 		}
 	}
-	private static int GetMessageLength(byte[] lengthBytes) throws Exception{
+	private int GetMessageLength(byte[] lengthBytes) throws Exception{
 		return Tools.bytesToInt(lengthBytes);
 	}
-	private static byte[] GetHandshakeMagicBytes(){
+	private byte[] GetHandshakeMagicBytes(){
 		byte[] output = new byte[28];
 		byte[] header = "HELLO".getBytes();
 		for(int i=0;i<header.length;i+=1){
@@ -77,7 +118,7 @@ public class MessageReceiver {
 		}
 		return output;
 	}
-	private static boolean MessageIsHandshake(byte[] message){
+	private boolean MessageIsHandshake(byte[] message){
 		if(message.length != 32){
 			return false;
 		}

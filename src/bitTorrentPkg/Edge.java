@@ -66,7 +66,6 @@ public class Edge extends Thread {
 	private final int EDGE_CLEAR_RECV_UNCHOKE = Integer.MAX_VALUE & ~(EDGE_RECV_UNCHOKE);
 	private final int EDGE_CLEAR_RECV_HAVE = Integer.MAX_VALUE & ~(EDGE_RECV_HAVE);
 	private final int EDGE_CLEAR_RECV_REQUEST = Integer.MAX_VALUE & ~(EDGE_RECV_REQUEST);
-	private final int EDGE_CLEAR_RECV_REQUESTED_PIECE = Integer.MAX_VALUE & ~(EDGE_RECV_REQUESTED_PIECE);
 	
 	
 	private final int EDGE_GREETING_COMPLETE = 15; 
@@ -260,26 +259,16 @@ public class Edge extends Thread {
 		this.sendMessage(message);
 	}
 	
-	public void sendHaves(int pieceIndex){
-		//create a have message for this piece index
-		Have have = new Have(pieceIndex);
-		//send it to every peer
-		for(int i = 0; i < NeighborController.getPeers().size(); i++){
-			NeighborController.getPeers().get(i).connection.sendMessage(have);
-		}
-	}
-	
 	/**
 	 * Thread method: Perpetually listens for responses. 
 	 */
 	public void run(){
 		try{
-			if(!NeighborController.isStarted()){
-				//if the timers haven't been started already, do it now
-				NeighborController.startTimers();
-			}
 			byte[] buffer;
 			int bytesRead;
+			
+			MessageReceiver receiver = new MessageReceiver();
+			
 			Tools.debug("[Edge.run] Now listening for responses...");
 			Tools.debug("[Edge.run] State is %s.",Tools.byteToBinString((byte)this.edgeState.get()));
 			while(!this.interrupted()){
@@ -306,10 +295,12 @@ public class Edge extends Thread {
 					for(byte b : buffer){
 						out.append(String.format("%2x ",b));
 					}
-					Tools.debug(out.toString());
+					//Tools.debug(out.toString());
 					
-					Message received = MessageReceiver.OpenMessageBytes(buffer);
-					this.handleMessage(received);
+					Message received = receiver.OpenMessageBytes(buffer);
+					if(received != null){
+						this.handleMessage(received);
+					}
 				}
 			}
 			Tools.debug("[Edge.run] Loop stopping...");
@@ -354,7 +345,7 @@ public class Edge extends Thread {
 					this.sendInterestedStatus();
 				}
 				
-				if((state & this.EDGE_RECV_UNCHOKE) != 0){
+				if((state & this.EDGE_RECV_UNCHOKE) ==  this.EDGE_RECV_UNCHOKE){
 					//if an unchoke message has been received, send interested
 					Tools.debug("[Edge.runTasks] Sending interested status in response to unchoke...");
 					this.sendInterestedStatus();
@@ -362,32 +353,30 @@ public class Edge extends Thread {
 					this.edgeState.set(state & this.EDGE_CLEAR_RECV_UNCHOKE);
 				}
 				
-				if((state & this.EDGE_SENT_REQUEST) == 0 && NeighborController.host.hasInterestIn(this.destination)){
-					Tools.debug("[Edge.runTasks] Getting ready to request a piece...");
-					int requestPiece = NeighborController.host.getPieceIdToRequestFrom(this.destination);
-					if(requestPiece != -1){ //If there are pieces we can actually request
-						Request requestMessage = new Request(requestPiece);
-						
-						Tools.debug("[Edge.runTasks] Requesting piece %d from peer %d...",requestPiece,this.destination.getPeerID());
-						this.sendRequest(requestMessage);
+				//if((state & this.EDGE_RECV_UNCHOKE) != 0){ //Same condition as above, but I want to keep this logic separate for now. 
+					if((state & this.EDGE_SENT_REQUEST) == 0 && NeighborController.host.hasInterestIn(this.destination)){
+						Tools.debug("[Edge.runTasks] Getting ready to request a piece...");
+						int requestPiece = NeighborController.host.getPieceIdToRequestFrom(this.destination);
+						if(requestPiece != -1){ //If there are pieces we can actually request
+							Request requestMessage = new Request(requestPiece);
+							
+							Tools.debug("[Edge.runTasks] Requesting piece %d from peer %d...",requestPiece,this.destination.getPeerID());
+							this.sendRequest(requestMessage);
+						}
 					}
-				}
-				else if((state & this.EDGE_RECV_REQUEST) != 0){
-					int index = this.destination.getLastRequestedPiece();
-					byte[] piece = NeighborController.host.getPiece(index);
-					Piece pieceMessage = new Piece(index,piece);
-					
-					this.edgeState.set(this.edgeState.get() & this.EDGE_CLEAR_RECV_REQUEST);
-					
-					Tools.debug("[Edge.runTasks] Sending piece %d to peer %d...",index,this.destination.getPeerID());
-					this.sendPiece(pieceMessage);
-				}
-			
-				
-				if((state & this.EDGE_RECV_REQUESTED_PIECE) != 0){
-					//if it gets a piece, it must send have message to all peers
-					//TODO: execute sendHaves(int pieceIndex), using the last piece index received
-				}
+					else if((state & this.EDGE_RECV_REQUEST) != 0){
+						int index = this.destination.getLastRequestedPiece();
+						byte[] piece = NeighborController.host.getPiece(index);
+						Piece pieceMessage = new Piece(index,piece);
+						
+						this.edgeState.set(this.edgeState.get() & this.EDGE_CLEAR_RECV_REQUEST);
+						
+						Tools.debug("[Edge.runTasks] Sending piece %d to peer %d...",index,this.destination.getPeerID());
+						Tools.debug("[Edge.runTasks] Piece MD5: %s [l: %d, s: %2x e: %2x]",Tools.getMD5(piece),piece.length,piece[0],piece[piece.length - 1]);
+						FileManager.writeBytesToFile("bytes-sent.txt", pieceMessage.toBytes());
+						this.sendPiece(pieceMessage);
+					}
+				//}
 			}
 		}
 	}
@@ -464,6 +453,9 @@ public class Edge extends Thread {
 			else if(received instanceof Piece){
 				Piece newPiece = (Piece)received;
 				Tools.debug("[Edge.handleMessage] Received piece %d!",newPiece.getIndex());
+				Tools.debug("[Edge.handleMessage] Piece MD5: %s [l: %d, s: %2x e: %2x]",Tools.getMD5(newPiece.getData()),newPiece.getData().length,newPiece.getData()[0],newPiece.getData()[newPiece.getData().length - 1]);
+				
+				FileManager.writeBytesToFile("message-received.txt", newPiece.toBytes());
 			}
 		}
 	}

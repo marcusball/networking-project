@@ -31,7 +31,7 @@ import java.util.Arrays;
 import java.util.concurrent.atomic.*;
 
 public class Edge extends Thread {
-	protected final Peer destination;
+	protected Peer destination;
 	
 	protected Socket client;
 	protected InputStream in;
@@ -39,8 +39,8 @@ public class Edge extends Thread {
 	
 	protected Message lastMessage;
 	
-	protected final AtomicInteger edgeState;
-	protected final AtomicBoolean breakAtHandshakeRecv;
+	protected AtomicInteger edgeState;
+	protected AtomicBoolean breakAtHandshakeRecv;
 	
 	private final int EDGE_RECV_HANDSHAKE = 1;
 	private final int EDGE_SENT_HANDSHAKE = 2;
@@ -199,10 +199,15 @@ public class Edge extends Thread {
 		try {
 			this.out.write(message.toBytes());
 			this.out.flush();
-			return true;
+			
+			Thread.sleep(500);
 		} 
 		catch (IOException e) {
 			Tools.debug("[Edge.sendMessage] Unable to send message to %s! IOException occurred: \"%s\".",this.destination.getHostName(),e.getMessage());
+		}
+		catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		return false;
 	}
@@ -280,7 +285,7 @@ public class Edge extends Thread {
 				//if the timers haven't been started already, do it now
 				NeighborController.startTimers();
 			}
-			byte[] buffer;
+			//byte[] buffer;
 			int bytesRead;
 			
 			final MessageReceiver receiver = new MessageReceiver();
@@ -308,6 +313,8 @@ public class Edge extends Thread {
 				this.runTasks(); //Do anything that needs to be done now.
 				
 				if(this.in.available() > 0){ //If there are any new data
+					byte[] buffer;
+					
 					buffer = new byte[(int) (5 + NeighborController.host.pieceSize())]; //This is the maximum length any message will ever take.
 					bytesRead = this.in.read(buffer); //Read the data
 					buffer = Arrays.copyOfRange(buffer, 0, bytesRead); //Trim off the excess buffer space.
@@ -317,11 +324,22 @@ public class Edge extends Thread {
 					for(byte b : buffer){
 						out.append(String.format("%2x ",b));
 					}
-					//Tools.debug(out.toString());
+					if(bytesRead > 800){
+						Tools.debug(out.toString().substring(0, 800));
+					}
 					
 					Message received = receiver.OpenMessageBytes(buffer);
 					if(received != null){
 						this.handleMessage(received);
+					}
+						
+					while(receiver.getOffset() != 0){
+						buffer = Arrays.copyOfRange(buffer, receiver.getOffset(), buffer.length);
+						
+						received = receiver.OpenMessageBytes(buffer);
+						if(received != null){
+							this.handleMessage(received);
+						}
 					}
 				}
 			}
@@ -377,12 +395,13 @@ public class Edge extends Thread {
 				}
 				
 				//if((state & this.EDGE_RECV_UNCHOKE) != 0){ //Same condition as above, but I want to keep this logic separate for now. 
-					if((state & this.EDGE_SENT_REQUEST) == 0 && NeighborController.host.hasInterestIn(this.destination)){
+					if(!NeighborController.host.hasRequestedPieceFrom(this.destination) && NeighborController.host.hasInterestIn(this.destination)){
 						Tools.debug("[Edge.runTasks] Getting ready to request a piece...");
 						int requestPiece = NeighborController.host.getPieceIdToRequestFrom(this.destination);
 						if(requestPiece != -1){ //If there are pieces we can actually request
 							Request requestMessage = new Request(requestPiece);
 							
+							NeighborController.host.addRequest(this.destination.getPeerID(), requestPiece);
 							Tools.debug("[Edge.runTasks] Requesting piece %d from peer %d...",requestPiece,this.destination.getPeerID());
 							this.sendRequest(requestMessage);
 						}
@@ -390,7 +409,7 @@ public class Edge extends Thread {
 							Tools.debug("[Edge.runTasks] No pieces to request from peer %d.",this.destination.getPeerID());
 						}
 					}
-					else if((state & this.EDGE_RECV_REQUEST) != 0){
+					if((state & this.EDGE_RECV_REQUEST) != 0){
 						int index = this.destination.getLastRequestedPiece();
 						byte[] piece = NeighborController.host.getPiece(index);
 						Piece pieceMessage = new Piece(index,piece);
@@ -402,7 +421,7 @@ public class Edge extends Thread {
 						//FileManager.writeBytesToFile("bytes-sent.txt", pieceMessage.toBytes());
 						this.sendPiece(pieceMessage);
 					}
-					else if((state & this.EDGE_RECV_REQUESTED_PIECE) != 0){ //Received our piece but haven't sent a have
+					if((state & this.EDGE_RECV_REQUESTED_PIECE) != 0){ //Received our piece but haven't sent a have
 						Tools.debug("[Edge.runTasks] Received piece index " + lastPieceIndex);
 						//if a piece has been received, send have messages to all peers
 						sendHaves(lastPieceIndex);
@@ -421,7 +440,6 @@ public class Edge extends Thread {
 
 				
 			}
-			Thread.sleep(500);
 		}
 	}
 	

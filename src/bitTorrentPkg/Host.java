@@ -11,7 +11,7 @@ import java.util.*;
 
 import bitTorrentPkg.Messages.Piece;
 
-public class Host {
+public final class Host {
 	//--------------------VARIABLES--------------------
 	//Common.cfg variables
 	private int numOfPrefNeighbors; //Number of neighbors this peer will share with
@@ -32,7 +32,7 @@ public class Host {
 								 //if not, initiate tcp connections with others
 	
 	private Bitfield bitfield;
-	private ArrayList<RequestedPiece> requests;
+	private final ArrayList<RequestedPiece> requests;
 
 	public HashMap<Integer,Peer> peerInfo; //This will contain the list of ALL peers listed in PeerInfo, not just the ones this host is connected to. 
 	public ArrayList<Integer> targetPeers; //This will contain the peer IDs of all of the peers above this host in the PeerInfo file. 
@@ -49,6 +49,8 @@ public class Host {
 		this.peerID = peerID;
 		peerInfo = new HashMap<Integer, Peer>();
 		targetPeers = new ArrayList<Integer>();
+		
+		this.requests = new ArrayList<RequestedPiece>();
 	}
 	
 	public void init() throws IOException{
@@ -317,11 +319,23 @@ public class Host {
 	
 	public int getPieceIdToRequestFrom(Peer other){
 		//return this.bitfield.getRandomIndex(true);
-		Bitfield possiblePieces = this.bitfield.not().and(other.getBitfield());
-		if(possiblePieces.isAll(false)){
-			return -1; //Other has no pieces that we do not already have. 
+		
+		int index, tries = 0;
+		do{
+			Bitfield possiblePieces = this.bitfield.not().and(other.getBitfield());
+			if(possiblePieces.isAll(false)){
+				return -1; //Other has no pieces that we do not already have. 
+			}
+			
+			index = possiblePieces.getRandomIndex(true);
 		}
-		return possiblePieces.getRandomIndex(true);
+		while(tries < 50 && this.hasRequestedPiece(index));
+		
+		if(this.hasRequestedPiece(index)){
+			Tools.debug("[Host.getPieceIdToRequestFrom] Unable to find a piece to request from peer %d",other.getPeerID());
+			return -1;
+		}
+		return index;
 	}
 
 	public boolean hasPiece(int id){
@@ -337,62 +351,91 @@ public class Host {
 	}
 	
 	public void addRequest(int peerID, int pieceIndex){
-		RequestedPiece request = new RequestedPiece(peerID, pieceIndex);
-		requests.add(request);
+		synchronized(this.requests){
+			RequestedPiece request = new RequestedPiece(peerID, pieceIndex);
+			requests.add(request);
+		}
 	}
 	
 	public RequestedPiece getRequest(int pieceIndex){
-		for(int i = 0; i < requests.size(); i++){
-			if(requests.get(i).getPieceIndex() == pieceIndex){
-				return requests.get(i);
+		synchronized(this.requests){
+			for(int i = 0; i < requests.size(); i++){
+				if(requests.get(i).getPieceIndex() == pieceIndex){
+					return requests.get(i);
+				}
 			}
+			Tools.debug("[Host] Piece index " + pieceIndex + " not found in outstanding requests!");
+			return null;
 		}
-		Tools.debug("[Host] Piece index " + pieceIndex + " not found in outstanding requests!");
-		return null;
 	}
 	
 	public int getRequestIndex(int pieceIndex){
-		//every time you get a request, make sure the requests are clean
-		cleanRequests();
-		for(int i = 0; i < requests.size(); i++){
-			if(requests.get(i).getPieceIndex() == pieceIndex){
-				return i;
+		synchronized(this.requests){
+			//every time you get a request, make sure the requests are clean
+			cleanRequests();
+			for(int i = 0; i < requests.size(); i++){
+				if(requests.get(i).getPieceIndex() == pieceIndex){
+					return i;
+				}
 			}
+			Tools.debug("[Host] Piece index " + pieceIndex + " not found in outstanding requests!");
+			return -1; 
 		}
-		Tools.debug("[Host] Piece index " + pieceIndex + " not found in outstanding requests!");
-		return -1; 
+	}
+	
+	public boolean hasRequestedPiece(int pieceIndex){
+		return this.getRequestIndex(pieceIndex) != -1;
 	}
 	
 	public void removeRequest(int pieceIndex){
-		if(getRequestIndex(pieceIndex) != -1){
-			requests.remove(getRequestIndex(pieceIndex));
-		}else{
-			Tools.debug("[Host] Piece index " + pieceIndex + " could not be removed, because it was not found in oustanding requests!");
+		synchronized(this.requests){
+			if(getRequestIndex(pieceIndex) != -1){
+				requests.remove(getRequestIndex(pieceIndex));
+			}else{
+				Tools.debug("[Host] Piece index " + pieceIndex + " could not be removed, because it was not found in oustanding requests!");
+			}
 		}
 	}
 	
 	public void cleanRequests(){
-		for(int i = 0; i < requests.size(); i++){
-			if(System.currentTimeMillis() - requests.get(i).getTimestamp() > requestTTL){
-				//if the request is greater than the request TTL
-				//delete the request so that it has a chance of being resent
-				requests.remove(i);
-				Tools.debug("[Host] Request of piece index " + requests.get(i).pieceIndex + " from peer " 
-						+ requests.get(i).getPeerID() + " has exceeded it's time to live, and has been removed.");
-				
+		synchronized(this.requests){
+			for(int i = 0; i < requests.size(); i++){
+				if(System.currentTimeMillis() - requests.get(i).getTimestamp() > requestTTL){
+					//if the request is greater than the request TTL
+					//delete the request so that it has a chance of being resent
+					
+					Tools.debug("[Host] Request of piece index " + requests.get(i).pieceIndex + " from peer " 
+							+ requests.get(i).getPeerID() + " has exceeded it's time to live, and has been removed.");
+					
+					requests.remove(i);
+				}
 			}
 		}
 	}
 	
 	public boolean hasRequestedPiece(Peer other,int pieceIndex){
-		int requestIndex = this.getRequestIndex(pieceIndex);
-		if(requestIndex != -1){
-			RequestedPiece request = this.getRequest(pieceIndex);
-			if(request.getPeerID() != other.getPeerID()){
-				return false;
+		synchronized(this.requests){
+			int requestIndex = this.getRequestIndex(pieceIndex);
+			if(requestIndex != -1){
+				RequestedPiece request = this.getRequest(pieceIndex);
+				if(request.getPeerID() != other.getPeerID()){
+					return false;
+				}
 			}
+			return true;
 		}
-		return true;
+	}
+	
+	public boolean hasRequestedPieceFrom(Peer other){
+		synchronized(this.requests){
+			this.cleanRequests();
+			for(RequestedPiece p : this.requests){
+				if(p.getPeerID() == other.getPeerID()){
+					return true;
+				}
+			}
+			return false;
+		}
 	}
 	
 	public byte[] getPiece(int pieceIndex) throws IOException{

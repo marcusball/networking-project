@@ -9,6 +9,8 @@ public class MessageReceiver {
 	private AtomicBoolean isAwaitingPiece;
 	private byte[] pieceBuffer;
 	private int bytesReceived;
+	
+	private int offset = 0;
 	public MessageReceiver(){
 		this.isAwaitingPiece = new AtomicBoolean(false);
 	}
@@ -16,8 +18,17 @@ public class MessageReceiver {
 		synchronized(this.isAwaitingPiece){
 			if(this.isAwaitingPiece.get()){ //If we've received some of a messages bytes, then this is the continuation of those bytes.
 				Tools.debug("[MessageReceiver] pieceBuffer length: %d; message length: %d; bytes received: %d",pieceBuffer.length, message.length, this.bytesReceived);
-				System.arraycopy(message, 0, pieceBuffer, this.bytesReceived, message.length);
-				this.bytesReceived += message.length;
+				int end = message.length;
+				if(this.bytesReceived + message.length > this.pieceBuffer.length){
+					end = this.pieceBuffer.length - this.bytesReceived;
+					this.offset = end; 
+				}
+				else{
+					this.offset = 0;
+				}
+				Tools.debug("[MessageReceiver] message, 0, buffer, %d, %d",this.bytesReceived, end);
+				System.arraycopy(message, 0, pieceBuffer, this.bytesReceived, end);
+				this.bytesReceived += end;
 				
 				if(this.bytesReceived == this.pieceBuffer.length){
 					Tools.debug("[MessageReceiver] Finished receiving pieces [%d/%d bytes]!",this.bytesReceived,this.pieceBuffer.length);
@@ -41,22 +52,26 @@ public class MessageReceiver {
 				byte[] lengthBytes = Arrays.copyOfRange(message, 0, 4);
 				try{
 					Tools.debug("[MessageReceiver] Length: [%s], value: %d",Tools.byteArrayToString(lengthBytes),Tools.bytesToInt(lengthBytes));
+					
+
 					int messageLength = GetMessageLength(lengthBytes);
+					if(messageLength + 5 < message.length){
+						this.offset = 5 + messageLength;
+					}
+					if(messageLength + 5 == message.length){
+						this.offset = 0;
+					}
+					
 					if(messageLength > message.length - 5){
 						//throw new IOException("Message supplied length that exceeds received message length! Stated length: " + messageLength + ", received: " + (message.length - 5));
-						if(messageLength > NeighborController.host.pieceSize() + 50){
-							Tools.debug("Really large size message?");
-							Tools.debug(Tools.byteArrayToString(message));
-						}
-						else{
-							this.isAwaitingPiece.set(true);
-							this.pieceBuffer = new byte[messageLength + 5]; //We're going to include message header
-							this.bytesReceived = 0;
-							System.arraycopy(message, 0, pieceBuffer, this.bytesReceived, message.length);
-							this.bytesReceived += message.length;
-							
-							Tools.debug("[MessageReceiver] Received partial message %d [Total: %d/%d bytes].",message.length,this.bytesReceived,this.pieceBuffer.length);
-						}
+						this.isAwaitingPiece.set(true);
+						this.pieceBuffer = new byte[messageLength + 5]; //We're going to include message header
+						this.bytesReceived = 0;
+						System.arraycopy(message, 0, pieceBuffer, this.bytesReceived, message.length);
+						this.bytesReceived += message.length;
+						
+						Tools.debug("[MessageReceiver] Received partial message %d [Total: %d/%d bytes].",message.length,this.bytesReceived,this.pieceBuffer.length);
+						
 						return null;
 					}
 					else{
@@ -111,6 +126,9 @@ public class MessageReceiver {
 			}
 			
 		}
+	}
+	public int getOffset(){
+		return this.offset; 
 	}
 	private int GetMessageLength(byte[] lengthBytes) throws Exception{
 		return Tools.bytesToInt(lengthBytes);

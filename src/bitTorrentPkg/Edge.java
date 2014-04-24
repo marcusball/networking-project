@@ -67,6 +67,7 @@ public class Edge extends Thread {
 	private final int EDGE_CLEAR_RECV_HAVE = Integer.MAX_VALUE & ~(EDGE_RECV_HAVE);
 	private final int EDGE_CLEAR_RECV_REQUEST = Integer.MAX_VALUE & ~(EDGE_RECV_REQUEST);
 	private final int EDGE_CLEAR_RECV_REQUESTED_PIECE = Integer.MAX_VALUE & ~(EDGE_RECV_REQUESTED_PIECE);
+	private final int EDGE_CLEAR_SENT_REQUEST = Integer.MAX_VALUE & ~(EDGE_SENT_REQUEST);
 	
 	private final int EDGE_GREETING_COMPLETE = 15; 
 	
@@ -391,14 +392,15 @@ public class Edge extends Thread {
 						FileManager.writeBytesToFile("bytes-sent.txt", pieceMessage.toBytes());
 						this.sendPiece(pieceMessage);
 					}
+					else if((state & this.EDGE_RECV_REQUESTED_PIECE) != 0){ //Received our piece but haven't sent a have
+						Tools.debug("[Edge.runTasks] Received piece index " + lastPieceIndex);
+						//if a piece has been received, send have messages to all peers
+						sendHaves(lastPieceIndex);
+						this.edgeState.set((this.edgeState.get() & this.EDGE_CLEAR_RECV_REQUESTED_PIECE) & this.EDGE_CLEAR_SENT_REQUEST);
+					}
 				//}
 
-				if((state & this.EDGE_RECV_REQUESTED_PIECE) != 0){
-					Tools.debug("[Edge.runTasks] Received piece index " + lastPieceIndex);
-					//if a piece has been received, send have messages to all peers
-					sendHaves(lastPieceIndex);
-					this.edgeState.set(this.edgeState.get() & this.EDGE_CLEAR_RECV_REQUESTED_PIECE);
-				}
+				
 			}
 		}
 	}
@@ -477,6 +479,10 @@ public class Edge extends Thread {
 				lastPieceIndex = newPiece.getIndex();
 				Tools.debug("[Edge.handleMessage] Received piece %d!",newPiece.getIndex());
 				Tools.debug("[Edge.handleMessage] Piece MD5: %s [l: %d, s: %2x e: %2x]",Tools.getMD5(newPiece.getData()),newPiece.getData().length,newPiece.getData()[0],newPiece.getData()[newPiece.getData().length - 1]);
+
+				//FileManager.writeBytesToFile("message-received.txt", newPiece.toBytes());
+				NeighborController.host.savePiece(newPiece);
+				
 				this.edgeState.set(this.edgeState.get() | EDGE_RECV_REQUESTED_PIECE);
 				FileManager.writeBytesToFile("message-received.txt", newPiece.toBytes());
 				Logger.logPiece(destination.getPeerID(), lastPieceIndex);

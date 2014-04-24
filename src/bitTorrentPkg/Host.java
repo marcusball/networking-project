@@ -9,6 +9,8 @@ import java.net.Socket;
 import java.net.ServerSocket;
 import java.util.*;
 
+import bitTorrentPkg.Messages.Piece;
+
 public class Host {
 	//--------------------VARIABLES--------------------
 	//Common.cfg variables
@@ -395,6 +397,17 @@ public class Host {
 	
 	public byte[] getPiece(int pieceIndex) throws IOException{
 		return FileManager.getFilePiece(pieceIndex, this.pieceSize);
+	}
+	
+	public void savePiece(Piece piece){
+		try {
+			FileManager.writeFilePiece(piece.getIndex(), piece.getData());
+			this.bitfield.setValue(piece.getIndex(), true);
+		} 
+		catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }
 

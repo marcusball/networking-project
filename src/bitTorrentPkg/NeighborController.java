@@ -71,6 +71,7 @@ public class NeighborController {
 	
 	class Unchoke extends TimerTask{
 		public void run(){
+			Tools.debug("[NeighborController.Unchoke] Unchoke TimerTask started.");
 			if(peers.size() >= 1){
 				LinkedList<Peer> peersToUnchoke = new LinkedList<Peer>();
 				if(!host.hasFile()){
@@ -115,6 +116,7 @@ public class NeighborController {
 				}
 				//now that peers to unchoke have been found, reiterate through peers and peersToUnchoke, sending choke and unchoke messages when necessary
 					//also change the state of "boolean unchoked" in the Peer object
+				Tools.debug("[NeighborController.Unchoke] Pref neighbors found.");
 				
 				for(int i = 0; i < peers.size(); i++){
 					//for each peer...
@@ -126,11 +128,13 @@ public class NeighborController {
 								//if we find that our peer is in peersToUnchoke, then we keep it unchoked
 								//so we don't send a choked message
 								sendChoked = false;
+								
 							}
 						}
 						if(sendChoked){
 							//the peer has been switched from unchoked to choked\
 							peers.get(i).choke();
+							Tools.debug("[NeighborController.Unchoke] Peer " + peers.get(i).getPeerID() + " has been choked.");
 						}
 					}else{
 						//if this peer is choked, see if we need to unchoke it
@@ -145,6 +149,7 @@ public class NeighborController {
 						if(sendUnchoked){
 							//the peer has been switched from choked to unchoked
 							peers.get(i).unchoke();
+							Tools.debug("[NeighborController.Unchoke] Peer " + peers.get(i).getPeerID() + " has been unchoked.");
 						}
 					}
 					//if the peer was unchoked and remains unchoked
@@ -172,8 +177,10 @@ public class NeighborController {
 				randIndex = new Random(System.currentTimeMillis()).nextInt(peers.size());
 				//choke the current opt neighbor and unchoke the next opt neighbor
 				peers.get(optimisticPeerIndex).optChoke();
+				Tools.debug("[NeighborController.Unchoke] Peer " + optimisticPeerIndex + " has been opt choked.");
 				optimisticPeerIndex = randIndex;
 				peers.get(optimisticPeerIndex).optUnchoke();
+				Tools.debug("[NeighborController.Unchoke] Peer " + optimisticPeerIndex + " has been opt unchoked.");
 				Logger.logChangeOfOptUnchokedNeighbor(optimisticPeerIndex);
 			}
 			

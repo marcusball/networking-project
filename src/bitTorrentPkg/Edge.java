@@ -66,6 +66,7 @@ public class Edge extends Thread {
 	private final int EDGE_CLEAR_RECV_UNCHOKE = Integer.MAX_VALUE & ~(EDGE_RECV_UNCHOKE);
 	private final int EDGE_CLEAR_RECV_HAVE = Integer.MAX_VALUE & ~(EDGE_RECV_HAVE);
 	private final int EDGE_CLEAR_RECV_REQUEST = Integer.MAX_VALUE & ~(EDGE_RECV_REQUEST);
+	private final int EDGE_CLEAR_RECV_REQUESTED_PIECE = Integer.MAX_VALUE & ~(EDGE_RECV_REQUESTED_PIECE);
 	
 	
 	private final int EDGE_GREETING_COMPLETE = 15; 
@@ -259,6 +260,15 @@ public class Edge extends Thread {
 		this.sendMessage(message);
 	}
 	
+	public void sendHaves(int pieceIndex){
+		//create a have message for this piece index
+		Have have = new Have(pieceIndex);
+		//send it to every peer
+		for(int i = 0; i < NeighborController.getPeers().size(); i++){
+			NeighborController.getPeers().get(i).connection.sendMessage(have);
+		}
+	}
+	
 	/**
 	 * Thread method: Perpetually listens for responses. 
 	 */
@@ -340,7 +350,7 @@ public class Edge extends Thread {
 					this.sendInterestedStatus();
 				}
 				
-				if((state & this.EDGE_RECV_UNCHOKE) ==  this.EDGE_RECV_UNCHOKE){
+				if((state & this.EDGE_RECV_UNCHOKE) != 0){
 					//if an unchoke message has been received, send interested
 					Tools.debug("[Edge.runTasks] Sending interested status in response to unchoke...");
 					this.sendInterestedStatus();
@@ -348,28 +358,32 @@ public class Edge extends Thread {
 					this.edgeState.set(state & this.EDGE_CLEAR_RECV_UNCHOKE);
 				}
 				
-				//if((state & this.EDGE_RECV_UNCHOKE) != 0){ //Same condition as above, but I want to keep this logic separate for now. 
-					if((state & this.EDGE_SENT_REQUEST) == 0 && NeighborController.host.hasInterestIn(this.destination)){
-						Tools.debug("[Edge.runTasks] Getting ready to request a piece...");
-						int requestPiece = NeighborController.host.getPieceIdToRequestFrom(this.destination);
-						if(requestPiece != -1){ //If there are pieces we can actually request
-							Request requestMessage = new Request(requestPiece);
-							
-							Tools.debug("[Edge.runTasks] Requesting piece %d from peer %d...",requestPiece,this.destination.getPeerID());
-							this.sendRequest(requestMessage);
-						}
-					}
-					else if((state & this.EDGE_RECV_REQUEST) != 0){
-						int index = this.destination.getLastRequestedPiece();
-						byte[] piece = NeighborController.host.getPiece(index);
-						Piece pieceMessage = new Piece(index,piece);
+				if((state & this.EDGE_SENT_REQUEST) == 0 && NeighborController.host.hasInterestIn(this.destination)){
+					Tools.debug("[Edge.runTasks] Getting ready to request a piece...");
+					int requestPiece = NeighborController.host.getPieceIdToRequestFrom(this.destination);
+					if(requestPiece != -1){ //If there are pieces we can actually request
+						Request requestMessage = new Request(requestPiece);
 						
-						this.edgeState.set(this.edgeState.get() & this.EDGE_CLEAR_RECV_REQUEST);
-						
-						Tools.debug("[Edge.runTasks] Sending piece %d to peer %d...",index,this.destination.getPeerID());
-						this.sendPiece(pieceMessage);
+						Tools.debug("[Edge.runTasks] Requesting piece %d from peer %d...",requestPiece,this.destination.getPeerID());
+						this.sendRequest(requestMessage);
 					}
-				//}
+				}
+				else if((state & this.EDGE_RECV_REQUEST) != 0){
+					int index = this.destination.getLastRequestedPiece();
+					byte[] piece = NeighborController.host.getPiece(index);
+					Piece pieceMessage = new Piece(index,piece);
+					
+					this.edgeState.set(this.edgeState.get() & this.EDGE_CLEAR_RECV_REQUEST);
+					
+					Tools.debug("[Edge.runTasks] Sending piece %d to peer %d...",index,this.destination.getPeerID());
+					this.sendPiece(pieceMessage);
+				}
+			
+				
+				if((state & this.EDGE_RECV_REQUESTED_PIECE) != 0){
+					//if it gets a piece, it must send have message to all peers
+					//TODO: execute sendHaves(int pieceIndex), using the last piece index received
+				}
 			}
 		}
 	}

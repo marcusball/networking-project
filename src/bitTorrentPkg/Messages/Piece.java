@@ -21,6 +21,6 @@ public class Piece extends NormalMessage{
 		return this.pieceIndex;
 	}
 	public byte[] getData(){
-		return Arrays.copyOfRange(this.payload,3,this.payload.length - 1);
+		return Arrays.copyOfRange(this.payload,4,this.payload.length);
 	}
 }

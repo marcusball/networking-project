@@ -5,7 +5,7 @@ import bitTorrentPkg.Messages.*;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicBoolean;
-public class MessageReceiver {
+public final class MessageReceiver {
 	private final AtomicBoolean isAwaitingPiece;
 	private byte[] pieceBuffer;
 	private int bytesReceived;
@@ -43,15 +43,19 @@ public class MessageReceiver {
 					int messageLength = GetMessageLength(lengthBytes);
 					if(messageLength > message.length - 5){
 						//throw new IOException("Message supplied length that exceeds received message length! Stated length: " + messageLength + ", received: " + (message.length - 5));
-
-						this.isAwaitingPiece.set(true);
-						this.pieceBuffer = new byte[messageLength + 5]; //We're going to include message header
-						this.bytesReceived = 0;
-						System.arraycopy(message, 0, pieceBuffer, this.bytesReceived, message.length);
-						this.bytesReceived += message.length;
-						
-						Tools.debug("[MessageReceiver] Received partial message %d [Total: %d/%d bytes].",message.length,this.bytesReceived,this.pieceBuffer.length);
-						
+						if(messageLength > NeighborController.host.pieceSize() + 50){
+							Tools.debug("Really large size message?");
+							Tools.debug(Tools.byteArrayToString(message));
+						}
+						else{
+							this.isAwaitingPiece.set(true);
+							this.pieceBuffer = new byte[messageLength + 5]; //We're going to include message header
+							this.bytesReceived = 0;
+							System.arraycopy(message, 0, pieceBuffer, this.bytesReceived, message.length);
+							this.bytesReceived += message.length;
+							
+							Tools.debug("[MessageReceiver] Received partial message %d [Total: %d/%d bytes].",message.length,this.bytesReceived,this.pieceBuffer.length);
+						}
 						return null;
 					}
 					else{

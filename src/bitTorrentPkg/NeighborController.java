@@ -77,6 +77,18 @@ public class NeighborController {
 		return peers;
 	}
 	
+	public static boolean allPeersHaveFile(){
+		if(peers.size() > 0){
+			for(Peer p : peers){
+				if(!p.hasFile()){
+					return false;
+				}
+			}
+			return true;
+		}
+		return false;
+	}
+	
 	class Unchoke extends TimerTask{
 		public void run(){
 			Tools.debug("[NeighborController.Unchoke] Unchoke TimerTask started.");

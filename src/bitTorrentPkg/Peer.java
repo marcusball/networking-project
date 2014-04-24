@@ -39,7 +39,7 @@ public class Peer {
 	protected Edge connection;
 	
 	protected long pieceSize;
-	protected long numOfPieces;
+	protected int numOfPieces;
 	protected Bitfield bitfield;
 	
 	protected long startTime; //in milliseconds since Jan 1 1970
@@ -58,7 +58,7 @@ public class Peer {
 	 * All Peer class constructors are located here
 	 */
 	
-	public Peer(int peerID, String hostName, int listeningPort, boolean hasFile, boolean isFirstPeer, long pieceSize, long numOfPieces, long startTime){
+	public Peer(int peerID, String hostName, int listeningPort, boolean hasFile, boolean isFirstPeer, long pieceSize, int numOfPieces, long startTime){
 		//this constructor is used to keep track of OTHER peers
 		//when keeping track of other peers, this info is all that is necessary
 		this.peerID = peerID;
@@ -71,9 +71,11 @@ public class Peer {
 		unchoked = false;
 		optUnchoked = false;
 		this.startTime = startTime;
+		
+		this.bitfield = new Bitfield(this.numOfPieces);
 	}
 	
-	public Peer(int peerID, String hostName, int listeningPort, boolean hasFile, boolean isFirstPeer, long pieceSize, long numOfPieces, long startTime, Edge connection){
+	public Peer(int peerID, String hostName, int listeningPort, boolean hasFile, boolean isFirstPeer, long pieceSize, int numOfPieces, long startTime, Edge connection){
 		//this constructor is used to keep track of OTHER peers
 		//when keeping track of other peers, this info is all that is necessary
 		this.peerID = peerID;
@@ -87,6 +89,8 @@ public class Peer {
 		optUnchoked = false;
 		this.startTime = startTime;
 		this.connection = connection;
+		
+		this.bitfield = new Bitfield(this.numOfPieces);
 	}	
 	
 	public void createEdgeConnection() throws IOException{

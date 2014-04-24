@@ -283,7 +283,7 @@ public class Edge extends Thread {
 			byte[] buffer;
 			int bytesRead;
 			
-			MessageReceiver receiver = new MessageReceiver();
+			final MessageReceiver receiver = new MessageReceiver();
 			
 			Tools.debug("[Edge.run] Now listening for responses...");
 			Tools.debug("[Edge.run] State is %s.",Tools.byteToBinString((byte)this.edgeState.get()));
@@ -296,6 +296,11 @@ public class Edge extends Thread {
 				if((this.edgeState.get() == this.EDGE_RECV_HANDSHAKE) && this.breakAtHandshakeRecv.get() == true){
 					//This if statement requires that EDGE_RECV_HANDSHAKE be 1. 
 					Tools.debug("[Edge.run] Handshake received, breaking...");
+					break;
+				}
+				
+				if(NeighborController.host.hasFile() && NeighborController.allPeersHaveFile()){
+					Tools.debug("[Edge.run] All peers have the file!");
 					break;
 				}
 
@@ -345,6 +350,8 @@ public class Edge extends Thread {
 						}
 						
 						this.sendHandshake(); //Send our handshake
+						
+						Thread.sleep(1500);
 					}
 					else{ //If we have sent our handshake
 						if((state & EDGE_SENT_BITFIELD) == 0){ //If we havent sent this host's bitfield
@@ -479,6 +486,10 @@ public class Edge extends Thread {
 				this.destination.setHasPiece(index,true);
 				this.edgeState.set(this.edgeState.get() & this.EDGE_CLEAR_SENT_INTEREST); //Because we've just received a HAVE, we may change our interest in this peer.
 				Logger.logHave(destination.getPeerID(), index);
+				
+				if(this.destination.getBitfield().isAll(true)){
+					this.destination.setHasFile(true);
+				}
 			}
 			else if(received instanceof Request){
 				Request req = (Request)received;

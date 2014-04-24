@@ -389,7 +389,7 @@ public class Edge extends Thread {
 						
 						Tools.debug("[Edge.runTasks] Sending piece %d to peer %d...",index,this.destination.getPeerID());
 						Tools.debug("[Edge.runTasks] Piece MD5: %s [l: %d, s: %2x e: %2x]",Tools.getMD5(piece),piece.length,piece[0],piece[piece.length - 1]);
-						FileManager.writeBytesToFile("bytes-sent.txt", pieceMessage.toBytes());
+						//FileManager.writeBytesToFile("bytes-sent.txt", pieceMessage.toBytes());
 						this.sendPiece(pieceMessage);
 					}
 					else if((state & this.EDGE_RECV_REQUESTED_PIECE) != 0){ //Received our piece but haven't sent a have

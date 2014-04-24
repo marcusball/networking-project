@@ -17,8 +17,11 @@ public class FileManager {
 	private static File shareFile;
 	private static RandomAccessFile shareFileRAF;
 	
+	private static boolean hasDirectory = false;
+	
 	public static void openSharedFile(String fileName){
 		try {
+			checkDirectory();
 			shareFilePath = getFilePath(fileName);
 			shareFile = new File(shareFilePath);
 			shareFileRAF = new RandomAccessFile(shareFile,"r");
@@ -28,6 +31,16 @@ public class FileManager {
 		catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+	}
+	
+	public static void checkDirectory(){
+		if(!hasDirectory){
+			File dir = new File(String.format(directoryPath,NeighborController.host.getPeerID()));
+			if(!dir.exists() || !dir.isDirectory()){
+				dir.mkdir();
+			}
+			hasDirectory = true;
 		}
 	}
 	
@@ -64,7 +77,17 @@ public class FileManager {
 	}
 	
 	public static void writeBytesToFile(String file,byte[] toWrite) throws IOException{
-		FileOutputStream out = new FileOutputStream(file);
+		checkDirectory();
+		
+		File piece = new File(file);
+		if(!piece.exists()){
+			piece.createNewFile();
+		}
+		else{
+			Tools.debug("[FileManager.writeBytesToFile] File already exists?");
+		}
+
+		FileOutputStream out = new FileOutputStream(piece);
 		out.write(toWrite);
 		out.close();
 	}

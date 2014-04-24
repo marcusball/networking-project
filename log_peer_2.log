@@ -1,335 +1,260 @@
-Thu Apr 24 00:39:33 EDT 2014: Test log. Peer ID = 2
-Thu Apr 24 00:39:34 EDT 2014: Peer 2 makes a connection to Peer 1
-Thu Apr 24 00:39:35 EDT 2014: Peer 2 makes a connection from Peer 3
-Thu Apr 24 00:39:35 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:36 EDT 2014: Peer 2 has downloaded the piece 90 from 1
-Thu Apr 24 00:39:36 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:36 EDT 2014: Peer 2 has downloaded the piece 33 from 1
-Thu Apr 24 00:39:36 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:36 EDT 2014: Peer 2 has downloaded the piece 108 from 1
-Thu Apr 24 00:39:36 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:36 EDT 2014: Peer 2 has downloaded the piece 104 from 1
-Thu Apr 24 00:39:36 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:36 EDT 2014: Peer 2 has downloaded the piece 17 from 1
-Thu Apr 24 00:39:36 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:36 EDT 2014: Peer 2 has downloaded the piece 106 from 1
-Thu Apr 24 00:39:36 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:36 EDT 2014: Peer 2 has downloaded the piece 7 from 1
-Thu Apr 24 00:39:36 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:36 EDT 2014: Peer 2 has downloaded the piece 29 from 1
-Thu Apr 24 00:39:36 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:36 EDT 2014: Peer 2 has downloaded the piece 120 from 1
-Thu Apr 24 00:39:36 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:36 EDT 2014: Peer 2 has downloaded the piece 25 from 1
-Thu Apr 24 00:39:36 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:36 EDT 2014: Peer 2 has downloaded the piece 15 from 1
-Thu Apr 24 00:39:36 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:36 EDT 2014: Peer 2 has downloaded the piece 24 from 1
-Thu Apr 24 00:39:36 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:36 EDT 2014: Peer 2 has downloaded the piece 100 from 1
-Thu Apr 24 00:39:36 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:36 EDT 2014: Peer 2 has downloaded the piece 68 from 1
-Thu Apr 24 00:39:36 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:36 EDT 2014: Peer 2 has downloaded the piece 13 from 1
-Thu Apr 24 00:39:36 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:36 EDT 2014: Peer 2 has downloaded the piece 38 from 1
-Thu Apr 24 00:39:36 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:37 EDT 2014: Peer 2 has downloaded the piece 36 from 1
-Thu Apr 24 00:39:37 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:37 EDT 2014: Peer 2 has downloaded the piece 71 from 1
-Thu Apr 24 00:39:37 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:37 EDT 2014: Peer 2 has downloaded the piece 41 from 1
-Thu Apr 24 00:39:37 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:37 EDT 2014: Peer 2 has downloaded the piece 19 from 1
-Thu Apr 24 00:39:37 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:37 EDT 2014: Peer 2 has downloaded the piece 101 from 1
-Thu Apr 24 00:39:37 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:37 EDT 2014: Peer 2 has downloaded the piece 94 from 1
-Thu Apr 24 00:39:37 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:37 EDT 2014: Peer 2 has downloaded the piece 98 from 1
-Thu Apr 24 00:39:37 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:37 EDT 2014: Peer 2 has downloaded the piece 18 from 1
-Thu Apr 24 00:39:37 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:37 EDT 2014: Peer 2 has downloaded the piece 66 from 1
-Thu Apr 24 00:39:37 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:37 EDT 2014: Peer 2 has downloaded the piece 52 from 1
-Thu Apr 24 00:39:37 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:37 EDT 2014: Peer 2 has downloaded the piece 70 from 1
-Thu Apr 24 00:39:37 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:37 EDT 2014: Peer 2 has downloaded the piece 42 from 1
-Thu Apr 24 00:39:37 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:37 EDT 2014: Peer 2 received a have message from Peer 3 for the piece 53
-Thu Apr 24 00:39:37 EDT 2014: Peer 2 has downloaded the piece 39 from 1
-Thu Apr 24 00:39:37 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:37 EDT 2014: Peer 2 has downloaded the piece 37 from 1
-Thu Apr 24 00:39:37 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:37 EDT 2014: Peer 2 received a have message from Peer 3 for the piece 120
-Thu Apr 24 00:39:37 EDT 2014: Peer 2 has downloaded the piece 93 from 1
-Thu Apr 24 00:39:37 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:37 EDT 2014: Peer 2 has downloaded the piece 0 from 1
-Thu Apr 24 00:39:37 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:37 EDT 2014: Peer 2 received a have message from Peer 3 for the piece 10
-Thu Apr 24 00:39:37 EDT 2014: Peer 2 has downloaded the piece 62 from 1
-Thu Apr 24 00:39:37 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:37 EDT 2014: Peer 2 received a have message from Peer 3 for the piece 17
-Thu Apr 24 00:39:37 EDT 2014: Peer 2 has downloaded the piece 44 from 1
-Thu Apr 24 00:39:37 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:37 EDT 2014: Peer 2 received a have message from Peer 3 for the piece 84
-Thu Apr 24 00:39:37 EDT 2014: Peer 2 has downloaded the piece 1 from 1
-Thu Apr 24 00:39:37 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:37 EDT 2014: Peer 2 received a have message from Peer 3 for the piece 73
-Thu Apr 24 00:39:37 EDT 2014: Peer 2 has downloaded the piece 4 from 1
-Thu Apr 24 00:39:37 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:37 EDT 2014: Peer 2 received a have message from Peer 3 for the piece 7
-Thu Apr 24 00:39:38 EDT 2014: Peer 2 has downloaded the piece 77 from 1
-Thu Apr 24 00:39:38 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:38 EDT 2014: Peer 2 received a have message from Peer 3 for the piece 93
-Thu Apr 24 00:39:38 EDT 2014: Peer 2 has downloaded the piece 2 from 1
-Thu Apr 24 00:39:38 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:38 EDT 2014: Peer 2 received a have message from Peer 3 for the piece 77
-Thu Apr 24 00:39:38 EDT 2014: Peer 2 has downloaded the piece 31 from 1
-Thu Apr 24 00:39:38 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:38 EDT 2014: Peer 2 received a have message from Peer 3 for the piece 18
-Thu Apr 24 00:39:38 EDT 2014: Peer 2 has downloaded the piece 82 from 1
-Thu Apr 24 00:39:38 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:38 EDT 2014: Peer 2 received a have message from Peer 3 for the piece 105
-Thu Apr 24 00:39:38 EDT 2014: Peer 2 has downloaded the piece 45 from 1
-Thu Apr 24 00:39:38 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:38 EDT 2014: Peer 2 received a have message from Peer 3 for the piece 16
-Thu Apr 24 00:39:38 EDT 2014: Peer 2 has downloaded the piece 5 from 1
-Thu Apr 24 00:39:38 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:38 EDT 2014: Peer 2 received a have message from Peer 3 for the piece 42
-Thu Apr 24 00:39:38 EDT 2014: Peer 2 has downloaded the piece 3 from 1
-Thu Apr 24 00:39:38 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:38 EDT 2014: Peer 2 has downloaded the piece 6 from 1
-Thu Apr 24 00:39:38 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:38 EDT 2014: Peer 2 received a have message from Peer 3 for the piece 13
-Thu Apr 24 00:39:38 EDT 2014: Peer 2 has downloaded the piece 95 from 1
-Thu Apr 24 00:39:38 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:38 EDT 2014: Peer 2 received a have message from Peer 3 for the piece 56
-Thu Apr 24 00:39:38 EDT 2014: Peer 2 has downloaded the piece 51 from 1
-Thu Apr 24 00:39:38 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:38 EDT 2014: Peer 2 has downloaded the piece 107 from 1
-Thu Apr 24 00:39:38 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:38 EDT 2014: Peer 2 received a have message from Peer 3 for the piece 39
-Thu Apr 24 00:39:38 EDT 2014: Peer 2 has downloaded the piece 121 from 1
-Thu Apr 24 00:39:38 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:38 EDT 2014: Peer 2 received a have message from Peer 3 for the piece 121
-Thu Apr 24 00:39:38 EDT 2014: Peer 2 has downloaded the piece 50 from 1
-Thu Apr 24 00:39:38 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:38 EDT 2014: Peer 2 has downloaded the piece 63 from 1
-Thu Apr 24 00:39:38 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:38 EDT 2014: Peer 2 received a have message from Peer 3 for the piece 0
-Thu Apr 24 00:39:38 EDT 2014: Peer 2 has downloaded the piece 76 from 1
-Thu Apr 24 00:39:38 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:38 EDT 2014: Peer 2 has downloaded the piece 12 from 1
-Thu Apr 24 00:39:38 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:38 EDT 2014: Peer 2 received a have message from Peer 3 for the piece 23
-Thu Apr 24 00:39:38 EDT 2014: Peer 2 has downloaded the piece 110 from 1
-Thu Apr 24 00:39:38 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:38 EDT 2014: Peer 2 received a have message from Peer 3 for the piece 115
-Thu Apr 24 00:39:38 EDT 2014: Peer 2 has downloaded the piece 80 from 1
-Thu Apr 24 00:39:38 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:38 EDT 2014: Peer 2 received a have message from Peer 3 for the piece 90
-Thu Apr 24 00:39:38 EDT 2014: Peer 2 has downloaded the piece 103 from 1
-Thu Apr 24 00:39:38 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:38 EDT 2014: Peer 2 received a have message from Peer 3 for the piece 54
-Thu Apr 24 00:39:38 EDT 2014: Peer 2 has downloaded the piece 9 from 1
-Thu Apr 24 00:39:38 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:38 EDT 2014: Peer 2 received a have message from Peer 3 for the piece 32
-Thu Apr 24 00:39:38 EDT 2014: Peer 2 has downloaded the piece 85 from 1
-Thu Apr 24 00:39:38 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:38 EDT 2014: Peer 2 received a have message from Peer 3 for the piece 21
-Thu Apr 24 00:39:38 EDT 2014: Peer 2 has downloaded the piece 114 from 1
-Thu Apr 24 00:39:38 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:38 EDT 2014: Peer 2 received a have message from Peer 3 for the piece 6
-Thu Apr 24 00:39:38 EDT 2014: Peer 2 has downloaded the piece 8 from 1
-Thu Apr 24 00:39:38 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:39 EDT 2014: Peer 2 has downloaded the piece 35 from 1
-Thu Apr 24 00:39:39 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:39 EDT 2014: Peer 2 received a have message from Peer 3 for the piece 22
-Thu Apr 24 00:39:39 EDT 2014: Peer 2 has downloaded the piece 122 from 1
-Thu Apr 24 00:39:39 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:39 EDT 2014: Peer 2 received a have message from Peer 3 for the piece 89
-Thu Apr 24 00:39:39 EDT 2014: Peer 2 has downloaded the piece 65 from 1
-Thu Apr 24 00:39:39 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:39 EDT 2014: Peer 2 received a have message from Peer 3 for the piece 14
-Thu Apr 24 00:39:39 EDT 2014: Peer 2 has downloaded the piece 75 from 1
-Thu Apr 24 00:39:39 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:39 EDT 2014: Peer 2 received a have message from Peer 3 for the piece 19
-Thu Apr 24 00:39:39 EDT 2014: Peer 2 has downloaded the piece 11 from 1
-Thu Apr 24 00:39:39 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:39 EDT 2014: Peer 2 received a have message from Peer 3 for the piece 122
-Thu Apr 24 00:39:39 EDT 2014: Peer 2 has downloaded the piece 116 from 1
-Thu Apr 24 00:39:39 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:39 EDT 2014: Peer 2 received a have message from Peer 3 for the piece 123
-Thu Apr 24 00:39:39 EDT 2014: Peer 2 has downloaded the piece 10 from 1
-Thu Apr 24 00:39:39 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:39 EDT 2014: Peer 2 received a have message from Peer 3 for the piece 72
-Thu Apr 24 00:39:39 EDT 2014: Peer 2 has downloaded the piece 56 from 1
-Thu Apr 24 00:39:39 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:39 EDT 2014: Peer 2 received a have message from Peer 3 for the piece 20
-Thu Apr 24 00:39:39 EDT 2014: Peer 2 has downloaded the piece 69 from 1
-Thu Apr 24 00:39:39 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:39 EDT 2014: Peer 2 received a have message from Peer 3 for the piece 67
-Thu Apr 24 00:39:39 EDT 2014: Peer 2 has downloaded the piece 79 from 1
-Thu Apr 24 00:39:39 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:39 EDT 2014: Peer 2 received a have message from Peer 3 for the piece 11
-Thu Apr 24 00:39:39 EDT 2014: Peer 2 has downloaded the piece 34 from 1
-Thu Apr 24 00:39:39 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:39 EDT 2014: Peer 2 has downloaded the piece 67 from 1
-Thu Apr 24 00:39:39 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:39 EDT 2014: Peer 2 received a have message from Peer 3 for the piece 76
-Thu Apr 24 00:39:39 EDT 2014: Peer 2 has downloaded the piece 21 from 1
-Thu Apr 24 00:39:39 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:39 EDT 2014: Peer 2 received a have message from Peer 3 for the piece 57
-Thu Apr 24 00:39:39 EDT 2014: Peer 2 has downloaded the piece 84 from 1
-Thu Apr 24 00:39:39 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:39 EDT 2014: Peer 2 received a have message from Peer 3 for the piece 113
-Thu Apr 24 00:39:39 EDT 2014: Peer 2 has downloaded the piece 102 from 1
-Thu Apr 24 00:39:39 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:39 EDT 2014: Peer 2 received a have message from Peer 3 for the piece 75
-Thu Apr 24 00:39:39 EDT 2014: Peer 2 has downloaded the piece 32 from 1
-Thu Apr 24 00:39:39 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:39 EDT 2014: Peer 2 received a have message from Peer 3 for the piece 4
-Thu Apr 24 00:39:39 EDT 2014: Peer 2 has downloaded the piece 64 from 1
-Thu Apr 24 00:39:39 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:39 EDT 2014: Peer 2 received a have message from Peer 3 for the piece 66
-Thu Apr 24 00:39:39 EDT 2014: Peer 2 has downloaded the piece 60 from 1
-Thu Apr 24 00:39:39 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:39 EDT 2014: Peer 2 received a have message from Peer 3 for the piece 31
-Thu Apr 24 00:39:39 EDT 2014: Peer 2 has downloaded the piece 30 from 1
-Thu Apr 24 00:39:39 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:39 EDT 2014: Peer 2 has downloaded the piece 58 from 1
-Thu Apr 24 00:39:39 EDT 2014: Peer 2 received a have message from Peer 3 for the piece 3
-Thu Apr 24 00:39:39 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:40 EDT 2014: Peer 2 has downloaded the piece 78 from 1
-Thu Apr 24 00:39:40 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:40 EDT 2014: Peer 2 received a have message from Peer 3 for the piece 15
-Thu Apr 24 00:39:40 EDT 2014: Peer 2 has downloaded the piece 53 from 1
-Thu Apr 24 00:39:40 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:40 EDT 2014: Peer 2 received a have message from Peer 3 for the piece 69
-Thu Apr 24 00:39:40 EDT 2014: Peer 2 has downloaded the piece 81 from 1
-Thu Apr 24 00:39:40 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:40 EDT 2014: Peer 2 received a have message from Peer 3 for the piece 41
-Thu Apr 24 00:39:40 EDT 2014: Peer 2 has downloaded the piece 87 from 1
-Thu Apr 24 00:39:40 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:40 EDT 2014: Peer 2 received a have message from Peer 3 for the piece 101
-Thu Apr 24 00:39:40 EDT 2014: Peer 2 has downloaded the piece 74 from 1
-Thu Apr 24 00:39:40 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:40 EDT 2014: Peer 2 has downloaded the piece 61 from 1
-Thu Apr 24 00:39:40 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:40 EDT 2014: Peer 2 received a have message from Peer 3 for the piece 38
-Thu Apr 24 00:39:40 EDT 2014: Peer 2 has downloaded the piece 22 from 1
-Thu Apr 24 00:39:40 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:40 EDT 2014: Peer 2 received a have message from Peer 3 for the piece 124
-Thu Apr 24 00:39:40 EDT 2014: Peer 2 has downloaded the piece 83 from 1
-Thu Apr 24 00:39:40 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:40 EDT 2014: Peer 2 received a have message from Peer 3 for the piece 12
-Thu Apr 24 00:39:40 EDT 2014: Peer 2 has downloaded the piece 92 from 1
-Thu Apr 24 00:39:40 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:40 EDT 2014: Peer 2 received a have message from Peer 3 for the piece 43
-Thu Apr 24 00:39:40 EDT 2014: Peer 2 has downloaded the piece 105 from 1
-Thu Apr 24 00:39:40 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:40 EDT 2014: Peer 2 received a have message from Peer 3 for the piece 79
-Thu Apr 24 00:39:40 EDT 2014: Peer 2 has downloaded the piece 117 from 1
-Thu Apr 24 00:39:40 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:40 EDT 2014: Peer 2 has downloaded the piece 97 from 1
-Thu Apr 24 00:39:40 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:40 EDT 2014: Peer 2 received a have message from Peer 3 for the piece 125
-Thu Apr 24 00:39:40 EDT 2014: Peer 2 has downloaded the piece 57 from 1
-Thu Apr 24 00:39:40 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:40 EDT 2014: Peer 2 received a have message from Peer 3 for the piece 51
-Thu Apr 24 00:39:40 EDT 2014: Peer 2 has downloaded the piece 20 from 1
-Thu Apr 24 00:39:40 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:40 EDT 2014: Peer 2 received a have message from Peer 3 for the piece 98
-Thu Apr 24 00:39:40 EDT 2014: Peer 2 has downloaded the piece 40 from 1
-Thu Apr 24 00:39:40 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:40 EDT 2014: Peer 2 has downloaded the piece 48 from 1
-Thu Apr 24 00:39:40 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:40 EDT 2014: Peer 2 received a have message from Peer 3 for the piece 63
-Thu Apr 24 00:39:40 EDT 2014: Peer 2 has downloaded the piece 96 from 1
-Thu Apr 24 00:39:40 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:40 EDT 2014: Peer 2 received a have message from Peer 3 for the piece 59
-Thu Apr 24 00:39:40 EDT 2014: Peer 2 has downloaded the piece 86 from 1
-Thu Apr 24 00:39:40 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:40 EDT 2014: Peer 2 received a have message from Peer 3 for the piece 85
-Thu Apr 24 00:39:40 EDT 2014: Peer 2 has downloaded the piece 26 from 1
-Thu Apr 24 00:39:40 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:40 EDT 2014: Peer 2 received a have message from Peer 3 for the piece 45
-Thu Apr 24 00:39:40 EDT 2014: Peer 2 has downloaded the piece 43 from 1
-Thu Apr 24 00:39:40 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:40 EDT 2014: Peer 2 received a have message from Peer 3 for the piece 126
-Thu Apr 24 00:39:40 EDT 2014: Peer 2 has downloaded the piece 14 from 1
-Thu Apr 24 00:39:40 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:40 EDT 2014: Peer 2 has downloaded the piece 72 from 1
-Thu Apr 24 00:39:40 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:40 EDT 2014: Peer 2 received a have message from Peer 3 for the piece 102
-Thu Apr 24 00:39:40 EDT 2014: Peer 2 has downloaded the piece 55 from 1
-Thu Apr 24 00:39:40 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:40 EDT 2014: Peer 2 received a have message from Peer 3 for the piece 1
-Thu Apr 24 00:39:40 EDT 2014: Peer 2 has downloaded the piece 99 from 1
-Thu Apr 24 00:39:40 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:40 EDT 2014: Peer 2 has downloaded the piece 119 from 1
-Thu Apr 24 00:39:40 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:40 EDT 2014: Peer 2 received a have message from Peer 3 for the piece 80
-Thu Apr 24 00:39:40 EDT 2014: Peer 2 has downloaded the piece 27 from 1
-Thu Apr 24 00:39:40 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:41 EDT 2014: Peer 2 has downloaded the piece 109 from 1
-Thu Apr 24 00:39:41 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:41 EDT 2014: Peer 2 received a have message from Peer 3 for the piece 114
-Thu Apr 24 00:39:41 EDT 2014: Peer 2 has downloaded the piece 47 from 1
-Thu Apr 24 00:39:41 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:41 EDT 2014: Peer 2 received a have message from Peer 3 for the piece 58
-Thu Apr 24 00:39:41 EDT 2014: Peer 2 has downloaded the piece 115 from 1
-Thu Apr 24 00:39:41 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:41 EDT 2014: Peer 2 has downloaded the piece 73 from 1
-Thu Apr 24 00:39:41 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:41 EDT 2014: Peer 2 received a have message from Peer 3 for the piece 74
-Thu Apr 24 00:39:41 EDT 2014: Peer 2 has downloaded the piece 88 from 1
-Thu Apr 24 00:39:41 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:41 EDT 2014: Peer 2 has downloaded the piece 54 from 1
-Thu Apr 24 00:39:41 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:41 EDT 2014: Peer 2 received a have message from Peer 3 for the piece 117
-Thu Apr 24 00:39:41 EDT 2014: Peer 2 has downloaded the piece 28 from 1
-Thu Apr 24 00:39:41 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:41 EDT 2014: Peer 2 has downloaded the piece 46 from 1
-Thu Apr 24 00:39:41 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:41 EDT 2014: Peer 2 received a have message from Peer 3 for the piece 47
-Thu Apr 24 00:39:41 EDT 2014: Peer 2 has downloaded the piece 113 from 1
-Thu Apr 24 00:39:41 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:41 EDT 2014: Peer 2 has downloaded the piece 112 from 1
-Thu Apr 24 00:39:41 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:41 EDT 2014: Peer 2 received a have message from Peer 3 for the piece 46
-Thu Apr 24 00:39:41 EDT 2014: Peer 2 has downloaded the piece 111 from 1
-Thu Apr 24 00:39:41 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:41 EDT 2014: Peer 2 received a have message from Peer 3 for the piece 33
-Thu Apr 24 00:39:41 EDT 2014: Peer 2 has downloaded the piece 16 from 1
-Thu Apr 24 00:39:41 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:41 EDT 2014: Peer 2 has downloaded the piece 118 from 1
-Thu Apr 24 00:39:41 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:41 EDT 2014: Peer 2 received a have message from Peer 3 for the piece 5
-Thu Apr 24 00:39:41 EDT 2014: Peer 2 has downloaded the piece 23 from 1
-Thu Apr 24 00:39:41 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:41 EDT 2014: Peer 2 has downloaded the piece 49 from 1
-Thu Apr 24 00:39:41 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:41 EDT 2014: Peer 2 received a have message from Peer 3 for the piece 48
-Thu Apr 24 00:39:41 EDT 2014: Peer 2 has downloaded the piece 89 from 1
-Thu Apr 24 00:39:41 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:41 EDT 2014: Peer 2 has downloaded the piece 59 from 1
-Thu Apr 24 00:39:41 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:41 EDT 2014: Peer 2 received a have message from Peer 3 for the piece 96
-Thu Apr 24 00:39:41 EDT 2014: Peer 2 has downloaded the piece 123 from 1
-Thu Apr 24 00:39:41 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:41 EDT 2014: Peer 2 has downloaded the piece 124 from 1
-Thu Apr 24 00:39:41 EDT 2014: Peer 2 received a have message from Peer 3 for the piece 49
-Thu Apr 24 00:39:41 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:41 EDT 2014: Peer 2 has downloaded the piece 125 from 1
-Thu Apr 24 00:39:41 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:41 EDT 2014: Peer 2 received a have message from Peer 3 for the piece 65
-Thu Apr 24 00:39:41 EDT 2014: Peer 2 has downloaded the piece 91 from 1
-Thu Apr 24 00:39:41 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:41 EDT 2014: Peer 2 has downloaded the piece 126 from 1
-Thu Apr 24 00:39:41 EDT 2014: Peer 2 received a not interested message from Peer 1
-Thu Apr 24 00:39:41 EDT 2014: Peer 2 received a have message from Peer 3 for the piece 8
-Thu Apr 24 00:39:41 EDT 2014: Peer 2 has downloaded the piece 127 from 1
+Thu Apr 24 01:14:32 EDT 2014: Test log. Peer ID = 2
+Thu Apr 24 01:14:32 EDT 2014: Peer 2 makes a connection to Peer 1
+Thu Apr 24 01:14:34 EDT 2014: Peer 2 makes a connection from Peer 3
+Thu Apr 24 01:14:34 EDT 2014: Peer 2 received a not interested message from Peer 1
+Thu Apr 24 01:14:35 EDT 2014: Peer 2 received a not interested message from Peer 3
+Thu Apr 24 01:14:35 EDT 2014: Peer 2 has downloaded the piece 103 from 1
+Thu Apr 24 01:14:36 EDT 2014: Peer 2 received a not interested message from Peer 1
+Thu Apr 24 01:14:36 EDT 2014: Peer 2 received an interested message from Peer 3
+Thu Apr 24 01:14:37 EDT 2014: Peer 2 has downloaded the piece 2 from 1
+Thu Apr 24 01:14:37 EDT 2014: Peer 2 received a not interested message from Peer 1
+Thu Apr 24 01:14:38 EDT 2014: Peer 2 received an interested message from Peer 3
+Thu Apr 24 01:14:38 EDT 2014: Peer 2 has downloaded the piece 45 from 1
+Thu Apr 24 01:14:39 EDT 2014: Peer 2 received a not interested message from Peer 1
+Thu Apr 24 01:14:39 EDT 2014: Peer 2 received an interested message from Peer 3
+Thu Apr 24 01:14:40 EDT 2014: Peer 2 has downloaded the piece 19 from 1
+Thu Apr 24 01:14:40 EDT 2014: Peer 2 received a not interested message from Peer 1
+Thu Apr 24 01:14:41 EDT 2014: Peer 2 received an interested message from Peer 3
+Thu Apr 24 01:14:41 EDT 2014: Peer 2 has downloaded the piece 106 from 1
+Thu Apr 24 01:14:42 EDT 2014: Peer 2 received a not interested message from Peer 1
+Thu Apr 24 01:14:42 EDT 2014: Peer 2 received an interested message from Peer 3
+Thu Apr 24 01:14:43 EDT 2014: Peer 2 has downloaded the piece 91 from 1
+Thu Apr 24 01:14:44 EDT 2014: Peer 2 received a not interested message from Peer 1
+Thu Apr 24 01:14:44 EDT 2014: Peer 2 received an interested message from Peer 3
+Thu Apr 24 01:14:45 EDT 2014: Peer 2 has downloaded the piece 71 from 1
+Thu Apr 24 01:14:45 EDT 2014: Peer 2 received a not interested message from Peer 1
+Thu Apr 24 01:14:45 EDT 2014: Peer 2 received an interested message from Peer 3
+Thu Apr 24 01:14:46 EDT 2014: Peer 2 has downloaded the piece 9 from 1
+Thu Apr 24 01:14:47 EDT 2014: Peer 2 received an interested message from Peer 3
+Thu Apr 24 01:14:47 EDT 2014: Peer 2 received a not interested message from Peer 1
+Thu Apr 24 01:14:48 EDT 2014: Peer 2 has downloaded the piece 10 from 1
+Thu Apr 24 01:14:48 EDT 2014: Peer 2 received a not interested message from Peer 1
+Thu Apr 24 01:14:49 EDT 2014: Peer 2 received an interested message from Peer 3
+Thu Apr 24 01:14:49 EDT 2014: Peer 2 has downloaded the piece 95 from 1
+Thu Apr 24 01:14:50 EDT 2014: Peer 2 received a not interested message from Peer 1
+Thu Apr 24 01:14:50 EDT 2014: Peer 2 received an interested message from Peer 3
+Thu Apr 24 01:14:51 EDT 2014: Peer 2 has downloaded the piece 97 from 1
+Thu Apr 24 01:14:51 EDT 2014: Peer 2 received a not interested message from Peer 1
+Thu Apr 24 01:14:52 EDT 2014: Peer 2 received an interested message from Peer 3
+Thu Apr 24 01:14:52 EDT 2014: Peer 2 has downloaded the piece 34 from 1
+Thu Apr 24 01:14:53 EDT 2014: Peer 2 received a not interested message from Peer 1
+Thu Apr 24 01:14:53 EDT 2014: Peer 2 received an interested message from Peer 3
+Thu Apr 24 01:14:54 EDT 2014: Peer 2 has downloaded the piece 78 from 1
+Thu Apr 24 01:14:54 EDT 2014: Peer 2 received a not interested message from Peer 1
+Thu Apr 24 01:14:55 EDT 2014: Peer 2 received an interested message from Peer 3
+Thu Apr 24 01:14:55 EDT 2014: Peer 2 has downloaded the piece 104 from 1
+Thu Apr 24 01:14:56 EDT 2014: Peer 2 received a not interested message from Peer 1
+Thu Apr 24 01:14:56 EDT 2014: Peer 2 received an interested message from Peer 3
+Thu Apr 24 01:14:57 EDT 2014: Peer 2 has downloaded the piece 43 from 1
+Thu Apr 24 01:14:58 EDT 2014: Peer 2 received a not interested message from Peer 1
+Thu Apr 24 01:14:58 EDT 2014: Peer 2 received an interested message from Peer 3
+Thu Apr 24 01:14:59 EDT 2014: Peer 2 has downloaded the piece 15 from 1
+Thu Apr 24 01:14:59 EDT 2014: Peer 2 received a not interested message from Peer 1
+Thu Apr 24 01:14:59 EDT 2014: Peer 2 received an interested message from Peer 3
+Thu Apr 24 01:15:00 EDT 2014: Peer 2 has downloaded the piece 58 from 1
+Thu Apr 24 01:15:01 EDT 2014: Peer 2 received an interested message from Peer 3
+Thu Apr 24 01:15:01 EDT 2014: Peer 2 received a not interested message from Peer 1
+Thu Apr 24 01:15:02 EDT 2014: Peer 2 has downloaded the piece 85 from 1
+Thu Apr 24 01:15:02 EDT 2014: Peer 2 received a not interested message from Peer 1
+Thu Apr 24 01:15:03 EDT 2014: Peer 2 received an interested message from Peer 3
+Thu Apr 24 01:15:03 EDT 2014: Peer 2 has downloaded the piece 113 from 1
+Thu Apr 24 01:15:04 EDT 2014: Peer 2 received a not interested message from Peer 1
+Thu Apr 24 01:15:04 EDT 2014: Peer 2 received an interested message from Peer 3
+Thu Apr 24 01:15:05 EDT 2014: Peer 2 has downloaded the piece 100 from 1
+Thu Apr 24 01:15:05 EDT 2014: Peer 2 received a not interested message from Peer 1
+Thu Apr 24 01:15:06 EDT 2014: Peer 2 received an interested message from Peer 3
+Thu Apr 24 01:15:06 EDT 2014: Peer 2 has downloaded the piece 44 from 1
+Thu Apr 24 01:15:07 EDT 2014: Peer 2 received a not interested message from Peer 1
+Thu Apr 24 01:15:07 EDT 2014: Peer 2 received an interested message from Peer 3
+Thu Apr 24 01:15:08 EDT 2014: Peer 2 has downloaded the piece 21 from 1
+Thu Apr 24 01:15:08 EDT 2014: Peer 2 received a not interested message from Peer 1
+Thu Apr 24 01:15:09 EDT 2014: Peer 2 received an interested message from Peer 3
+Thu Apr 24 01:15:09 EDT 2014: Peer 2 has downloaded the piece 5 from 1
+Thu Apr 24 01:15:10 EDT 2014: Peer 2 received a not interested message from Peer 1
+Thu Apr 24 01:15:10 EDT 2014: Peer 2 received an interested message from Peer 3
+Thu Apr 24 01:15:11 EDT 2014: Peer 2 has downloaded the piece 56 from 1
+Thu Apr 24 01:15:12 EDT 2014: Peer 2 received a not interested message from Peer 1
+Thu Apr 24 01:15:12 EDT 2014: Peer 2 received an interested message from Peer 3
+Thu Apr 24 01:15:13 EDT 2014: Peer 2 has downloaded the piece 4 from 1
+Thu Apr 24 01:15:13 EDT 2014: Peer 2 received a not interested message from Peer 1
+Thu Apr 24 01:15:13 EDT 2014: Peer 2 received an interested message from Peer 3
+Thu Apr 24 01:15:14 EDT 2014: Peer 2 has downloaded the piece 120 from 1
+Thu Apr 24 01:15:15 EDT 2014: Peer 2 received a not interested message from Peer 1
+Thu Apr 24 01:15:15 EDT 2014: Peer 2 received an interested message from Peer 3
+Thu Apr 24 01:15:16 EDT 2014: Peer 2 has downloaded the piece 25 from 1
+Thu Apr 24 01:15:16 EDT 2014: Peer 2 received an interested message from Peer 3
+Thu Apr 24 01:15:16 EDT 2014: Peer 2 received a not interested message from Peer 1
+Thu Apr 24 01:15:17 EDT 2014: Peer 2 has downloaded the piece 121 from 1
+Thu Apr 24 01:15:18 EDT 2014: Peer 2 received an interested message from Peer 3
+Thu Apr 24 01:15:18 EDT 2014: Peer 2 received a not interested message from Peer 1
+Thu Apr 24 01:15:19 EDT 2014: Peer 2 has downloaded the piece 73 from 1
+Thu Apr 24 01:15:19 EDT 2014: Peer 2 received a not interested message from Peer 1
+Thu Apr 24 01:15:20 EDT 2014: Peer 2 received an interested message from Peer 3
+Thu Apr 24 01:15:20 EDT 2014: Peer 2 has downloaded the piece 13 from 1
+Thu Apr 24 01:15:21 EDT 2014: Peer 2 received a not interested message from Peer 1
+Thu Apr 24 01:15:21 EDT 2014: Peer 2 received an interested message from Peer 3
+Thu Apr 24 01:15:22 EDT 2014: Peer 2 has downloaded the piece 16 from 1
+Thu Apr 24 01:15:22 EDT 2014: Peer 2 received a not interested message from Peer 1
+Thu Apr 24 01:15:23 EDT 2014: Peer 2 received an interested message from Peer 3
+Thu Apr 24 01:15:23 EDT 2014: Peer 2 has downloaded the piece 14 from 1
+Thu Apr 24 01:15:24 EDT 2014: Peer 2 received a not interested message from Peer 1
+Thu Apr 24 01:15:24 EDT 2014: Peer 2 received an interested message from Peer 3
+Thu Apr 24 01:15:25 EDT 2014: Peer 2 has downloaded the piece 42 from 1
+Thu Apr 24 01:15:25 EDT 2014: Peer 2 received a not interested message from Peer 1
+Thu Apr 24 01:15:26 EDT 2014: Peer 2 received an interested message from Peer 3
+Thu Apr 24 01:15:27 EDT 2014: Peer 2 has downloaded the piece 59 from 1
+Thu Apr 24 01:15:27 EDT 2014: Peer 2 received a not interested message from Peer 1
+Thu Apr 24 01:15:27 EDT 2014: Peer 2 received an interested message from Peer 3
+Thu Apr 24 01:15:28 EDT 2014: Peer 2 has downloaded the piece 87 from 1
+Thu Apr 24 01:15:29 EDT 2014: Peer 2 received a not interested message from Peer 1
+Thu Apr 24 01:15:29 EDT 2014: Peer 2 received an interested message from Peer 3
+Thu Apr 24 01:15:30 EDT 2014: Peer 2 has downloaded the piece 36 from 1
+Thu Apr 24 01:15:30 EDT 2014: Peer 2 received a not interested message from Peer 1
+Thu Apr 24 01:15:30 EDT 2014: Peer 2 received an interested message from Peer 3
+Thu Apr 24 01:15:31 EDT 2014: Peer 2 has downloaded the piece 41 from 1
+Thu Apr 24 01:15:32 EDT 2014: Peer 2 received a not interested message from Peer 1
+Thu Apr 24 01:15:32 EDT 2014: Peer 2 received an interested message from Peer 3
+Thu Apr 24 01:15:33 EDT 2014: Peer 2 has downloaded the piece 20 from 1
+Thu Apr 24 01:15:33 EDT 2014: Peer 2 received an interested message from Peer 3
+Thu Apr 24 01:15:33 EDT 2014: Peer 2 received a not interested message from Peer 1
+Thu Apr 24 01:15:34 EDT 2014: Peer 2 has downloaded the piece 8 from 1
+Thu Apr 24 01:15:35 EDT 2014: Peer 2 received an interested message from Peer 3
+Thu Apr 24 01:15:35 EDT 2014: Peer 2 received a not interested message from Peer 1
+Thu Apr 24 01:15:36 EDT 2014: Peer 2 has downloaded the piece 18 from 1
+Thu Apr 24 01:15:36 EDT 2014: Peer 2 received an interested message from Peer 3
+Thu Apr 24 01:15:36 EDT 2014: Peer 2 received a not interested message from Peer 1
+Thu Apr 24 01:15:37 EDT 2014: Peer 2 has downloaded the piece 12 from 1
+Thu Apr 24 01:15:38 EDT 2014: Peer 2 received an interested message from Peer 3
+Thu Apr 24 01:15:38 EDT 2014: Peer 2 received a not interested message from Peer 1
+Thu Apr 24 01:15:39 EDT 2014: Peer 2 has downloaded the piece 60 from 1
+Thu Apr 24 01:15:39 EDT 2014: Peer 2 received a not interested message from Peer 1
+Thu Apr 24 01:15:40 EDT 2014: Peer 2 received an interested message from Peer 3
+Thu Apr 24 01:15:40 EDT 2014: Peer 2 has downloaded the piece 27 from 1
+Thu Apr 24 01:15:41 EDT 2014: Peer 2 received a not interested message from Peer 1
+Thu Apr 24 01:15:41 EDT 2014: Peer 2 received an interested message from Peer 3
+Thu Apr 24 01:15:42 EDT 2014: Peer 2 has downloaded the piece 109 from 1
+Thu Apr 24 01:15:42 EDT 2014: Peer 2 received a not interested message from Peer 1
+Thu Apr 24 01:15:43 EDT 2014: Peer 2 received an interested message from Peer 3
+Thu Apr 24 01:15:44 EDT 2014: Peer 2 has downloaded the piece 102 from 1
+Thu Apr 24 01:15:44 EDT 2014: Peer 2 received a not interested message from Peer 1
+Thu Apr 24 01:15:44 EDT 2014: Peer 2 received an interested message from Peer 3
+Thu Apr 24 01:15:45 EDT 2014: Peer 2 has downloaded the piece 99 from 1
+Thu Apr 24 01:15:46 EDT 2014: Peer 2 received a not interested message from Peer 1
+Thu Apr 24 01:15:46 EDT 2014: Peer 2 received an interested message from Peer 3
+Thu Apr 24 01:15:47 EDT 2014: Peer 2 has downloaded the piece 11 from 1
+Thu Apr 24 01:15:47 EDT 2014: Peer 2 received a not interested message from Peer 1
+Thu Apr 24 01:15:47 EDT 2014: Peer 2 received an interested message from Peer 3
+Thu Apr 24 01:15:48 EDT 2014: Peer 2 has downloaded the piece 89 from 1
+Thu Apr 24 01:15:49 EDT 2014: Peer 2 received an interested message from Peer 3
+Thu Apr 24 01:15:49 EDT 2014: Peer 2 received a not interested message from Peer 1
+Thu Apr 24 01:15:50 EDT 2014: Peer 2 has downloaded the piece 3 from 1
+Thu Apr 24 01:15:50 EDT 2014: Peer 2 received an interested message from Peer 3
+Thu Apr 24 01:15:50 EDT 2014: Peer 2 received a not interested message from Peer 1
+Thu Apr 24 01:15:51 EDT 2014: Peer 2 has downloaded the piece 47 from 1
+Thu Apr 24 01:15:52 EDT 2014: Peer 2 received an interested message from Peer 3
+Thu Apr 24 01:15:52 EDT 2014: Peer 2 received a not interested message from Peer 1
+Thu Apr 24 01:15:53 EDT 2014: Peer 2 has downloaded the piece 61 from 1
+Thu Apr 24 01:15:53 EDT 2014: Peer 2 received an interested message from Peer 3
+Thu Apr 24 01:15:53 EDT 2014: Peer 2 received a not interested message from Peer 1
+Thu Apr 24 01:15:54 EDT 2014: Peer 2 has downloaded the piece 1 from 1
+Thu Apr 24 01:15:55 EDT 2014: Peer 2 received an interested message from Peer 3
+Thu Apr 24 01:15:55 EDT 2014: Peer 2 received a not interested message from Peer 1
+Thu Apr 24 01:15:56 EDT 2014: Peer 2 has downloaded the piece 26 from 1
+Thu Apr 24 01:15:56 EDT 2014: Peer 2 received a not interested message from Peer 1
+Thu Apr 24 01:15:57 EDT 2014: Peer 2 received an interested message from Peer 3
+Thu Apr 24 01:15:58 EDT 2014: Peer 2 has downloaded the piece 69 from 1
+Thu Apr 24 01:15:58 EDT 2014: Peer 2 received a not interested message from Peer 1
+Thu Apr 24 01:15:58 EDT 2014: Peer 2 received an interested message from Peer 3
+Thu Apr 24 01:15:59 EDT 2014: Peer 2 has downloaded the piece 101 from 1
+Thu Apr 24 01:16:00 EDT 2014: Peer 2 received a not interested message from Peer 1
+Thu Apr 24 01:16:00 EDT 2014: Peer 2 received an interested message from Peer 3
+Thu Apr 24 01:16:01 EDT 2014: Peer 2 has downloaded the piece 110 from 1
+Thu Apr 24 01:16:01 EDT 2014: Peer 2 received a not interested message from Peer 1
+Thu Apr 24 01:16:01 EDT 2014: Peer 2 received an interested message from Peer 3
+Thu Apr 24 01:16:02 EDT 2014: Peer 2 has downloaded the piece 40 from 1
+Thu Apr 24 01:16:03 EDT 2014: Peer 2 received a not interested message from Peer 1
+Thu Apr 24 01:16:03 EDT 2014: Peer 2 received an interested message from Peer 3
+Thu Apr 24 01:16:04 EDT 2014: Peer 2 has downloaded the piece 77 from 1
+Thu Apr 24 01:16:04 EDT 2014: Peer 2 received a not interested message from Peer 1
+Thu Apr 24 01:16:04 EDT 2014: Peer 2 received an interested message from Peer 3
+Thu Apr 24 01:16:05 EDT 2014: Peer 2 has downloaded the piece 33 from 1
+Thu Apr 24 01:16:06 EDT 2014: Peer 2 received an interested message from Peer 3
+Thu Apr 24 01:16:06 EDT 2014: Peer 2 received a not interested message from Peer 1
+Thu Apr 24 01:16:07 EDT 2014: Peer 2 has downloaded the piece 74 from 1
+Thu Apr 24 01:16:07 EDT 2014: Peer 2 received an interested message from Peer 3
+Thu Apr 24 01:16:07 EDT 2014: Peer 2 received a not interested message from Peer 1
+Thu Apr 24 01:16:08 EDT 2014: Peer 2 has downloaded the piece 6 from 1
+Thu Apr 24 01:16:09 EDT 2014: Peer 2 received an interested message from Peer 3
+Thu Apr 24 01:16:09 EDT 2014: Peer 2 received a not interested message from Peer 1
+Thu Apr 24 01:16:10 EDT 2014: Peer 2 has downloaded the piece 23 from 1
+Thu Apr 24 01:16:10 EDT 2014: Peer 2 received an interested message from Peer 3
+Thu Apr 24 01:16:10 EDT 2014: Peer 2 received a not interested message from Peer 1
+Thu Apr 24 01:16:11 EDT 2014: Peer 2 has downloaded the piece 66 from 1
+Thu Apr 24 01:16:12 EDT 2014: Peer 2 received an interested message from Peer 3
+Thu Apr 24 01:16:12 EDT 2014: Peer 2 received a not interested message from Peer 1
+Thu Apr 24 01:16:13 EDT 2014: Peer 2 has downloaded the piece 24 from 1
+Thu Apr 24 01:16:13 EDT 2014: Peer 2 received a not interested message from Peer 1
+Thu Apr 24 01:16:14 EDT 2014: Peer 2 received an interested message from Peer 3
+Thu Apr 24 01:16:15 EDT 2014: Peer 2 has downloaded the piece 84 from 1
+Thu Apr 24 01:16:15 EDT 2014: Peer 2 received a not interested message from Peer 1
+Thu Apr 24 01:16:15 EDT 2014: Peer 2 received an interested message from Peer 3
+Thu Apr 24 01:16:16 EDT 2014: Peer 2 has downloaded the piece 39 from 1
+Thu Apr 24 01:16:17 EDT 2014: Peer 2 received a not interested message from Peer 1
+Thu Apr 24 01:16:17 EDT 2014: Peer 2 received an interested message from Peer 3
+Thu Apr 24 01:16:18 EDT 2014: Peer 2 has downloaded the piece 119 from 1
+Thu Apr 24 01:16:18 EDT 2014: Peer 2 received a not interested message from Peer 1
+Thu Apr 24 01:16:18 EDT 2014: Peer 2 received an interested message from Peer 3
+Thu Apr 24 01:16:19 EDT 2014: Peer 2 has downloaded the piece 122 from 1
+Thu Apr 24 01:16:20 EDT 2014: Peer 2 received a not interested message from Peer 1
+Thu Apr 24 01:16:20 EDT 2014: Peer 2 received an interested message from Peer 3
+Thu Apr 24 01:16:21 EDT 2014: Peer 2 has downloaded the piece 32 from 1
+Thu Apr 24 01:16:21 EDT 2014: Peer 2 received a not interested message from Peer 1
+Thu Apr 24 01:16:21 EDT 2014: Peer 2 received an interested message from Peer 3
+Thu Apr 24 01:16:22 EDT 2014: Peer 2 has downloaded the piece 116 from 1
+Thu Apr 24 01:16:23 EDT 2014: Peer 2 received an interested message from Peer 3
+Thu Apr 24 01:16:23 EDT 2014: Peer 2 received a not interested message from Peer 1
+Thu Apr 24 01:16:24 EDT 2014: Peer 2 has downloaded the piece 46 from 1
+Thu Apr 24 01:16:24 EDT 2014: Peer 2 received an interested message from Peer 3
+Thu Apr 24 01:16:24 EDT 2014: Peer 2 received a not interested message from Peer 1
+Thu Apr 24 01:16:25 EDT 2014: Peer 2 has downloaded the piece 0 from 1
+Thu Apr 24 01:16:26 EDT 2014: Peer 2 received an interested message from Peer 3
+Thu Apr 24 01:16:26 EDT 2014: Peer 2 received a not interested message from Peer 1
+Thu Apr 24 01:16:27 EDT 2014: Peer 2 has downloaded the piece 64 from 1
+Thu Apr 24 01:16:27 EDT 2014: Peer 2 received an interested message from Peer 3
+Thu Apr 24 01:16:27 EDT 2014: Peer 2 received a not interested message from Peer 1
+Thu Apr 24 01:16:28 EDT 2014: Peer 2 has downloaded the piece 22 from 1
+Thu Apr 24 01:16:29 EDT 2014: Peer 2 received an interested message from Peer 3
+Thu Apr 24 01:16:29 EDT 2014: Peer 2 received a not interested message from Peer 1
+Thu Apr 24 01:16:30 EDT 2014: Peer 2 has downloaded the piece 90 from 1
+Thu Apr 24 01:16:30 EDT 2014: Peer 2 received an interested message from Peer 3
+Thu Apr 24 01:16:30 EDT 2014: Peer 2 received a not interested message from Peer 1
+Thu Apr 24 01:16:32 EDT 2014: Peer 2 has downloaded the piece 17 from 1
+Thu Apr 24 01:16:32 EDT 2014: Peer 2 received a not interested message from Peer 1
+Thu Apr 24 01:16:32 EDT 2014: Peer 2 received an interested message from Peer 3
+Thu Apr 24 01:16:33 EDT 2014: Peer 2 has downloaded the piece 76 from 1
+Thu Apr 24 01:16:34 EDT 2014: Peer 2 received a not interested message from Peer 1
+Thu Apr 24 01:16:34 EDT 2014: Peer 2 received an interested message from Peer 3
+Thu Apr 24 01:16:35 EDT 2014: Peer 2 has downloaded the piece 37 from 1
+Thu Apr 24 01:16:35 EDT 2014: Peer 2 received a not interested message from Peer 1
+Thu Apr 24 01:16:35 EDT 2014: Peer 2 received an interested message from Peer 3
+Thu Apr 24 01:16:36 EDT 2014: Peer 2 has downloaded the piece 96 from 1
+Thu Apr 24 01:16:37 EDT 2014: Peer 2 received a not interested message from Peer 1
+Thu Apr 24 01:16:37 EDT 2014: Peer 2 received an interested message from Peer 3
+Thu Apr 24 01:16:38 EDT 2014: Peer 2 has downloaded the piece 88 from 1
+Thu Apr 24 01:16:38 EDT 2014: Peer 2 received a not interested message from Peer 1
+Thu Apr 24 01:16:38 EDT 2014: Peer 2 received an interested message from Peer 3
+Thu Apr 24 01:16:39 EDT 2014: Peer 2 has downloaded the piece 68 from 1
+Thu Apr 24 01:16:40 EDT 2014: Peer 2 received an interested message from Peer 3
+Thu Apr 24 01:16:40 EDT 2014: Peer 2 received a not interested message from Peer 1
+Thu Apr 24 01:16:41 EDT 2014: Peer 2 has downloaded the piece 52 from 1
+Thu Apr 24 01:16:41 EDT 2014: Peer 2 received an interested message from Peer 3
+Thu Apr 24 01:16:41 EDT 2014: Peer 2 received a not interested message from Peer 1
+Thu Apr 24 01:16:42 EDT 2014: Peer 2 has downloaded the piece 115 from 1
+Thu Apr 24 01:16:43 EDT 2014: Peer 2 received an interested message from Peer 3
+Thu Apr 24 01:16:43 EDT 2014: Peer 2 received a not interested message from Peer 1
+Thu Apr 24 01:16:44 EDT 2014: Peer 2 has downloaded the piece 114 from 1
+Thu Apr 24 01:16:44 EDT 2014: Peer 2 received an interested message from Peer 3
+Thu Apr 24 01:16:44 EDT 2014: Peer 2 received a not interested message from Peer 1
+Thu Apr 24 01:16:45 EDT 2014: Peer 2 has downloaded the piece 65 from 1
+Thu Apr 24 01:16:46 EDT 2014: Peer 2 received an interested message from Peer 3
+Thu Apr 24 01:16:46 EDT 2014: Peer 2 received a not interested message from Peer 1

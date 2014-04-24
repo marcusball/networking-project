@@ -5,8 +5,8 @@ import bitTorrentPkg.Messages.*;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicBoolean;
-public final class MessageReceiver {
-	private final AtomicBoolean isAwaitingPiece;
+public class MessageReceiver {
+	private AtomicBoolean isAwaitingPiece;
 	private byte[] pieceBuffer;
 	private int bytesReceived;
 	public MessageReceiver(){
@@ -15,6 +15,7 @@ public final class MessageReceiver {
 	public Message OpenMessageBytes(byte[] message) throws IOException,Exception{
 		synchronized(this.isAwaitingPiece){
 			if(this.isAwaitingPiece.get()){ //If we've received some of a messages bytes, then this is the continuation of those bytes.
+				Tools.debug("[MessageReceiver] pieceBuffer length: %d; message length: %d; bytes received: %d",pieceBuffer.length, message.length, this.bytesReceived);
 				System.arraycopy(message, 0, pieceBuffer, this.bytesReceived, message.length);
 				this.bytesReceived += message.length;
 				

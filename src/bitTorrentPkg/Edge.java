@@ -350,8 +350,6 @@ public class Edge extends Thread {
 						}
 						
 						this.sendHandshake(); //Send our handshake
-						
-						Thread.sleep(1500);
 					}
 					else{ //If we have sent our handshake
 						if((state & EDGE_SENT_BITFIELD) == 0){ //If we havent sent this host's bitfield
@@ -362,6 +360,7 @@ public class Edge extends Thread {
 						}
 					}
 				}
+				Tools.debug("[Edge.runTasks] edgeState = %s",Tools.intToBinString(this.edgeState.get()));
 			}
 			else{ // OKAY: We've exchanged handshakes and bitfields, let's continue... 
 				if((state & this.EDGE_SENT_INTERESTED) == 0 && (state & this.EDGE_SENT_NOTINTERESTED) == 0){
@@ -422,6 +421,7 @@ public class Edge extends Thread {
 
 				
 			}
+			Thread.sleep(500);
 		}
 	}
 	
@@ -571,13 +571,18 @@ public class Edge extends Thread {
 	
 	
 	private void sendInterestedStatus(){
-		if(NeighborController.host.hasInterestIn(this.destination)){
-			Tools.debug("[Edge.sendInterestedStatus] Sending interest!");
-			this.sendInterested();
+		if((this.edgeState.get() & this.EDGE_RECV_BITFIELD) != 0){
+			if(NeighborController.host.hasInterestIn(this.destination)){
+				Tools.debug("[Edge.sendInterestedStatus] Sending interest to peer %d!",this.destination.getPeerID());
+				this.sendInterested();
+			}
+			else{
+				Tools.debug("[Edge.sendInterestedStatus] Sending lack of interest to peer %d.",this.destination.getPeerID());
+				this.sendNotInterested();
+			}
 		}
 		else{
-			Tools.debug("[Edge.sendInterestedStatus] Sending lack of interest.");
-			this.sendNotInterested();
+			Tools.debug("[Edge.sendInterestedStatus] Have not received bitfield, skipping sending of interest...");
 		}
 	}
 

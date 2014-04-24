@@ -96,6 +96,19 @@ public class FileManager {
 		out.close();
 	}
 	
+	
+	public static boolean lockOutput(){
+		File file = new File(getFilePath("lockdir"));
+		if (!file.mkdir()){
+			return false;
+		}
+		return true;
+	}
+	public static void unlockOutput(){
+		File file = new File(getFilePath("lockdir"));
+		file.delete();
+	}
+	
 	public class FileInfo{
 		private String fileName;
 		private long byteLength;
@@ -121,6 +134,8 @@ public class FileManager {
 	}
 	
 	public static void combinePiecesToFile() throws IOException{
+		
+		if(!lockOutput()) return; //Another thread is already using this method
 		//create new file in peer_%d/Filename
 		File file = new File(getFilePath(NeighborController.host.getFileName()));
 		FileOutputStream out = new FileOutputStream(file);
@@ -136,6 +151,6 @@ public class FileManager {
 				out.write(in.read());
 			}
 		}
-		
+		unlockOutput();
 	}
 }

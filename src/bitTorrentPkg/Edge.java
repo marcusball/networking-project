@@ -407,22 +407,26 @@ public class Edge extends Thread {
 			else if(received instanceof Choke){
 				Tools.debug("[Edge.handleMessage] Received Choke!");
 				this.edgeState.set(this.edgeState.get() | EDGE_RECV_CHOKE);
+				Logger.logChoking(destination.getPeerID());
 			}
 			else if(received instanceof Unchoke){
 				Tools.debug("[Edge.handleMessage] Received Unchoke");
 				this.edgeState.set(this.edgeState.get() | EDGE_RECV_UNCHOKE);
+				Logger.logUnchoking(destination.getPeerID());
 			}
 			else if(received instanceof Interested){
 				Tools.debug("[Edge.handleMessage] Received interested from %s!",this.destination.getPeerID());
 				this.edgeState.set(this.edgeState.get() | EDGE_RECV_INTERESTED);
 				
 				this.destination.setInterest(true);
+				Logger.logInterested(destination.getPeerID());
 			}
 			else if(received instanceof NotInterested){
 				Tools.debug("[Edge.handleMessage] Received not interested from %s!",this.destination.getPeerID());
 				this.edgeState.set(this.edgeState.get() | EDGE_RECV_NOTINTERESTED);
 				
 				this.destination.setInterest(false);
+				Logger.logNotInterested(destination.getPeerID());
 			}
 			else if(received instanceof Have){
 				Have have = (Have)received;
@@ -430,6 +434,7 @@ public class Edge extends Thread {
 				
 				this.destination.setHasPiece(index,true);
 				this.edgeState.set(this.edgeState.get() & this.EDGE_CLEAR_SENT_INTEREST); //Because we've just received a HAVE, we may change our interest in this peer.
+				Logger.logHave(destination.getPeerID(), index);
 			}
 			else if(received instanceof Request){
 				Request req = (Request)received;

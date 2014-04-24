@@ -259,6 +259,7 @@ public class Host {
 						nextPeer.getConnection().sendHandshake();
 						NeighborController.addPeer(nextPeer);
 						
+						Logger.logTCPConnectionTo(nextPeer.getPeerID());
 						Tools.debug("[Host.intitiateTCPConnections] BAM! Connection established with %s!",nextPeer.getHostName());
 					}
 				}
@@ -269,13 +270,7 @@ public class Host {
 		}
 		//TODO: I now have readPeerInfo actually creating all the peers
 		//This method now needs to loop through those peers and initiate TCP connections
-	}
-	
-	public void listen() throws IOException{
-		//TODO: After changing Peer to represent OTHER PEERS ONLY, change this
-		
-	}
-	
+	}	
 	
 	public boolean isExpectingPeerId(int id){ //Checks whether PeerInfo had connection configured for this ID
 		return this.peerInfo.containsKey(id);

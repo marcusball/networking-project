@@ -7,8 +7,10 @@ public class Tools {
 			throw new IllegalArgumentException(String.format("Expected four byte input! Received %d bytes!",fourBytes.length));
 		}
 		int val = 0;
+		Tools.debug("[bytesToInt] val = %s",val);
 		for(int i=0;i<4;i+=1){
-			val |= fourBytes[i] << (8 * (3-i));
+			val |= toUnsigned(fourBytes[i]) << (8 * (3-i));
+			Tools.debug("[bytesToInt] val = %s (%2x %s)",val,fourBytes[i],Tools.byteToBinString(fourBytes[i]));
 		}
 		return val;
 	}
@@ -33,5 +35,22 @@ public class Tools {
 		String s = Integer.toBinaryString(val);
 		if(s.length() > 8) s = s.substring(s.length() - 8);
 		return String.format("%08d", Integer.parseInt(s));
+	}
+	
+	public static String intToBinString(int val){
+		String s = Integer.toBinaryString(val);
+		return String.format("%s", s);
+	}
+	
+	public static String byteArrayToString(byte[] bytes){
+		StringBuilder s = new StringBuilder();
+		for(byte b : bytes){
+			s.append(String.format("%2x ",b));
+		}
+		return s.toString();
+	}
+	
+	public static int toUnsigned(byte b){
+		return b & 0xFF;
 	}
 }

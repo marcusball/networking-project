@@ -12,6 +12,7 @@ public class MessageReceiver {
 		
 		byte[] lengthBytes = Arrays.copyOfRange(message, 0, 4);
 		try{
+			Tools.debug("[MessageReceiver] Length: [%s], value: %d",Tools.byteArrayToString(lengthBytes),Tools.bytesToInt(lengthBytes));
 			int messageLength = GetMessageLength(lengthBytes);
 			if(messageLength > message.length - 5){ //HEARTBLEED
 				throw new IOException("Message supplied length that exceeds received message length! Stated length: " + messageLength + ", received: " + (message.length - 5));

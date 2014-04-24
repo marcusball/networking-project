@@ -8,6 +8,8 @@ import java.net.Socket;
 import java.net.ServerSocket;
 import java.util.*;
 
+import bitTorrentPkg.Messages.*;
+
 /* CLASS: Peer
  * 		-Peer is a stripped down version of class Host
  * 		-It is made to represent "other" peers with respect to the Host (the machine executing the program)
@@ -27,23 +29,29 @@ public class Peer {
 	protected String hostName; //host name of THIS peer
 	protected int listeningPort; 	//listening port for THIS peer
 	protected boolean hasFile;
-	protected boolean isFirstPeer; //if it's the first peer, just wait and listen
+	protected boolean firstPeer; //if it's the first peer, just wait and listen
 								 //if not, initiate tcp connections with others
 	
-	boolean isUnchoked;
-	boolean isOptUnchoked;
+	protected boolean unchoked;
+	protected boolean optUnchoked;
+	protected boolean interested; 
 	
 	protected Edge connection;
 	
-	long pieceSize;
-	long numOfPieces;
+	protected long pieceSize;
+	protected long numOfPieces;
 	protected Bitfield bitfield;
 	
-	long startTime; //in milliseconds since Jan 1 1970
-	int piecesDownloaded;
-	float dlRate;
+	protected long startTime; //in milliseconds since Jan 1 1970
+	protected long totalDLTime; //in milliseconds
+	//after every unchoke, lastUnchokeTime is saved the current time
+	protected long lastUnchokeTime; //time this peer was last unchoked
+	protected int piecesDownloaded;
+	protected int piecesSinceUnchoke;
+	protected float dlRate; //represents average download rate since last unchoke
 	
-	protected boolean isInterested; 
+	protected int lastRequestedPiece; //What piece was last requested by this peer
+
 
 	
 	/*--------------------CONSTRUCTORS--------------------
@@ -57,11 +65,11 @@ public class Peer {
 		this.hostName = hostName;
 		this.listeningPort = listeningPort;
 		this.hasFile = hasFile;
-		this.isFirstPeer = isFirstPeer;
+		this.firstPeer = isFirstPeer;
 		this.pieceSize = pieceSize;
 		this.numOfPieces = numOfPieces;
-		isUnchoked = false;
-		isOptUnchoked = false;
+		unchoked = false;
+		optUnchoked = false;
 		this.startTime = startTime;
 	}
 	
@@ -72,11 +80,11 @@ public class Peer {
 		this.hostName = hostName;
 		this.listeningPort = listeningPort;
 		this.hasFile = hasFile;
-		this.isFirstPeer = isFirstPeer;
+		this.firstPeer = isFirstPeer;
 		this.pieceSize = pieceSize;
 		this.numOfPieces = numOfPieces;
-		isUnchoked = false;
-		isOptUnchoked = false;
+		unchoked = false;
+		optUnchoked = false;
 		this.startTime = startTime;
 		this.connection = connection;
 	}	
@@ -125,11 +133,11 @@ public class Peer {
 	}
 	
 	public boolean isFirstPeer(){
-		return isFirstPeer;
+		return firstPeer;
 	}
 	
 	public void setIsFirstPeer(boolean isFirstPeer){
-		this.isFirstPeer = isFirstPeer;
+		this.firstPeer = isFirstPeer;
 	}
 	
 	public long getNumOfPieces(){
@@ -160,11 +168,8 @@ public class Peer {
 		this.piecesDownloaded = piecesDownloaded;
 	}
 	
-	public void updateDLRate(){
-		dlRate = ((float)(piecesDownloaded*pieceSize)) / ( ((float)(System.currentTimeMillis() - startTime)) * 1000);
-	}
-	
 	public float getDLRate(){
+		dlRate = ((float)(piecesDownloaded*pieceSize)) / ((float)((System.currentTimeMillis() - startTime)*1000));
 		return dlRate;
 	}
 	
@@ -173,19 +178,60 @@ public class Peer {
 	}
 	
 	public void setInterest(boolean isIntr){
-		this.isInterested = isIntr;
+		this.interested = isIntr;
 	}
 	public boolean isInterested(){
-		return this.isInterested;
+		return this.interested;
 	}
 	
+	public void choke(){
+		unchoked = false;
+		Choke choke = new Choke();
+		connection.sendMessage(choke);
+	}
+	
+	public void unchoke(){
+		unchoked = true;
+		Unchoke unchoke = new Unchoke();
+		connection.sendMessage(unchoke);
+	}
+	
+	public boolean isUnchoked(){
+		return unchoked;
+	}
+	
+	public void optUnchoke(){
+		optUnchoked = true;
+		Unchoke unchoke = new Unchoke();
+		connection.sendMessage(unchoke);
+	}
+	
+	public void optChoke(){
+		optUnchoked = false;
+		Choke choke = new Choke();
+		connection.sendMessage(choke);
+	}
+	
+	public boolean isOptUnchoked(){
+		return optUnchoked;
+	}
 	
 	public String toString(){
 		//mainly for debugging- this can be converted into a log later maybe?
 		return "PeerID " + peerID + "\nHostName " + hostName + 
 				"\nListeningPort " + listeningPort + "\nHasFile " + hasFile + "\n";		
 	}
-
+	
+	public void setHasPiece(long pieceId, boolean has){
+		this.bitfield.setValue(pieceId, has);
+	}
+	
+	public void setLastRequestedPiece(int piece){
+		this.lastRequestedPiece = piece;
+	}
+	public int getLastRequestedPiece(){
+		return this.lastRequestedPiece;
+	}
 }
 
 

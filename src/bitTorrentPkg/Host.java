@@ -17,8 +17,9 @@ public class Host {
 	private long optUnchokingInterval; //Time between each optimistic unchoke of a new peer (in seconds)
 	private String fileName; 
 	private long fileSize;	//in bytes
-	private long pieceSize;	//Size of each piece file will be broken up into (in bytes)
-	private long numOfPieces; //number of pieces in a file (fileSize divided by pieceSize, rounded up)
+	private int pieceSize;	//Size of each piece file will be broken up into (in bytes)
+	private int numOfPieces; //number of pieces in a file (fileSize divided by pieceSize, rounded up)
+	private long requestTTL;
 	
 	//PeerInfo.cfg variables
 	private int peerID; //the peerID of THIS peer (inputted into command line)
@@ -29,6 +30,7 @@ public class Host {
 								 //if not, initiate tcp connections with others
 	
 	private Bitfield bitfield;
+	private ArrayList<RequestedPiece> requests;
 
 	public HashMap<Integer,Peer> peerInfo; //This will contain the list of ALL peers listed in PeerInfo, not just the ones this host is connected to. 
 	public ArrayList<Integer> targetPeers; //This will contain the peer IDs of all of the peers above this host in the PeerInfo file. 
@@ -87,11 +89,11 @@ public class Host {
 		return fileSize; //this cannot be changed
 	}
 	
-	public long pieceSize(){
+	public int pieceSize(){
 		return pieceSize; //this cannot be changed
 	}
 	
-	public long numOfPieces(){
+	public int numOfPieces(){
 		return numOfPieces; //this cannot be changed
 	}
 	
@@ -160,7 +162,7 @@ public class Host {
 		this.fileSize = Long.parseLong(parts[1]);
 		currLine = config.readLine();
 		parts = currLine.split("\\s+");
-		this.pieceSize = Long.parseLong(parts[1]);
+		this.pieceSize = Integer.parseInt(parts[1]);
 		config.close(); //close the config file
 		
 		//reading from Common.cfg is complete, now finish calculations
@@ -257,6 +259,7 @@ public class Host {
 						nextPeer.getConnection().sendHandshake();
 						NeighborController.addPeer(nextPeer);
 						
+						Logger.logTCPConnectionTo(nextPeer.getPeerID());
 						Tools.debug("[Host.intitiateTCPConnections] BAM! Connection established with %s!",nextPeer.getHostName());
 					}
 				}
@@ -267,13 +270,7 @@ public class Host {
 		}
 		//TODO: I now have readPeerInfo actually creating all the peers
 		//This method now needs to loop through those peers and initiate TCP connections
-	}
-	
-	public void listen() throws IOException{
-		//TODO: After changing Peer to represent OTHER PEERS ONLY, change this
-		
-	}
-	
+	}	
 	
 	public boolean isExpectingPeerId(int id){ //Checks whether PeerInfo had connection configured for this ID
 		return this.peerInfo.containsKey(id);
@@ -308,14 +305,97 @@ public class Host {
 			Tools.debug("[Host.readShareFileInfo] Not in possestion of file, skipping read attempt.");
 		}
 		
-		this.numOfPieces = (long) Math.ceil(fileSize / pieceSize); 
+		this.numOfPieces = (int) Math.ceil(fileSize / pieceSize); 
 		bitfield = new Bitfield(numOfPieces,this.hasFile);
 	}
 	
 	public boolean hasInterestIn(Peer other){
 		return this.bitfield.checkForInterest(other.getBitfield());
 	}
+	
+	public int getPieceIdToRequestFrom(Peer other){
+		//return this.bitfield.getRandomIndex(true);
+		Bitfield possiblePieces = this.bitfield.not().and(other.getBitfield());
+		if(possiblePieces.isAll(false)){
+			return -1; //Other has no pieces that we do not already have. 
+		}
+		return possiblePieces.getRandomIndex(true);
+	}
 
+	public boolean hasPiece(int id){
+		return this.bitfield.getValue(id);
+	}
+	
+	public void setRequestTTL(long TTL){
+		this.requestTTL = TTL;
+	}
+	
+	public long getRequestTTL(){
+		return requestTTL;
+	}
+	
+	public void addRequest(int peerID, int pieceIndex){
+		RequestedPiece request = new RequestedPiece(peerID, pieceIndex);
+		requests.add(request);
+	}
+	
+	public RequestedPiece getRequest(int pieceIndex){
+		for(int i = 0; i < requests.size(); i++){
+			if(requests.get(i).getPieceIndex() == pieceIndex){
+				return requests.get(i);
+			}
+		}
+		Tools.debug("[Host] Piece index " + pieceIndex + " not found in outstanding requests!");
+		return null;
+	}
+	
+	public int getRequestIndex(int pieceIndex){
+		//every time you get a request, make sure the requests are clean
+		cleanRequests();
+		for(int i = 0; i < requests.size(); i++){
+			if(requests.get(i).getPieceIndex() == pieceIndex){
+				return i;
+			}
+		}
+		Tools.debug("[Host] Piece index " + pieceIndex + " not found in outstanding requests!");
+		return -1; 
+	}
+	
+	public void removeRequest(int pieceIndex){
+		if(getRequestIndex(pieceIndex) != -1){
+			requests.remove(getRequestIndex(pieceIndex));
+		}else{
+			Tools.debug("[Host] Piece index " + pieceIndex + " could not be removed, because it was not found in oustanding requests!");
+		}
+	}
+	
+	public void cleanRequests(){
+		for(int i = 0; i < requests.size(); i++){
+			if(System.currentTimeMillis() - requests.get(i).getTimestamp() > requestTTL){
+				//if the request is greater than the request TTL
+				//delete the request so that it has a chance of being resent
+				requests.remove(i);
+				Tools.debug("[Host] Request of piece index " + requests.get(i).pieceIndex + " from peer " 
+						+ requests.get(i).getPeerID() + " has exceeded it's time to live, and has been removed.");
+				
+			}
+		}
+	}
+	
+	public boolean hasRequestedPiece(Peer other,int pieceIndex){
+		int requestIndex = this.getRequestIndex(pieceIndex);
+		if(requestIndex != -1){
+			RequestedPiece request = this.getRequest(pieceIndex);
+			if(request.getPeerID() != other.getPeerID()){
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	public byte[] getPiece(int pieceIndex) throws IOException{
+		return FileManager.getFilePiece(pieceIndex, this.pieceSize);
+	}
 }
 
 

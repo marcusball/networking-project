@@ -2,8 +2,11 @@ package bitTorrentPkg;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.RandomAccessFile;
 import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
 
 public class FileManager {
 	private final static String directoryPath = "peer_%d";
@@ -40,6 +43,25 @@ public class FileManager {
 	
 	public static FileInfo getFileInfo() throws IOException{
 		return new FileManager().new FileInfo(shareFilePath,shareFileRAF.length());
+	}
+	
+	public static byte[] getFilePiece(int pieceIndex, int pieceSize) throws IOException{
+		FileChannel f = shareFileRAF.getChannel();
+		f.position(pieceSize * pieceIndex);
+		
+		ByteBuffer buffer = ByteBuffer.allocate(pieceSize);
+		int readBytes = f.read(buffer);
+		if(readBytes < pieceSize){
+			Tools.debug("[FileManager.getFile] Short piece! Read %d bytes, for pieces of %d bytes.",readBytes,pieceSize);
+		}
+		buffer.limit(readBytes);
+		return buffer.array();
+	}
+	
+	public static void writeBytesToFile(String file,byte[] toWrite) throws IOException{
+		FileOutputStream out = new FileOutputStream(file);
+		out.write(toWrite);
+		out.close();
 	}
 	
 	public class FileInfo{

@@ -402,6 +402,14 @@ public class Edge extends Thread {
 						sendHaves(lastPieceIndex);
 						this.edgeState.set((this.edgeState.get() & this.EDGE_CLEAR_RECV_REQUESTED_PIECE) & this.EDGE_CLEAR_SENT_REQUEST);
 					}
+					
+					if(NeighborController.host.downloadIsComplete() && !NeighborController.host.hasFile()){
+						Tools.debug("[Edge.runTasks] Oh snap we're done!");
+						Tools.debug("[Edge.runTasks] Merging pieces!");
+						
+						FileManager.combinePiecesToFile();
+						Tools.debug("[Edge.runTasks] A'ight.");
+					}
 				//}
 
 				

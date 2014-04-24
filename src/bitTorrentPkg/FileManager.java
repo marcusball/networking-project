@@ -18,9 +18,6 @@ public class FileManager {
 	private static RandomAccessFile shareFileRAF;
 	
 	private static boolean hasDirectory = false;
-	static{
-		
-	}
 	
 	public static void openSharedFile(String fileName){
 		try {

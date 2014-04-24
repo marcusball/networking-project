@@ -66,9 +66,11 @@ public class Edge extends Thread {
 	private final int EDGE_CLEAR_RECV_UNCHOKE = Integer.MAX_VALUE & ~(EDGE_RECV_UNCHOKE);
 	private final int EDGE_CLEAR_RECV_HAVE = Integer.MAX_VALUE & ~(EDGE_RECV_HAVE);
 	private final int EDGE_CLEAR_RECV_REQUEST = Integer.MAX_VALUE & ~(EDGE_RECV_REQUEST);
-	
+	private final int EDGE_CLEAR_RECV_REQUESTED_PIECE = Integer.MAX_VALUE & ~(EDGE_RECV_REQUESTED_PIECE);
 	
 	private final int EDGE_GREETING_COMPLETE = 15; 
+	
+	int lastPieceIndex;
 	
 	private final boolean cloned;
 	
@@ -258,12 +260,25 @@ public class Edge extends Thread {
 		
 		this.sendMessage(message);
 	}
+	public void sendHaves(int pieceIndex){
+		//create a have message for this piece index
+		Have have = new Have(pieceIndex);
+		//send it to every peer
+		for(int i = 0; i < NeighborController.getPeers().size(); i++){
+			NeighborController.getPeers().get(i).connection.sendMessage(have);
+		}
+
+	}
 	
 	/**
 	 * Thread method: Perpetually listens for responses. 
 	 */
 	public void run(){
 		try{
+			if(!NeighborController.isStarted()){
+				//if the timers haven't been started already, do it now
+				NeighborController.startTimers();
+			}
 			byte[] buffer;
 			int bytesRead;
 			
@@ -377,6 +392,13 @@ public class Edge extends Thread {
 						this.sendPiece(pieceMessage);
 					}
 				//}
+
+				if((state & this.EDGE_RECV_REQUESTED_PIECE) != 0){
+					Tools.debug("[Edge.runTasks] Received piece index " + lastPieceIndex);
+					//if a piece has been received, send have messages to all peers
+					sendHaves(lastPieceIndex);
+					this.edgeState.set(this.edgeState.get() & this.EDGE_CLEAR_RECV_REQUESTED_PIECE);
+				}
 			}
 		}
 	}
@@ -452,9 +474,10 @@ public class Edge extends Thread {
 			}
 			else if(received instanceof Piece){
 				Piece newPiece = (Piece)received;
+				lastPieceIndex = newPiece.getIndex();
 				Tools.debug("[Edge.handleMessage] Received piece %d!",newPiece.getIndex());
 				Tools.debug("[Edge.handleMessage] Piece MD5: %s [l: %d, s: %2x e: %2x]",Tools.getMD5(newPiece.getData()),newPiece.getData().length,newPiece.getData()[0],newPiece.getData()[newPiece.getData().length - 1]);
-				
+				this.edgeState.set(this.edgeState.get() | EDGE_RECV_REQUESTED_PIECE);
 				FileManager.writeBytesToFile("message-received.txt", newPiece.toBytes());
 			}
 		}

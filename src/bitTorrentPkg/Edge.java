@@ -298,6 +298,7 @@ public class Edge extends Thread {
 					Tools.debug("[Edge.run] Handshake received, breaking...");
 					break;
 				}
+
 				
 				this.runTasks(); //Do anything that needs to be done now.
 				
@@ -378,6 +379,9 @@ public class Edge extends Thread {
 							
 							Tools.debug("[Edge.runTasks] Requesting piece %d from peer %d...",requestPiece,this.destination.getPeerID());
 							this.sendRequest(requestMessage);
+						}
+						else{
+							Tools.debug("[Edge.runTasks] No pieces to request from peer %d.",this.destination.getPeerID());
 						}
 					}
 					else if((state & this.EDGE_RECV_REQUEST) != 0){

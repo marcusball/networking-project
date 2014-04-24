@@ -409,6 +409,10 @@ public class Host {
 			e.printStackTrace();
 		}
 	}
+	
+	public boolean downloadIsComplete(){
+		return this.bitfield.isAll(true);
+	}
 }
 
 

@@ -31,6 +31,7 @@ public class peerProcess {
 		Scanner input = new Scanner(System.in);
 		System.out.println("Enter a peer ID:");
 		int peerID = input.nextInt();
+		Logger.setPeerID(peerID);
 		
 		Tools.debug("[PeerProcess.main] My peer ID: %d",peerID);
 		

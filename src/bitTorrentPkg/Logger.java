@@ -12,23 +12,23 @@ public class Logger {
 	protected static int numOfLogs;
 	protected static PrintWriter writer;
 	
-	public void setPeerID(int peerID) throws FileNotFoundException, UnsupportedEncodingException{
-		this.peerID = peerID;
+	public static void setPeerID(int pID) throws FileNotFoundException, UnsupportedEncodingException{
+		peerID = pID;
 		logFileName = "log_peer_" + peerID + ".log";
 		writer = new PrintWriter(logFileName, "UTF-8");
 	}
 	
 	//LOGGER METHODS------------------------------------------------------------
 	//typical get methods
-	public int getPeerID(){
+	public static int getPeerID(){
 		return peerID;
 	}
 	
-	public String getLogFileName(){
+	public static String getLogFileName(){
 		return logFileName;
 	}
 	
-	public PrintWriter getWriter(){
+	public static PrintWriter getWriter(){
 		return writer;
 	}
 	

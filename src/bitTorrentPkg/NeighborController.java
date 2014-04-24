@@ -18,6 +18,8 @@ public class NeighborController {
 	private static Timer changeNeighbors;
 	private static Timer changeOptUnchoked;
 	
+	private static boolean started = false;
+	
 	//private long startTime;
 
 	
@@ -36,11 +38,17 @@ public class NeighborController {
 		
 		changeNeighbors = new Timer();
 		changeOptUnchoked = new Timer();
-		changeNeighbors.schedule(new NeighborController().new Unchoke(), unchokingInterval*1000);
-		changeOptUnchoked.schedule(new NeighborController().new OptimisticUnchoke(), optUnchokingInterval*1000);	
-		//create the timers and add tasks to them at their respective intervals
 	}
 	
+	public static void startTimers(){
+		changeNeighbors.schedule(new NeighborController().new Unchoke(), unchokingInterval*1000);
+		changeOptUnchoked.schedule(new NeighborController().new OptimisticUnchoke(), optUnchokingInterval*1000);
+		started = true;
+	}
+	
+	public static boolean isStarted(){
+		return started;
+	}
 	
 	
 	public static void addPeer(Peer other){

@@ -274,6 +274,10 @@ public class Edge extends Thread {
 	 */
 	public void run(){
 		try{
+			if(!NeighborController.isStarted()){
+				//if the timers haven't been started already, do it now
+				NeighborController.startTimers();
+			}
 			byte[] buffer;
 			int bytesRead;
 			Tools.debug("[Edge.run] Now listening for responses...");

@@ -479,6 +479,7 @@ public class Edge extends Thread {
 				Tools.debug("[Edge.handleMessage] Piece MD5: %s [l: %d, s: %2x e: %2x]",Tools.getMD5(newPiece.getData()),newPiece.getData().length,newPiece.getData()[0],newPiece.getData()[newPiece.getData().length - 1]);
 				this.edgeState.set(this.edgeState.get() | EDGE_RECV_REQUESTED_PIECE);
 				FileManager.writeBytesToFile("message-received.txt", newPiece.toBytes());
+				Logger.logPiece(destination.getPeerID(), lastPieceIndex);
 			}
 		}
 	}

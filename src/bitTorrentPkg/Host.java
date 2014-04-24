@@ -93,7 +93,7 @@ public class Host {
 		return pieceSize; //this cannot be changed
 	}
 	
-	public int numOfPieces(){
+	public int getNumOfPieces(){
 		return numOfPieces; //this cannot be changed
 	}
 	

@@ -1,2 +1,5 @@
-Wed Apr 23 21:26:56 EDT 2014: Test log. Peer ID = 2
-
+Wed Apr 23 22:03:20 EDT 2014: Test log. Peer ID = 2
+Wed Apr 23 22:03:20 EDT 2014: Peer 2 makes a connection to Peer 1
+Wed Apr 23 22:03:20 EDT 2014: Peer 2 received a not interested message from Peer 1
+Wed Apr 23 22:03:21 EDT 2014: Peer 2 has downloaded the piece 69 from 1
+Wed Apr 23 22:03:21 EDT 2014: Peer 2 received a not interested message from Peer 1

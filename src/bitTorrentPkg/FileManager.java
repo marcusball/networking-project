@@ -87,4 +87,15 @@ public class FileManager {
 			return this.byteLength;
 		}
 	}
+	
+	public static void combinePiecesToFile() throws FileNotFoundException{
+		//create new file in peer_%d/Filename
+		File file = new File(directoryPath + NeighborController.host.getFileName());
+		FileOutputStream out = new FileOutputStream(file);
+		
+		for(int i = 0; i < NeighborController.host.getNumOfPieces(); i++){
+			//for every piece, read and write to the file
+		}
+		
+	}
 }

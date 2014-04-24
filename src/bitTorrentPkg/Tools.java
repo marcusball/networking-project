@@ -1,7 +1,7 @@
 package bitTorrentPkg;
 
 public class Tools {
-	private final static boolean useFancyOutput = true;
+	private final static boolean useFancyOutput = false;
 	public static int bytesToInt(byte[] fourBytes) throws IllegalArgumentException{
 		if(fourBytes.length != 4){
 			throw new IllegalArgumentException(String.format("Expected four byte input! Received %d bytes!",fourBytes.length));

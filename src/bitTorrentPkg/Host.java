@@ -17,8 +17,8 @@ public class Host {
 	private long optUnchokingInterval; //Time between each optimistic unchoke of a new peer (in seconds)
 	private String fileName; 
 	private long fileSize;	//in bytes
-	private long pieceSize;	//Size of each piece file will be broken up into (in bytes)
-	private long numOfPieces; //number of pieces in a file (fileSize divided by pieceSize, rounded up)
+	private int pieceSize;	//Size of each piece file will be broken up into (in bytes)
+	private int numOfPieces; //number of pieces in a file (fileSize divided by pieceSize, rounded up)
 	private long requestTTL;
 	
 	//PeerInfo.cfg variables
@@ -89,11 +89,11 @@ public class Host {
 		return fileSize; //this cannot be changed
 	}
 	
-	public long pieceSize(){
+	public int pieceSize(){
 		return pieceSize; //this cannot be changed
 	}
 	
-	public long numOfPieces(){
+	public int numOfPieces(){
 		return numOfPieces; //this cannot be changed
 	}
 	
@@ -162,7 +162,7 @@ public class Host {
 		this.fileSize = Long.parseLong(parts[1]);
 		currLine = config.readLine();
 		parts = currLine.split("\\s+");
-		this.pieceSize = Long.parseLong(parts[1]);
+		this.pieceSize = Integer.parseInt(parts[1]);
 		config.close(); //close the config file
 		
 		//reading from Common.cfg is complete, now finish calculations
@@ -310,7 +310,7 @@ public class Host {
 			Tools.debug("[Host.readShareFileInfo] Not in possestion of file, skipping read attempt.");
 		}
 		
-		this.numOfPieces = (long) Math.ceil(fileSize / pieceSize); 
+		this.numOfPieces = (int) Math.ceil(fileSize / pieceSize); 
 		bitfield = new Bitfield(numOfPieces,this.hasFile);
 	}
 	
@@ -385,6 +385,21 @@ public class Host {
 				
 			}
 		}
+	}
+	
+	public boolean hasRequestedPiece(Peer other,int pieceIndex){
+		int requestIndex = this.getRequestIndex(pieceIndex);
+		if(requestIndex != -1){
+			RequestedPiece request = this.getRequest(pieceIndex);
+			if(request.getPeerID() != other.getPeerID()){
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	public byte[] getPiece(int pieceIndex) throws IOException{
+		return FileManager.getFilePiece(pieceIndex, this.pieceSize);
 	}
 }
 

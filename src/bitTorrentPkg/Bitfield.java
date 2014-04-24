@@ -1,12 +1,12 @@
 package bitTorrentPkg;
 
 public class Bitfield {
-	private long length;
+	private int length;
 	protected byte[] container;
-	public Bitfield(long numOfPieces){
+	public Bitfield(int numOfPieces){
 		this(numOfPieces,false);
 	}
-	public Bitfield(long length,boolean intialVal){
+	public Bitfield(int length,boolean intialVal){
 		this.length = length;
 		this.container = new byte[(int)Math.ceil(length / 8.0)]; //Make sure we have enough bytes for all of the bits
 		Tools.debug("[Bitfield] Creating container of length %d.",(int)Math.ceil(length / 8.0));
@@ -26,7 +26,7 @@ public class Bitfield {
 		this.length = bitfield.length * 8;
 		this.container = bitfield;
 	}
-	public Bitfield(byte[] bitfield, long l){
+	public Bitfield(byte[] bitfield, int l){
 		if((int)Math.ceil(l / 8.0) != bitfield.length){
 			throw new IllegalArgumentException(String.format("The given length of %d, corresponding to %d container bytes, does not match the given byte array length %d!",l,(int)Math.ceil(l / 8.0),bitfield.length));
 		}
@@ -193,7 +193,7 @@ public class Bitfield {
 	 * Warning: this is imprecise if the Bitfield(byte[]) constructor is used without the length argument. 
 	 * @return
 	 */
-	public long getLength(){
+	public int getLength(){
 		return this.length;
 	}
 }

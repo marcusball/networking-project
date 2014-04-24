@@ -56,7 +56,7 @@ public class Edge extends Thread {
 	private final int EDGE_SENT_NOTINTERESTED = 2048;
 	private final int EDGE_RECV_HAVE = 4096;
 	private final int EDGE_SENT_HAVE = 8192;
-	private final int EDGE_RECV_PIECE = 16384;
+	private final int EDGE_RECV_REQUESTED_PIECE = 16384;
 	private final int EDGE_SENT_PIECE = 32768;
 	private final int EDGE_SENT_REQUEST = 65536;
 	private final int EDGE_RECV_REQUEST = 131072;
@@ -65,6 +65,7 @@ public class Edge extends Thread {
 	private final int EDGE_CLEAR_RECV_CHOKE = Integer.MAX_VALUE & ~(EDGE_RECV_CHOKE);
 	private final int EDGE_CLEAR_RECV_UNCHOKE = Integer.MAX_VALUE & ~(EDGE_RECV_UNCHOKE);
 	private final int EDGE_CLEAR_RECV_HAVE = Integer.MAX_VALUE & ~(EDGE_RECV_HAVE);
+	private final int EDGE_CLEAR_RECV_REQUEST = Integer.MAX_VALUE & ~(EDGE_RECV_REQUEST);
 	
 	
 	private final int EDGE_GREETING_COMPLETE = 15; 
@@ -253,6 +254,11 @@ public class Edge extends Thread {
 		this.sendMessage(message);
 	}
 	
+	public void sendPiece(Piece message){
+		
+		this.sendMessage(message);
+	}
+	
 	/**
 	 * Thread method: Perpetually listens for responses. 
 	 */
@@ -353,6 +359,16 @@ public class Edge extends Thread {
 							this.sendRequest(requestMessage);
 						}
 					}
+					else if((state & this.EDGE_RECV_REQUEST) != 0){
+						int index = this.destination.getLastRequestedPiece();
+						byte[] piece = NeighborController.host.getPiece(index);
+						Piece pieceMessage = new Piece(index,piece);
+						
+						this.edgeState.set(this.edgeState.get() & this.EDGE_CLEAR_RECV_REQUEST);
+						
+						Tools.debug("[Edge.runTasks] Sending piece %d to peer %d...",index,this.destination.getPeerID());
+						this.sendPiece(pieceMessage);
+					}
 				//}
 			}
 		}
@@ -419,7 +435,12 @@ public class Edge extends Thread {
 				Request req = (Request)received;
 				Tools.debug("[Edge.handleMessage] Received request of piece %d!",req.GetPayloadValue());
 				
+				this.destination.setLastRequestedPiece(req.GetPayloadValue());
 				this.edgeState.set(this.edgeState.get() | this.EDGE_RECV_REQUEST);
+			}
+			else if(received instanceof Piece){
+				Piece newPiece = (Piece)received;
+				Tools.debug("[Edge.handleMessage] Received piece %d!",newPiece.getIndex());
 			}
 		}
 	}

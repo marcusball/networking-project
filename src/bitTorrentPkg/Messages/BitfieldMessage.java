@@ -3,13 +3,13 @@ package bitTorrentPkg.Messages;
 import bitTorrentPkg.Bitfield;
 
 public class BitfieldMessage extends NormalMessage{
-	private long bitfieldLength;
+	private int bitfieldLength;
 	public BitfieldMessage(byte[] bitfield){
 		this.messageType = 5;
 		this.payload = bitfield;
 		this.bitfieldLength = -1; //Yeah, I'm sorry. I hate magic numbers too. 
 	}
-	public BitfieldMessage(byte[] bitfield,long length){
+	public BitfieldMessage(byte[] bitfield,int length){
 		this.messageType = 5;
 		this.payload = bitfield;
 		this.bitfieldLength = length;

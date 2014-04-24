@@ -49,6 +49,8 @@ public class Peer {
 	protected int piecesDownloaded;
 	protected int piecesSinceUnchoke;
 	protected float dlRate; //represents average download rate since last unchoke
+	
+	protected int lastRequestedPiece; //What piece was last requested by this peer
 
 
 	
@@ -223,7 +225,13 @@ public class Peer {
 	public void setHasPiece(long pieceId, boolean has){
 		this.bitfield.setValue(pieceId, has);
 	}
-
+	
+	public void setLastRequestedPiece(int piece){
+		this.lastRequestedPiece = piece;
+	}
+	public int getLastRequestedPiece(){
+		return this.lastRequestedPiece;
+	}
 }
 
 

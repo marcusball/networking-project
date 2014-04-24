@@ -67,3 +67,4 @@ local.properties
 
 
 peer_*/*
+.nfs*

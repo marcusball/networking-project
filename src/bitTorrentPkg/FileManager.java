@@ -36,6 +36,9 @@ public class FileManager {
 	private static String getFilePath(String fileName){
 		return String.format(directoryPath + "/" + fileName,NeighborController.host.getPeerID());
 	}
+	private static String getPiecePath(int pieceId){
+		return String.format(directoryPath + "/" + partFileName,NeighborController.host.getPeerID(),pieceId);
+	}
 	
 	public static String getShareFilePath(){
 		return shareFilePath;
@@ -56,6 +59,10 @@ public class FileManager {
 		}
 		buffer.limit(readBytes);
 		return buffer.array();
+	}
+	
+	public static void writeFilePiece(int pieceId,byte[] data) throws IOException{
+		writeBytesToFile(getPiecePath(pieceId),data);
 	}
 	
 	public static void writeBytesToFile(String file,byte[] toWrite) throws IOException{

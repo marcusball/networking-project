@@ -150,11 +150,9 @@ public class Logger {
 	}
 	
 	// Same pieceIndex used a few methods above; numPieces introduced for the first time
-	public static void logPiece(int pID, int pieceIndex, int numPieces) {
+	public static void logPiece(int pID, int pieceIndex) {
 		if(peerID != -1){	
 			writer.println(new Date().toString() + ": Peer " + peerID + " has downloaded the piece " + pieceIndex + " from " + pID);
-			writer.flush();
-			writer.println("Now the number of pieces it has is: " + numPieces);
 			writer.flush();
 		}else{
 			Tools.debug("[Logger] Log not set!");

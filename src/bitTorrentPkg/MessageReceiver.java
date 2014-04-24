@@ -79,7 +79,7 @@ public class MessageReceiver {
 								received = new Have(messagePayload);
 								break;
 							case 5:
-								received = new BitfieldMessage(messagePayload,NeighborController.host.numOfPieces());
+								received = new BitfieldMessage(messagePayload,NeighborController.host.getNumOfPieces());
 								break;
 							case 6:
 								received = new Request(messagePayload);
@@ -118,6 +118,7 @@ public class MessageReceiver {
 		}
 		return output;
 	}
+	
 	private boolean MessageIsHandshake(byte[] message){
 		if(message.length != 32){
 			return false;

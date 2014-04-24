@@ -1,6 +1,7 @@
 package bitTorrentPkg;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.RandomAccessFile;
@@ -116,5 +117,23 @@ public class FileManager {
 		public long getByteLength(){
 			return this.byteLength;
 		}
+	}
+	
+	public static void combinePiecesToFile() throws IOException{
+		//create new file in peer_%d/Filename
+		File file = new File(getFilePath(NeighborController.host.getFileName()));
+		FileOutputStream out = new FileOutputStream(file);
+		File piece;
+		FileInputStream in;
+		
+		for(int i = 0; i < NeighborController.host.getNumOfPieces(); i++){
+			//for every piece, read and write to the file
+			piece = new File(getPiecePath(NeighborController.host.getPeerID()));
+			in = new FileInputStream(piece);
+			while(in.available() > 0){
+				out.write(in.read());
+			}
+		}
+		
 	}
 }

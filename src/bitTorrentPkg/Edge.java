@@ -488,7 +488,8 @@ public class Edge extends Thread {
 				NeighborController.host.savePiece(newPiece);
 				
 				this.edgeState.set(this.edgeState.get() | EDGE_RECV_REQUESTED_PIECE);
-				//FileManager.writeBytesToFile("message-received.txt", newPiece.toBytes());
+				FileManager.writeBytesToFile("message-received.txt", newPiece.toBytes());
+				Logger.logPiece(destination.getPeerID(), lastPieceIndex);
 			}
 		}
 	}

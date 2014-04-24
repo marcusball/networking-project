@@ -89,7 +89,7 @@ public class MessageReceiver {
 									throw new IOException("Received peice message with payload length less than 5!");
 								}
 								byte[] indexBytes = Arrays.copyOfRange(messagePayload, 0, 4);
-								byte[] piece = Arrays.copyOfRange(messagePayload, 5, messageLength);
+								byte[] piece = Arrays.copyOfRange(messagePayload, 4, messageLength);
 								
 								received = new Piece(Tools.bytesToInt(indexBytes),piece);
 								break;
